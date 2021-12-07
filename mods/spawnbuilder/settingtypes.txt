@@ -1,0 +1,4 @@
+#Side length of the surface area of the spawn platform
+#If the number is odd, the platform will be centered at spawn.
+#Using a width lower than 3 is not recommended.
+spawnbuilder_width (Spawn platform width) int 33 1
