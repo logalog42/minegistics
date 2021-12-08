@@ -57,20 +57,14 @@ local function logResult(context, obj)
    minetest.log("error", context.." returned "..msg.." object");
 end
 
-minetest.after(0, function()
-   logResult("get_perlin_map", minetest.get_perlin_map(NOISE_PARAMS, SIZE));
-   logResult("get_perlin_map", minetest.get_perlin_map(NOISE_PARAMS, SIZE));
-   logResult("PerlinNoise", PerlinNoise(23, 3, 0.70, 100));
-   logResult("PerlinNoiseMap", PerlinNoiseMap(NOISE_PARAMS, SIZE));
-end)
-
-
-
 
 -- Generates the platform or platform piece within minp and maxp with the center at centerpos
 local function generate_platform(minp, maxp, centerpos)
 	-- Get stone and cobble nodes, based on the mapgen aliases. This allows for great compability with practically
 	-- all subgames!
+   local c_river = minetest.get_content_id("mapgen_river_water_source")
+   local c_grass = minetest.get_content_id("mapgen_dirt_with_grass")
+   local c_sand = minetest.get_content_id("mapgen_sand")
 	local c_stone = minetest.get_content_id("mapgen_stone")
 	local c_cobble
 	if minetest.registered_aliases["mapgen_cobble"] == "air" or minetest.registered_aliases["mapgen_cobble"] == nil then
@@ -100,17 +94,36 @@ local function generate_platform(minp, maxp, centerpos)
 		local data = vm:get_data()
 		local area = VoxelArea:new({MinEdge=emin, MaxEdge=emax})
 
+      -- Loop throught all the positions
 		for x = xmin, xmax do
 			for y = ymin, ymax do
 				for z = zmin, zmax do
-					local p_pos = area:index(x, y, z)
+               local p_pos = area:index(x, y, z)
 					local pos = {x=x,y=y,z=z}
 					if minetest.registered_nodes[minetest.get_node(pos).name].is_ground_content == true then
-						if y <= centerpos.y then
+
+                  if y <= centerpos.y then
 							if x == centerpos.x and y == centerpos.y and z == centerpos.z then
 								data[p_pos] = c_cobble
 								minetest.log("action", "[spawnbuilder] Spawn platform center generated at "..minetest.pos_to_string(pos)..".")
-							else
+                     -- Generates the top layer of the platform
+                     elseif y == centerpos.y then
+                        randomNumber = math.random(1, 100)
+                        minetest.log("Testing", randomNumber)
+                        if randomNumber >= 1 and randomNumber < 10 then
+                           data[p_pos] = c_cobble
+                        elseif randomNumber >= 30 and randomNumber < 40 then
+                           data[p_pos] = c_river
+                        elseif randomNumber >= 40 and randomNumber < 50 then
+                           data[p_pos] = c_grass
+                        elseif randomNumber >= 50 and randomNumber < 60 then
+                           data[p_pos] = c_sand
+                        elseif randomNumber >= 60 and randomNumber < 70 then
+                           data[p_pos] = c_stone
+                        else
+                           data[p_pos] = c_grass
+                        end
+                     else
 								data[p_pos] = c_stone
 							end
 						elseif y >= centerpos.y + 1 and y <= ymax then
