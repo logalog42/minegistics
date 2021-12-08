@@ -62,6 +62,7 @@ end
 local function generate_platform(minp, maxp, centerpos)
 	-- Get stone and cobble nodes, based on the mapgen aliases. This allows for great compability with practically
 	-- all subgames!
+   local c_gravel = minetest.get_content_id("mapgen_gravel")
    local c_river = minetest.get_content_id("mapgen_river_water_source")
    local c_grass = minetest.get_content_id("mapgen_dirt_with_grass")
    local c_sand = minetest.get_content_id("mapgen_sand")
@@ -109,16 +110,15 @@ local function generate_platform(minp, maxp, centerpos)
                      -- Generates the top layer of the platform
                      elseif y == centerpos.y then
                         randomNumber = math.random(1, 100)
-                        minetest.log("Testing", randomNumber)
-                        if randomNumber >= 1 and randomNumber < 10 then
+                        if randomNumber >= 1 and randomNumber < 5 then
                            data[p_pos] = c_cobble
-                        elseif randomNumber >= 30 and randomNumber < 40 then
+                        elseif randomNumber >= 5 and randomNumber < 10 then
+                           data[p_pos] = c_gravel
+                        elseif randomNumber >= 10 and randomNumber < 15 then
                            data[p_pos] = c_river
-                        elseif randomNumber >= 40 and randomNumber < 50 then
-                           data[p_pos] = c_grass
-                        elseif randomNumber >= 50 and randomNumber < 60 then
+                        elseif randomNumber >= 15 and randomNumber < 20 then
                            data[p_pos] = c_sand
-                        elseif randomNumber >= 60 and randomNumber < 70 then
+                        elseif randomNumber >= 20 and randomNumber < 25 then
                            data[p_pos] = c_stone
                         else
                            data[p_pos] = c_grass
