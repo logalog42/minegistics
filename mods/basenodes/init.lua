@@ -133,5 +133,4 @@ minetest.register_node("basenodes:stone_with_tin", {
 minetest.register_node("basenodes:stone_with_gold", {
 	description = ("Gold Ore"),
 	tiles = {"default_stone.png^default_mineral_gold.png"},
-	groups = {cracky = 2},
 })
