@@ -6,10 +6,11 @@ end
 
 local give_initial_stuff = function(player)
 	local inv = player:get_inventory()
-	give_if_not_gotten_already(inv, "main", "basetools:pick_mese")
-	give_if_not_gotten_already(inv, "main", "basetools:axe_steel")
-	give_if_not_gotten_already(inv, "main", "basetools:shovel_steel")
-	give_if_not_gotten_already(inv, "main", "bucket:bucket")
+	give_if_not_gotten_already(inv, "main", "minegistics_structures_Town")
+	give_if_not_gotten_already(inv, "main", "minegistics_structures_Market")
+	give_if_not_gotten_already(inv, "main", "minegistics_structures_Collector")
+	give_if_not_gotten_already(inv, "main", "minegistics_structures_Factories")
+   give_if_not_gotten_already(inv, "main", "minegistics_structures_Warehouse")
 	minetest.log("action", "[give_initial_stuff] Giving initial stuff to "..player:get_player_name())
 end
 
