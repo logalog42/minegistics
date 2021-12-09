@@ -8,12 +8,6 @@ local LAVA_VISC = 7
 
 -- Register nodes
 
-minetest.register_node("basenodes:Collector", {
-   description = " Building to gather resources",
-   tiles = {"minegistics_structures_Collector.png"},
-   groups = {cracky=3},
-})
-
 minetest.register_node("basenodes:stone", {
 	description = "Stone",
 	tiles = {"default_stone.png"},
