@@ -11,7 +11,6 @@ local LAVA_VISC = 7
 minetest.register_node("basenodes:stone", {
 	description = "Stone",
 	tiles = {"default_stone.png"},
-	groups = {cracky=3},
 })
 
 minetest.register_node("basenodes:dirt_with_grass", {
@@ -21,25 +20,21 @@ minetest.register_node("basenodes:dirt_with_grass", {
 		"default_dirt.png^basenodes_dirt_with_grass_bottom.png",
 		{name = "default_dirt.png^default_grass_side.png",
 		tileable_vertical = false}},
-	groups = {crumbly=3, soil=1},
 })
 
 minetest.register_node("basenodes:dirt", {
 	description = "Dirt",
 	tiles ={"default_dirt.png"},
-	groups = {crumbly=3, soil=1},
 })
 
 minetest.register_node("basenodes:sand", {
 	description = "Sand",
 	tiles ={"default_sand.png"},
-	groups = {crumbly=3},
 })
 
 minetest.register_node("basenodes:gravel", {
 	description = "Gravel",
 	tiles ={"default_gravel.png"},
-	groups = {crumbly=2},
 })
 
 minetest.register_node("basenodes:leaves", {
@@ -48,7 +43,6 @@ minetest.register_node("basenodes:leaves", {
 	tiles = {"default_leaves.png"},
 	paramtype = "light",
 	is_ground_content = false,
-	groups = {snappy=3},
 })
 
 minetest.register_node("basenodes:river_water_source", {
@@ -114,5 +108,30 @@ minetest.register_node("basenodes:cobble", {
 	description = "Cobblestone",
 	tiles ={"default_cobble.png"},
 	is_ground_content = false,
-	groups = {cracky=3},
+})
+
+minetest.register_node("basenodes:stone_with_coal", {
+	description = ("Coal Ore"),
+	tiles = {"default_stone.png^default_mineral_coal.png"},
+})
+
+minetest.register_node("basenodes:stone_with_iron", {
+	description = ("Iron Ore"),
+	tiles = {"default_stone.png^default_mineral_iron.png"},
+})
+
+minetest.register_node("basenodes:stone_with_copper", {
+	description = ("Copper Ore"),
+	tiles = {"default_stone.png^default_mineral_copper.png"},
+})
+
+minetest.register_node("basenodes:stone_with_tin", {
+	description = ("Tin Ore"),
+	tiles = {"default_stone.png^default_mineral_tin.png"},
+})
+
+minetest.register_node("basenodes:stone_with_gold", {
+	description = ("Gold Ore"),
+	tiles = {"default_stone.png^default_mineral_gold.png"},
+	groups = {cracky = 2},
 })
