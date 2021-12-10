@@ -62,11 +62,17 @@ end
 local function generate_platform(minp, maxp, centerpos)
 	-- Get stone and cobble nodes, based on the mapgen aliases. This allows for great compability with practically
 	-- all subgames!
-   local c_gravel = minetest.get_content_id("mapgen_gravel")
-   local c_river = minetest.get_content_id("mapgen_river_water_source")
-   local c_grass = minetest.get_content_id("mapgen_dirt_with_grass")
-   local c_sand = minetest.get_content_id("mapgen_sand")
+  local c_gravel = minetest.get_content_id("mapgen_gravel")
+  local c_river = minetest.get_content_id("mapgen_river_water_source")
+  local c_grass = minetest.get_content_id("mapgen_dirt_with_grass")
+  local c_sand = minetest.get_content_id("mapgen_sand")
 	local c_stone = minetest.get_content_id("mapgen_stone")
+	local c_coal = minetest.get_content_id("mapgen_coal")
+	local c_iron = minetest.get_content_id("mapgen_iron")
+	local c_copper = minetest.get_content_id("mapgen_copper")
+	local c_tin = minetest.get_content_id("mapgen_tin")
+	local c_gold = minetest.get_content_id("mapgen_gold")
+
 	local c_cobble
 	if minetest.registered_aliases["mapgen_cobble"] == "air" or minetest.registered_aliases["mapgen_cobble"] == nil then
 		-- Fallback option: If cobble mapgen alias is inappropriate or missing, use stone instead.
@@ -119,7 +125,18 @@ local function generate_platform(minp, maxp, centerpos)
                         elseif randomNumber >= 15 and randomNumber < 20 then
                            data[p_pos] = c_sand
                         elseif randomNumber >= 20 and randomNumber < 25 then
-                           data[p_pos] = c_stone
+                           oreNumber = math.random(1, 10)
+													 if oreNumber >= 1 and oreNumber < 3 then
+														 data[p_pos] = c_iron
+													 elseif oreNumber >= 3 and oreNumber < 5 then
+														 data[p_pos] = c_copper
+													 elseif oreNumber >= 5 and oreNumber < 7 then
+														 data[p_pos] = c_tin
+													 elseif oreNumber >= 7 and oreNumber < 8  then
+														 data[p_pos] = c_gold
+													 else
+														 data[p_pos] = c_coal
+													 end
                         else
                            data[p_pos] = c_grass
                         end
@@ -169,4 +186,5 @@ minetest.register_on_generated(function(minp, maxp, seed)
 	end
 
 	generate_platform(minp, maxp, centerpos)
+
 end)
