@@ -45,6 +45,37 @@ minetest.register_node("basenodes:leaves", {
 	is_ground_content = false,
 })
 
+minetest.register_node("basenodes:cobble", {
+	description = "Cobblestone",
+	tiles ={"default_cobble.png"},
+	is_ground_content = false,
+})
+
+minetest.register_node("basenodes:stone_with_coal", {
+	description = ("Coal Ore"),
+	tiles = {"default_stone.png^default_mineral_coal.png"},
+})
+
+minetest.register_node("basenodes:stone_with_iron", {
+	description = ("Iron Ore"),
+	tiles = {"default_stone.png^default_mineral_iron.png"},
+})
+
+minetest.register_node("basenodes:stone_with_copper", {
+	description = ("Copper Ore"),
+	tiles = {"default_stone.png^default_mineral_copper.png"},
+})
+
+minetest.register_node("basenodes:stone_with_tin", {
+	description = ("Tin Ore"),
+	tiles = {"default_stone.png^default_mineral_tin.png"},
+})
+
+minetest.register_node("basenodes:stone_with_gold", {
+	description = ("Gold Ore"),
+	tiles = {"default_stone.png^default_mineral_gold.png"},
+})
+
 minetest.register_node("basenodes:river_water_source", {
 	description = "River Water Source".."\n"..
 		"Drowning damage: 1",
@@ -102,35 +133,4 @@ minetest.register_node("basenodes:river_water_flowing", {
 	liquid_range = 2,
 	post_effect_color = {a = 103, r = 30, g = 76, b = 90},
 	groups = {water = 3, liquid = 3, },
-})
-
-minetest.register_node("basenodes:cobble", {
-	description = "Cobblestone",
-	tiles ={"default_cobble.png"},
-	is_ground_content = false,
-})
-
-minetest.register_node("basenodes:stone_with_coal", {
-	description = ("Coal Ore"),
-	tiles = {"default_stone.png^default_mineral_coal.png"},
-})
-
-minetest.register_node("basenodes:stone_with_iron", {
-	description = ("Iron Ore"),
-	tiles = {"default_stone.png^default_mineral_iron.png"},
-})
-
-minetest.register_node("basenodes:stone_with_copper", {
-	description = ("Copper Ore"),
-	tiles = {"default_stone.png^default_mineral_copper.png"},
-})
-
-minetest.register_node("basenodes:stone_with_tin", {
-	description = ("Tin Ore"),
-	tiles = {"default_stone.png^default_mineral_tin.png"},
-})
-
-minetest.register_node("basenodes:stone_with_gold", {
-	description = ("Gold Ore"),
-	tiles = {"default_stone.png^default_mineral_gold.png"},
 })
