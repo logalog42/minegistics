@@ -1,8 +1,5 @@
 -- carts/cart_entity.lua
 
--- support for MT game translation.
-local S = carts.get_translator
-
 local cart_entity = {
 	initial_properties = {
 		physical = false, -- otherwise going uphill breaks
