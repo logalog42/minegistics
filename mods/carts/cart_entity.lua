@@ -18,6 +18,27 @@ local cart_entity = {
 	old_switch = 0,
 	railtype = nil,
 	attached_items = {}
+
+	on_step = function(self, dtime)
+		local pos = self.object:get_pos()
+		local vel = self.object:get_velocity()
+		local north = {x=pos.x, y=pos.y, z=pos.z + 1}
+		local west = {x=pos.x - 1, y=pos.y, z=pos.z}
+		local east = {x=pos.x + 1, y=pos.y, z=pos.z}
+		local south = {x=pos.x, y=pos.y, z=pos.z - 1}
+		local go = false
+
+		if vel == 0 and go == false then
+			 = minetest.get_meta()
+
+			 if :get_string("type") == "collector" then
+
+			 elseif :get_string("type") == "reciever" then
+
+			 else
+				 return
+			 end 
+
 }
 
 function cart_entity:on_activate(staticdata, dtime_s)
