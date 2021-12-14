@@ -1,12 +1,8 @@
 -- carts/init.lua
 
--- Load support for MT game translation.
-local S = minetest.get_translator("carts")
-
 carts = {}
 carts.modpath = minetest.get_modpath("carts")
 carts.railparams = {}
-carts.get_translator = S
 
 -- Maximal speed of the cart in m/s (min = -1)
 carts.speed_max = 7
@@ -20,9 +16,16 @@ dofile(carts.modpath.."/functions.lua")
 dofile(carts.modpath.."/rails.lua")
 dofile(carts.modpath.."/cart_entity.lua")
 
--- Register rails as dungeon loot
-if minetest.global_exists("dungeon_loot") then
-	dungeon_loot.register({
-		name = "carts:rail", chance = 0.35, count = {1, 6}
-	})
-end
+minetest.register_abm({
+    nodenames = {"carts:cart_entity"},
+    neighbors = {"minegistics_structures:minegistics_structures_collector"},
+    interval = 1, -- Run every 1 second
+    chance = 1, -- Select every 1 in 1 node
+    action = function(pos, node, active_object_count, active_object_count_wider)
+      local meta = minetest.get_meta({ x = pos.x, y = pos.y, z = pos.z })
+      if meta:get_int("iron") < 100 then
+         meta:set_int("iron", (meta:get_int("iron") + 1))
+      else
+      end
+    end
+})

@@ -20,24 +20,6 @@ local cart_entity = {
 	attached_items = {}
 }
 
-function cart_entity:on_rightclick(clicker)
-	if not clicker or not clicker:is_player() then
-		return
-	end
-	local player_name = clicker:get_player_name()
-	if self.driver and player_name == self.driver then
-		self.driver = nil
-		carts:manage_attachment(clicker, nil)
-	elseif not self.driver then
-		self.driver = player_name
-		carts:manage_attachment(clicker, self.object)
-
-		-- player_api does not update the animation
-		-- when the player is attached, reset to default animation
-		player_api.set_animation(clicker, "stand")
-	end
-end
-
 function cart_entity:on_activate(staticdata, dtime_s)
 	self.object:set_armor_groups({immortal=1})
 	if string.sub(staticdata, 1, string.len("return")) ~= "return" then
@@ -297,7 +279,7 @@ local function rail_on_step(self, dtime)
 			if ctrl and ctrl.down then
 				acc = acc - 3
 			else
-				acc = acc - 0.4
+				acc = acc
 			end
 		end
 
@@ -384,7 +366,7 @@ end
 minetest.register_entity("carts:cart", cart_entity)
 
 minetest.register_craftitem("carts:cart", {
-	description = S("Cart") .. "\n" .. S("(Sneak+Click to pick up)"),
+	description = ("Cart") .. "\n" .. ("(Sneak+Click to pick up)"),
 	inventory_image = minetest.inventorycube("carts_cart_top.png", "carts_cart_front.png", "carts_cart_side.png"),
 	wield_image = "carts_cart_front.png",
 	on_place = function(itemstack, placer, pointed_thing)
@@ -417,12 +399,4 @@ minetest.register_craftitem("carts:cart", {
 		end
 		return itemstack
 	end,
-})
-
-minetest.register_craft({
-	output = "carts:cart",
-	recipe = {
-		{"default:steel_ingot", "", "default:steel_ingot"},
-		{"default:steel_ingot", "default:steel_ingot", "default:steel_ingot"},
-	},
 })
