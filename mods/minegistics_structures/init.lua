@@ -1,6 +1,25 @@
 minetest.register_node("minegistics_structures:Collector", {
    description = " Building to gather resources",
    tiles = {"minegistics_structures_collector.png"},
+   on_construct = function(pos)
+     local meta = minetest.get_meta(pos)
+     meta:set_string("formspec",
+         "size[8,9]"..
+         "list[current_name;main;0,0;8,4;]"..
+         "list[current_player;main;0,5;8,4;]" ..
+         "listring[]")
+     meta:set_string("infotext", "collector")
+     local inv = meta:get_inventory()
+     inv:set_size("main", 5*1)
+  end,
+  allow_metadata_inventory_take = function(pos, listname, index, stack, player)
+     minetest.chat_send_player(player:get_player_name(), "Allow take: " .. stack:to_string())
+     return stack:get_count()
+  end,
+  on_metadata_inventory_take = function(pos, listname, index, stack, player)
+     minetest.chat_send_player(player:get_player_name(), "On take: " .. stack:to_string())
+  end,
+
 })
 
 minetest.register_abm({
@@ -10,29 +29,7 @@ minetest.register_abm({
     chance = 1, -- Select every 1 in 1 node
     action = function(pos, node, active_object_count, active_object_count_wider)
       local meta = minetest.get_meta({ x = pos.x, y = pos.y, z = pos.z })
-      if meta:get_int("coal") < 100 then
-         meta:set_int("coal", (meta:get_int("coal") + 1))
-      else
       end
-    end
-    on_construct = function(pos)
-      local meta = minetest.get_meta(pos)
-      meta:set_string("formspec",
-          "size[8,9]"..
-          "list[current_name;main;0,0;8,4;]"..
-          "list[current_player;main;0,5;8,4;]" ..
-          "listring[]")
-      meta:set_string("infotext", "collector")
-      local inv = meta:get_inventory()
-      inv:set_size("main", 5*1)
-    end,
-    allow_metadata_inventory_take = function(pos, listname, index, stack, player)
-      minetest.chat_send_player(player:get_player_name(), "Allow take: " .. stack:to_string())
-      return stack:get_count()
-    end,
-    on_metadata_inventory_take = function(pos, listname, index, stack, player)
-      minetest.chat_send_player(player:get_player_name(), "On take: " .. stack:to_string())
-    end,
 })
 
 minetest.register_abm({
