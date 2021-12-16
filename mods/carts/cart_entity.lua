@@ -40,11 +40,11 @@ function cart_entity:get_staticdata()
 	return minetest.serialize({
 		railtype = self.railtype,
 		old_dir = self.old_dir,
-      ironInv = 0,
-      coalInv = 0,
-      copperInv = 0,
-      goldInv = 0,
-      tinInv = 0,
+      ironInv = self.ironIv,
+      coalInv = self.coalInv,
+      copperInv = self.copperInv,
+      goldInv = self.goldInv,
+      tinInv = self.tinInv,
 	})
 end
 
@@ -367,13 +367,43 @@ end
 local function structure_check(self, dtime)
    local vel = self.object:get_velocity()
    local pos = self.object:get_pos()
+   local load = self
+   local north = minetest.get_meta((pos.x + 1), pos.y, pos.z)
+   local south = minetest.get_meta((pos.x - 1), pos.y, pos.z)
+   local east = minetest.get_meta(pos.x, pos.y, (pos.z + 1))
+   local west = minetest.get_meta(pos.x, pos.y, (pos.z - 1))
 
+   if vel == 0 then
+      if load == true then
+         if north:get_string("infotext") == "collector" then
+
+         elseif south:get_string("infotext") == "collector" then
+
+         elseif east:get_string("infotext") == "collector" then
+
+         elseif west:get_string("infotext") == "collector" then
+
+         else
+         end
+
+      elseif load == false then
+         if north:get_string("infotext") == "depot" then
+
+         elseif south:get_string("infotext") == "depot" then
+
+         elseif east:get_string("infotext") == "depot" then
+
+         elseif west:get_string("infotext") == "depot" then
+
+         else
+         end
 
 end
 
 function cart_entity:on_step(dtime)
 	rail_on_step(self, dtime)
 	rail_sound(self, dtime)
+   structure_check(self, dtime)
 end
 
 minetest.register_entity("carts:cart", cart_entity)
