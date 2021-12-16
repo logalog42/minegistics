@@ -44,12 +44,14 @@ minetest.register_abm({
     interval = 1, -- Run every 1 second
     chance = 1, -- Select every 1 in 1 node
     action = function(pos, node, active_object_count, active_object_count_wider)
-      local meta = minetest.get_meta({ x = pos.x, y = pos.y, z = pos.z })
-      if meta:get_int("iron") < 100 then
-         meta:set_int("iron", (meta:get_int("iron") + 1))
+      local meta = minetest.get_meta(pos)
+      local inv = meta:get_inventory()
+      if inv:contains_item("main", "basenodes:iron_lump") then
+       inv:add_item("main", "basenodes:iron_lump")
       else
+       inv:set_stack("main", 2, "basenodes:iron_lump")
       end
-    end
+      end
 })
 
 minetest.register_abm({
@@ -58,12 +60,14 @@ minetest.register_abm({
     interval = 1, -- Run every 1 second
     chance = 1, -- Select every 1 in 1 node
     action = function(pos, node, active_object_count, active_object_count_wider)
-      local meta = minetest.get_meta({ x = pos.x, y = pos.y, z = pos.z })
-      if meta:get_int("Copper") < 100 then
-         meta:set_int("copper", (meta:get_int("copper") + 1))
+      local meta = minetest.get_meta(pos)
+      local inv = meta:get_inventory()
+      if inv:contains_item("main", "basenodes:copper_lump") then
+       inv:add_item("main", "basenodes:copper_lump")
       else
+       inv:set_stack("main", 3, "basenodes:copper_lump")
       end
-    end
+      end
 })
 
 minetest.register_abm({
@@ -72,12 +76,14 @@ minetest.register_abm({
     interval = 1, -- Run every 1 second
     chance = 1, -- Select every 1 in 1 node
     action = function(pos, node, active_object_count, active_object_count_wider)
-      local meta = minetest.get_meta({ x = pos.x, y = pos.y, z = pos.z })
-      if meta:get_int("tin") < 100 then
-         meta:set_int("tin", (meta:get_int("tin") + 1))
+      local meta = minetest.get_meta(pos)
+      local inv = meta:get_inventory()
+      if inv:contains_item("main", "basenodes:tin_lump") then
+       inv:add_item("main", "basenodes:tin_lump")
       else
+       inv:set_stack("main", 4, "basenodes:tin_lump")
       end
-    end
+      end
 })
 
 minetest.register_abm({
@@ -86,12 +92,14 @@ minetest.register_abm({
     interval = 1, -- Run every 1 second
     chance = 1, -- Select every 1 in 1 node
     action = function(pos, node, active_object_count, active_object_count_wider)
-      local meta = minetest.get_meta({ x = pos.x, y = pos.y, z = pos.z })
-      if meta:get_int("gold") < 100 then
-         meta:set_int("gold", (meta:get_int("gold") + 1))
+      local meta = minetest.get_meta(pos)
+      local inv = meta:get_inventory()
+      if inv:contains_item("main", "basenodes:gold_lump") then
+       inv:add_item("main", "basenodes:gold_lump")
       else
+       inv:set_stack("main", 5, "basenodes:gold_lump")
       end
-    end
+      end
 })
 
 

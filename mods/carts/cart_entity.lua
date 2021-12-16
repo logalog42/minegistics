@@ -414,7 +414,7 @@ end
 function cart_entity:on_step(dtime)
 	rail_on_step(self, dtime)
 	rail_sound(self, dtime)
-   structure_check(self, dtime)
+   --structure_check(self, dtime)
 end
 
 minetest.register_entity("carts:cart", cart_entity)
