@@ -28,8 +28,14 @@ minetest.register_abm({
     interval = 1, -- Run every 1 second
     chance = 1, -- Select every 1 in 1 node
     action = function(pos, node, active_object_count, active_object_count_wider)
-      local meta = minetest.get_meta({ x = pos.x, y = pos.y, z = pos.z })
+      local meta = minetest.get_meta(pos)
+      local inv = meta:get_inventory()
+      if inv:contains_item("main", "basenodes:coal_lump") then
+        inv:add_item("main", "basenodes:coal_lump")
+      else
+        inv:set_stack("main", 1, "basenodes:coal_lump")
       end
+    end
 })
 
 minetest.register_abm({
