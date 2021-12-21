@@ -3,6 +3,44 @@ local WATER_VISC = 1
 local LAVA_VISC = 7
 
 --
+-- Craftitems
+--
+
+-- Register Craftitems
+
+
+minetest.register_craftitem("basenodes:coal_lump", {
+	description = ("Coal Lump"),
+	inventory_image = "default_coal_lump.png",
+	groups = {coal = 1, flammable = 1}
+})
+
+minetest.register_craftitem("basenodes:copper_lump", {
+	description = ("Copper Lump"),
+	inventory_image = "default_copper_lump.png"
+})
+
+minetest.register_craftitem("basenodes:tin_lump", {
+   description = ("Tin lump"),
+   inventory_image = "default_tin_lump.png"
+})
+
+minetest.register_craftitem("basenodes:gold_lump", {
+	description = ("Gold Lump"),
+	inventory_image = "default_gold_lump.png"
+})
+
+minetest.register_craftitem("basenodes:iron_lump", {
+	description = ("Iron Lump"),
+	inventory_image = "default_iron_lump.png"
+})
+
+minetest.register_craftitem("basenodes:flint", {
+	description = ("Flint"),
+	inventory_image = "default_flint.png"
+})
+
+--
 -- Node definitions
 --
 
