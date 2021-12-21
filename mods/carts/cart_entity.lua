@@ -17,28 +17,13 @@ local cart_entity = {
 	old_pos = nil,
 	old_switch = 0,
 	railtype = nil,
-	attached_items = {}
-
-	on_step = function(self, dtime)
-		local pos = self.object:get_pos()
-		local vel = self.object:get_velocity()
-		local north = {x=pos.x, y=pos.y, z=pos.z + 1}
-		local west = {x=pos.x - 1, y=pos.y, z=pos.z}
-		local east = {x=pos.x + 1, y=pos.y, z=pos.z}
-		local south = {x=pos.x, y=pos.y, z=pos.z - 1}
-		local go = false
-
-		if vel == 0 and go == false then
-			 = minetest.get_meta()
-
-			 if :get_string("type") == "collector" then
-
-			 elseif :get_string("type") == "reciever" then
-
-			 else
-				 return
-			 end 
-
+	attached_items = {},
+	ironInv = 0,
+	coalInv = 0,
+	copperInv = 0,
+	goldInv = 0,
+	tinInv = 0,
+  load = true
 }
 
 function cart_entity:on_activate(staticdata, dtime_s)
@@ -51,6 +36,13 @@ function cart_entity:on_activate(staticdata, dtime_s)
 		return
 	end
 	self.railtype = data.railtype
+	self.ironInv = data.ironIv
+	self.copperInv = data.copperInv
+	self.coalInv = data.coalInv
+	self.goldInv = data.goldInv
+	self.tinInv = data.tinInv
+	self.load = data.load
+
 	if data.old_dir then
 		self.old_dir = data.old_dir
 	end
@@ -59,7 +51,14 @@ end
 function cart_entity:get_staticdata()
 	return minetest.serialize({
 		railtype = self.railtype,
-		old_dir = self.old_dir
+		old_dir = self.old_dir,
+    ironInv = self.ironIv,
+    coalInv = self.coalInv,
+    copperInv = self.copperInv,
+    goldInv = self.goldInv,
+    tinInv = self.tinInv,
+    load = self.load
+
 	})
 end
 
@@ -380,6 +379,114 @@ local function rail_on_step(self, dtime)
 end
 
 function cart_entity:on_step(dtime)
+	-- Checks if the cart is moving and if stopped check for a structure next to it.
+local function structure_check(self, dtime)
+   local vel = self.object:get_velocity()
+   local pos = self.object:get_pos()
+   local north = minetest.get_meta({x=(pos.x + 1), y=pos.y, z=pos.z})
+   local south = minetest.get_meta({x=(pos.x - 1), y=pos.y, z=pos.z})
+   local east = minetest.get_meta({x=pos.x, y=pos.y, z=(pos.z + 1)})
+   local west = minetest.get_meta({x=pos.x, y=pos.y, z=(pos.z - 1)})
+	 local directions = {north, south, east, west}
+	 local cartInv = {self.coalInv, self.copperInv, self.tinInv, self.ironInv, self.goldInv}
+	 local lumps = {"basenodes:coal_lump","basenodes:copper_lump",
+	 	"basenodes:tin_lump","basenodes:iron_lump", "basenodes:gold_lump"}
+
+	if vel.x == 0 and vel.y == 0 and vel.z == 0 then
+		for i, direction in ipairs(directions) do
+			if direction:get_string("infotext") == "collector" then
+				resources = direction:get_inventory()
+				for i, lump in ipairs(lumps) do
+					while (resources:contains_item("main", (lump .. " 10")))
+					do
+						resources:remove_item("main", (lump .. " 10"))
+						cartInv[i] = cartInv[i] +10
+						minetest.log("error", cartInv[i])
+					end
+				end
+			elseif direction:get_string("infotext") == "depot" then
+				resources = direction:get_inventory()
+				for i, lump in ipairs(lumps) do
+					minetest.log("error", cartInv[i])
+					resources:add_item("main", lump .. " " .. cartInv[i])
+					cartInv[i] =  0
+				end
+			end
+		end
+	end
+end
+          --[[if north:get_string("infotext") == "collector" then
+   				 resource = north:get_inventory()
+                while (resource:contains_item("main", "basenodes:coal_lump 10"))
+                do
+                   resource:remove_item("main", "basenodes:coal_lump 10")
+                   self.coalInv = self.coalInv + 10
+                end
+                self.load = false
+          elseif south:get_string("infotext") == "collector" then
+   				 resource = south:get_inventory()
+                while (resource:contains_item("main", "basenodes:coal_lump 10"))
+                do
+                   resource:remove_item("main", "basenodes:coal_lump 10")
+                   self.coalInv = self.coalInv + 10
+                end
+                self.load = false
+          elseif east:get_string("infotext") == "collector" then
+   				 resource = east:get_inventory()
+                while (resource:contains_item("main", "basenodes:coal_lump 10"))
+                do
+                   resource:remove_item("main", "basenodes:coal_lump 10")
+                   self.coalInv = self.coalInv + 10
+                end
+                self.load = false
+          elseif west:get_string("infotext") == "collector" then
+   				 resource = west:get_inventory()
+                while (resource:contains_item("main", "basenodes:coal_lump 10"))
+                do
+                   resource:remove_item("main", "basenodes:coal_lump 10")
+                   self.coalInv = self.coalInv + 10
+                end
+                self.load = false
+          else
+   				 return
+				 end
+      elseif self.load == false then
+        if north:get_string("infotext") == "depot" then
+            resource = north:get_inventory()
+            while self.coalInv > 0
+            do
+               self.coalInv = self.coalInv - 1
+               resource:add_item("main", "basenodes:coal_lump")
+            end
+            self.load = true
+        elseif south:get_string("infotext") == "depot" then
+            resource = south:get_inventory()
+            while self.coalInv > 0
+            do
+                self.coalInv = self.coalInv - 1
+                resource:add_item("main", "basenodes:coal_lump")
+            end
+            self.load = true
+        elseif east:get_string("infotext") == "depot" then
+            resource = east:get_inventory()
+            while self.coalInv > 0
+            do
+                self.coalInv = self.coalInv - 1
+                resource:add_item("main", "basenodes:coal_lump")
+            end
+            self.load = true
+        elseif west:get_string("infotext") == "depot" then
+            resource = west:get_inventory()
+            while self.coalInv > 0
+                do
+                   self.coalInv = self.coalInv - 1
+                   resource:add_item("main", "basenodes:coal_lump")
+            end
+            self.load = true
+         end]]--
+function cart_entity:on_step(dtime)
+   structure_check(self, dtime)
+
 	rail_on_step(self, dtime)
 	rail_sound(self, dtime)
 end
