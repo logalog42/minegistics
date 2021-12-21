@@ -380,7 +380,6 @@ end
 local function structure_check(self, dtime)
    local vel = self.object:get_velocity()
    local pos = self.object:get_pos()
-	 local load = self.load
    local north = minetest.get_meta({x=(pos.x + 1), y=pos.y, z=pos.z})
    local south = minetest.get_meta({x=(pos.x - 1), y=pos.y, z=pos.z})
    local east = minetest.get_meta({x=pos.x, y=pos.y, z=(pos.z + 1)})
@@ -390,38 +389,27 @@ local function structure_check(self, dtime)
 	 local lumps = {"basenodes:coal_lump","basenodes:copper_lump",
 	 	"basenodes:tin_lump","basenodes:iron_lump", "basenodes:gold_lump"}
 
-
 	if vel.x == 0 and vel.y == 0 and vel.z == 0 then
-    if load == true then
-			for i, direction in ipairs(directions) do
-				if direction:get_string("infotext") == "collector" then
-					resources = direction:get_inventory()
-					for i, lump in ipairs(lumps) do
-						while (resources:contains_item("main", lump .. " 10"))
-						do
-							resources:remove_item("main", lump .. " 10")
-							cartInv[i] = cartInv[i] .. "+ 10"
-						end
+		for i, direction in ipairs(directions) do
+			if direction:get_string("infotext") == "collector" then
+				resources = direction:get_inventory()
+				for i, lump in ipairs(lumps) do
+					while (resources:contains_item("main", (lump .. " 10")))
+					do
+						resources:remove_item("main", (lump .. " 10"))
+						cartInv[i] = cartInv[i] +10
+						minetest.log("error", cartInv[i])
 					end
 				end
-			end
-			if load == true then
-				load = false
-			end
-		elseif load == false then
-			minetest.log("error", "Meta is now in self.load false")
-			for i, direction in ipairs(directions) do
-				if direction:get_string("infotext") == "depot" then
-					resources = direction:get_inventory()
-					for i, lump in ipairs(lumps) do
-						minetest.log("error", cartInv[i])
-						resources:add_item("main", lump .. " " .. cartInv[i])
-						cartInv[i] =  0
-					end
+			elseif direction:get_string("infotext") == "depot" then
+				resources = direction:get_inventory()
+				for i, lump in ipairs(lumps) do
+					minetest.log("error", cartInv[i])
+					resources:add_item("main", lump .. " " .. cartInv[i])
+					cartInv[i] =  0
 				end
 			end
 		end
-		load = true
 	end
 end
           --[[if north:get_string("infotext") == "collector" then
