@@ -42,7 +42,6 @@ function cart_entity:on_activate(staticdata, dtime_s)
 	self.goldInv = data.goldInv
 	self.tinInv = data.tinInv
 	self.load = data.load
-
 	if data.old_dir then
 		self.old_dir = data.old_dir
 	end
@@ -58,7 +57,6 @@ function cart_entity:get_staticdata()
     goldInv = self.goldInv,
     tinInv = self.tinInv,
     load = self.load
-
 	})
 end
 
@@ -378,7 +376,6 @@ local function rail_on_step(self, dtime)
 	rail_on_step_event(railparams.on_step, self, dtime)
 end
 
-function cart_entity:on_step(dtime)
 	-- Checks if the cart is moving and if stopped check for a structure next to it.
 local function structure_check(self, dtime)
    local vel = self.object:get_velocity()
@@ -486,7 +483,6 @@ end
          end]]--
 function cart_entity:on_step(dtime)
    structure_check(self, dtime)
-
 	rail_on_step(self, dtime)
 	rail_sound(self, dtime)
 end
