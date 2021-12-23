@@ -25,7 +25,6 @@ minetest.register_abm({
       local meta = minetest.get_meta({ x = pos.x, y = pos.y, z = pos.z })
       if meta:get_int("iron") < 100 then
          meta:set_int("iron", (meta:get_int("iron") + 1))
-      else
       end
     end
 })

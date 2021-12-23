@@ -51,12 +51,12 @@ function cart_entity:get_staticdata()
 	return minetest.serialize({
 		railtype = self.railtype,
 		old_dir = self.old_dir,
-    ironInv = self.ironIv,
-    coalInv = self.coalInv,
-    copperInv = self.copperInv,
-    goldInv = self.goldInv,
-    tinInv = self.tinInv,
-    load = self.load
+      ironInv = self.ironIv,
+      coalInv = self.coalInv,
+      copperInv = self.copperInv,
+      goldInv = self.goldInv,
+      tinInv = self.tinInv,
+      load = self.load
 	})
 end
 
@@ -384,27 +384,26 @@ local function structure_check(self, dtime)
    local south = minetest.get_meta({x=(pos.x - 1), y=pos.y, z=pos.z})
    local east = minetest.get_meta({x=pos.x, y=pos.y, z=(pos.z + 1)})
    local west = minetest.get_meta({x=pos.x, y=pos.y, z=(pos.z - 1)})
-	 local directions = {north, south, east, west}
-	 local cartInv = {self.coalInv, self.copperInv, self.tinInv, self.ironInv, self.goldInv}
-	 local lumps = {"basenodes:coal_lump","basenodes:copper_lump",
-	 	"basenodes:tin_lump","basenodes:iron_lump", "basenodes:gold_lump"}
+	local directions = {north, south, east, west}
+	local cartInv = {self.coalInv, self.copperInv, self.tinInv, self.ironInv, self.goldInv}
+	local lumps = {"basenodes:coal_lump","basenodes:copper_lump", "basenodes:tin_lump","basenodes:iron_lump", "basenodes:gold_lump"}
 
 	if vel.x == 0 and vel.y == 0 and vel.z == 0 then
 		for i, direction in ipairs(directions) do
 			if direction:get_string("infotext") == "collector" then
 				resources = direction:get_inventory()
-				for i, lump in ipairs(lumps) do
+				for i, lump in ipairs(lumps)
+            do
 					while (resources:contains_item("main", (lump .. " 10")))
 					do
 						resources:remove_item("main", (lump .. " 10"))
 						cartInv[i] = cartInv[i] +10
-						minetest.log("error", cartInv[i])
 					end
 				end
 			elseif direction:get_string("infotext") == "depot" then
 				resources = direction:get_inventory()
-				for i, lump in ipairs(lumps) do
-					minetest.log("error", cartInv[i])
+				for i, lump in ipairs(lumps)
+            do
 					resources:add_item("main", lump .. " " .. cartInv[i])
 					cartInv[i] =  0
 				end
@@ -412,75 +411,7 @@ local function structure_check(self, dtime)
 		end
 	end
 end
-          --[[if north:get_string("infotext") == "collector" then
-   				 resource = north:get_inventory()
-                while (resource:contains_item("main", "basenodes:coal_lump 10"))
-                do
-                   resource:remove_item("main", "basenodes:coal_lump 10")
-                   self.coalInv = self.coalInv + 10
-                end
-                self.load = false
-          elseif south:get_string("infotext") == "collector" then
-   				 resource = south:get_inventory()
-                while (resource:contains_item("main", "basenodes:coal_lump 10"))
-                do
-                   resource:remove_item("main", "basenodes:coal_lump 10")
-                   self.coalInv = self.coalInv + 10
-                end
-                self.load = false
-          elseif east:get_string("infotext") == "collector" then
-   				 resource = east:get_inventory()
-                while (resource:contains_item("main", "basenodes:coal_lump 10"))
-                do
-                   resource:remove_item("main", "basenodes:coal_lump 10")
-                   self.coalInv = self.coalInv + 10
-                end
-                self.load = false
-          elseif west:get_string("infotext") == "collector" then
-   				 resource = west:get_inventory()
-                while (resource:contains_item("main", "basenodes:coal_lump 10"))
-                do
-                   resource:remove_item("main", "basenodes:coal_lump 10")
-                   self.coalInv = self.coalInv + 10
-                end
-                self.load = false
-          else
-   				 return
-				 end
-      elseif self.load == false then
-        if north:get_string("infotext") == "depot" then
-            resource = north:get_inventory()
-            while self.coalInv > 0
-            do
-               self.coalInv = self.coalInv - 1
-               resource:add_item("main", "basenodes:coal_lump")
-            end
-            self.load = true
-        elseif south:get_string("infotext") == "depot" then
-            resource = south:get_inventory()
-            while self.coalInv > 0
-            do
-                self.coalInv = self.coalInv - 1
-                resource:add_item("main", "basenodes:coal_lump")
-            end
-            self.load = true
-        elseif east:get_string("infotext") == "depot" then
-            resource = east:get_inventory()
-            while self.coalInv > 0
-            do
-                self.coalInv = self.coalInv - 1
-                resource:add_item("main", "basenodes:coal_lump")
-            end
-            self.load = true
-        elseif west:get_string("infotext") == "depot" then
-            resource = west:get_inventory()
-            while self.coalInv > 0
-                do
-                   self.coalInv = self.coalInv - 1
-                   resource:add_item("main", "basenodes:coal_lump")
-            end
-            self.load = true
-         end]]--
+
 function cart_entity:on_step(dtime)
    structure_check(self, dtime)
 	rail_on_step(self, dtime)
