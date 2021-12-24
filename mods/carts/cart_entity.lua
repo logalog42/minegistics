@@ -1,5 +1,13 @@
 -- carts/cart_entity.lua
 
+local lumps = {
+      "basenodes:coal_lump",
+      "basenodes:copper_lump", 
+      "basenodes:tin_lump",
+      "basenodes:iron_lump", 
+      "basenodes:gold_lump"
+  }
+
 local cart_entity = {
 	initial_properties = {
 		physical = false, -- otherwise going uphill breaks
@@ -7,7 +15,7 @@ local cart_entity = {
 		visual = "mesh",
 		mesh = "carts_cart.b3d",
 		visual_size = {x=1, y=1},
-		textures = {"carts_cart.png"},
+		textures = {"carts_cart.png"}
 	},
 
 	driver = nil,
@@ -18,11 +26,7 @@ local cart_entity = {
 	old_switch = 0,
 	railtype = nil,
 	attached_items = {},
-	ironInv = 0,
-	coalInv = 0,
-	copperInv = 0,
-	goldInv = 0,
-	tinInv = 0,
+	cartInv = {},
   load = true
 }
 
@@ -36,11 +40,7 @@ function cart_entity:on_activate(staticdata, dtime_s)
 		return
 	end
 	self.railtype = data.railtype
-	self.ironInv = data.ironIv
-	self.copperInv = data.copperInv
-	self.coalInv = data.coalInv
-	self.goldInv = data.goldInv
-	self.tinInv = data.tinInv
+  self.cartInv = data.cartInv
 	self.load = data.load
 	if data.old_dir then
 		self.old_dir = data.old_dir
@@ -49,13 +49,9 @@ end
 
 function cart_entity:get_staticdata()
 	return minetest.serialize({
-		railtype = self.railtype,
-		old_dir = self.old_dir,
-      ironInv = self.ironIv,
-      coalInv = self.coalInv,
-      copperInv = self.copperInv,
-      goldInv = self.goldInv,
-      tinInv = self.tinInv,
+      railtype = self.railtype,
+      old_dir = self.old_dir,
+      cartInv = self.cartInv,
       load = self.load
 	})
 end
@@ -330,8 +326,10 @@ local function rail_on_step(self, dtime)
 				ent:disable_physics()
 				obj_:set_attach(self.object, "", {x=0, y=0, z=0}, {x=0, y=0, z=0})
 				self.attached_items[#self.attached_items + 1] = obj_
+        add_item_to_cart(self, ent)
 			end
 		end
+    
 		self.punched = false
 		update.vel = true
 	end
@@ -376,44 +374,92 @@ local function rail_on_step(self, dtime)
 	rail_on_step_event(railparams.on_step, self, dtime)
 end
 
-	-- Checks if the cart is moving and if stopped check for a structure next to it.
+--adjusts inventory based on attached items
+function add_item_to_cart(cart, item_ent)
+    if item_ent then
+        local inv_item = minetest.deserialize(item_ent:get_staticdata())
+        local item_table = {}
+        for str in string.gmatch(inv_item["itemstring"], "([^".." ".."]+)") do
+            table.insert(item_table, str)
+        end
+        local item_name = item_table[1]
+        local item_amount = item_table[2]
+        if item_amount == nil then item_amount = 1 end
+        for lump, amount in pairs(cart.cartInv) do
+            if lump == item_name then
+                if cart.cartInv[lump] == nil then cart.cartInv[lump] = 0 end            
+                cart.cartInv[lump] = cart.cartInv[lump] + item_amount
+            end                
+        end
+    end
+end
+
+--attaches an itemstack to the cart
+function attach_to_cart(cart, item)
+    local item_obj = minetest.add_item(cart.object:get_pos(), ItemStack(item))
+    local item_ent = item_obj:get_luaentity()
+    if item_ent and item_ent.name == "__builtin:item" and item_ent.physical_state then
+        item_ent:disable_physics()
+        item_obj:set_attach(cart.object, "", {x=0, y=0, z=0}, {x=0, y=0, z=0})
+        cart.attached_items[#cart.attached_items + 1] = item_obj
+    end
+end
+
+--removes all itemstacks from the cart
+function empty_cart(cart)
+  for _, obj in pairs(cart.attached_items) do
+    if obj then
+      local ent = obj:get_luaentity()
+      if ent then
+          obj:remove()
+      end
+    end
+  end
+end
+
+-- Checks if the cart is moving and if stopped check for a structure next to it.
 local function structure_check(self, dtime)
-   local vel = self.object:get_velocity()
-   local pos = self.object:get_pos()
-   local north = minetest.get_meta({x=(pos.x + 1), y=pos.y, z=pos.z})
-   local south = minetest.get_meta({x=(pos.x - 1), y=pos.y, z=pos.z})
-   local east = minetest.get_meta({x=pos.x, y=pos.y, z=(pos.z + 1)})
-   local west = minetest.get_meta({x=pos.x, y=pos.y, z=(pos.z - 1)})
+  local vel = self.object:get_velocity()
+  local pos = self.object:get_pos()
+  local north = minetest.get_meta({x=(pos.x + 1), y=pos.y, z=pos.z})
+  local south = minetest.get_meta({x=(pos.x - 1), y=pos.y, z=pos.z})
+  local east = minetest.get_meta({x=pos.x, y=pos.y, z=(pos.z + 1)})
+  local west = minetest.get_meta({x=pos.x, y=pos.y, z=(pos.z - 1)})
 	local directions = {north, south, east, west}
-	local cartInv = {self.coalInv, self.copperInv, self.tinInv, self.ironInv, self.goldInv}
-	local lumps = {"basenodes:coal_lump","basenodes:copper_lump", "basenodes:tin_lump","basenodes:iron_lump", "basenodes:gold_lump"}
 
 	if vel.x == 0 and vel.y == 0 and vel.z == 0 then
 		for i, direction in ipairs(directions) do
 			if direction:get_string("infotext") == "collector" then
 				resources = direction:get_inventory()
-				for i, lump in ipairs(lumps)
-            do
-					while (resources:contains_item("main", (lump .. " 10")))
-					do
+				for i, lump in ipairs(lumps) do
+					while (resources:contains_item("main", (lump .. " 10"))) do
 						resources:remove_item("main", (lump .. " 10"))
-						cartInv[i] = cartInv[i] +10
+            if self.cartInv[lump] == nil then 
+              self.cartInv[lump] = 0 
+            end
+            self.cartInv[lump] = self.cartInv[lump] + 10
+            attach_to_cart(self, lump .. " 10")
 					end
 				end
 			elseif direction:get_string("infotext") == "depot" then
 				resources = direction:get_inventory()
-				for i, lump in ipairs(lumps)
-            do
-					resources:add_item("main", lump .. " " .. cartInv[i])
-					cartInv[i] =  0
+				for i, lump in ipairs(lumps) do
+          if self.cartInv[lump] == nil then 
+            self.cartInv[lump] = 0
+          end
+          if self.cartInv[lump] > 0 then
+            resources:add_item("main", lump .. " " .. self.cartInv[lump])
+            self.cartInv[lump] =  0
+          end
 				end
+        empty_cart(self)
 			end
 		end
 	end
 end
 
 function cart_entity:on_step(dtime)
-   structure_check(self, dtime)
+  structure_check(self, dtime)
 	rail_on_step(self, dtime)
 	rail_sound(self, dtime)
 end

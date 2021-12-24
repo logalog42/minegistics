@@ -1,3 +1,17 @@
+minetest.register_on_punchnode(function(pos, node, puncher, pointed_thing)
+    if node.name == "minegistics_structures:Collector" then
+        if puncher:get_inventory():add_item("main", item) then
+            minetest.remove_node(pos)
+            local item = ItemStack("minegistics_structures:Collector")
+        end
+    elseif node.name == "minegistics_structures:Market" then
+        if puncher:get_inventory():add_item("main", item) then
+            minetest.remove_node(pos)
+            local item = ItemStack("minegistics_structures:Market")
+        end
+    end
+end)
+
 minetest.register_node("minegistics_structures:Collector", {
    description = " Building to gather resources",
    tiles = {"minegistics_structures_collector.png"},
