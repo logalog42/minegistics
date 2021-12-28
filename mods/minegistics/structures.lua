@@ -1,4 +1,4 @@
-minetest.register_node("minegistics_structures:Collector", {
+minetest.register_node("minegistics:Collector", {
    description = " Building to gather resources",
    tiles = {"minegistics_structures_collector.png"},
    on_construct = function(pos)
@@ -23,7 +23,7 @@ minetest.register_node("minegistics_structures:Collector", {
 })
 
 minetest.register_abm({
-    nodenames = {"minegistics_structures:Collector"},
+    nodenames = {"minegistics:Collector"},
     neighbors = {"basenodes:stone_with_coal"},
     interval = 1, -- Run every 1 second
     chance = 1, -- Select every 1 in 1 node
@@ -39,7 +39,7 @@ minetest.register_abm({
 })
 
 minetest.register_abm({
-    nodenames = {"minegistics_structures:Collector"},
+    nodenames = {"minegistics:Collector"},
     neighbors = {"basenodes:stone_with_iron"},
     interval = 1, -- Run every 1 second
     chance = 1, -- Select every 1 in 1 node
@@ -55,7 +55,7 @@ minetest.register_abm({
 })
 
 minetest.register_abm({
-    nodenames = {"minegistics_structures:Collector"},
+    nodenames = {"minegistics:Collector"},
     neighbors = {"basenodes:stone_with_copper"},
     interval = 1, -- Run every 1 second
     chance = 1, -- Select every 1 in 1 node
@@ -71,7 +71,7 @@ minetest.register_abm({
 })
 
 minetest.register_abm({
-    nodenames = {"minegistics_structures:Collector"},
+    nodenames = {"minegistics:Collector"},
     neighbors = {"basenodes:stone_with_tin"},
     interval = 1, -- Run every 1 second
     chance = 1, -- Select every 1 in 1 node
@@ -87,7 +87,7 @@ minetest.register_abm({
 })
 
 minetest.register_abm({
-    nodenames = {"minegistics_structures:Collector"},
+    nodenames = {"minegistics:Collector"},
     neighbors = {"basenodes:stone_with_gold"},
     interval = 1, -- Run every 1 second
     chance = 1, -- Select every 1 in 1 node
@@ -102,9 +102,8 @@ minetest.register_abm({
       end
 })
 
-
 minetest.register_abm({
-    nodenames = {"minegistics_structures:Collector"},
+    nodenames = {"minegistics:Collector"},
     neighbors = {"basenodes:cobblestone"},
     interval = 1, -- Run every 1 second
     chance = 1, -- Select every 1 in 1 node
@@ -118,7 +117,7 @@ minetest.register_abm({
 })
 
 minetest.register_abm({
-    nodenames = {"minegistics_structures:Collector"},
+    nodenames = {"minegistics:Collector"},
     neighbors = {"basenodes:gravel"},
     interval = 1, -- Run every 1 seconds
     chance = 1, -- Select every 1 in 1 node
@@ -132,7 +131,7 @@ minetest.register_abm({
 })
 
 minetest.register_abm({
-    nodenames = {"minegistics_structures:Collector"},
+    nodenames = {"minegistics:Collector"},
     neighbors = {"basenode:sand"},
     interval = 1, -- Run every 1 second
     chance = 1, -- Select every 1 in 1 nodes
@@ -145,9 +144,7 @@ minetest.register_abm({
     end
 })
 
-
-
-minetest.register_node("minegistics_structures:Factory", {
+minetest.register_node("minegistics:Factory", {
    description = " Take resources output goods",
    tiles = {"minegistics_structures_factory.png"},
    on_construct = function(pos)
@@ -182,7 +179,7 @@ minetest.register_node("minegistics_structures:Factory", {
 	end,
 })
 
-minetest.register_node("minegistics_structures:Market", {
+minetest.register_node("minegistics:Market", {
    description = " Building changes any resources into money",
    tiles = {"minegistics_structures_market.png"},
    on_construct = function(pos)
@@ -217,7 +214,7 @@ minetest.register_node("minegistics_structures:Market", {
 	end,
 })
 
-minetest.register_node("minegistics_structures:town", {
+minetest.register_node("minegistics:town", {
    description = " Building changes specific resources into money",
    tiles = {"minegistics_structures_town.png"},
    on_construct = function(pos)
@@ -252,7 +249,7 @@ minetest.register_node("minegistics_structures:town", {
 	end,
 })
 
-minetest.register_node("minegistics_structures:Warehouse", {
+minetest.register_node("minegistics:Warehouse", {
    description = " Building to store any resource",
    tiles = {"minegistics_structures_warehouse.png"},
    on_construct = function(pos)
