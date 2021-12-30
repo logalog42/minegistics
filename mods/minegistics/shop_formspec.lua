@@ -1,5 +1,12 @@
-guessing = {}
+shop = {}
 local _contexts = {}
+local products = {
+   "collector",
+   "factory",
+   "market",
+   "warehouse",
+   "cart",
+   "rail" }
 local function get_context(name)
     local context = _contexts[name] or {}
     _contexts[name] = context
@@ -10,59 +17,84 @@ minetest.register_on_leaveplayer(function(player)
     _contexts[player:get_player_name()] = nil
 end)
 
-function guessing.get_formspec(name, context)
-  local text
-  if not context.guess then
-      text = "I'm thinking of a number... Make a guess!"
-  elseif context.guess == context.target then
-      text = "Hurray, you got it!"
-  elseif context.guess > context.target then
-      text = "Too high!"
-  else
-      text = "Too low!"
-  end
+function shop.get_formspec(name, context)
 
-    local formspec = {
-        "formspec_version[4]",
-        "size[6,3.476]",
-        "label[0.375,0.5;", minetest.formspec_escape(text), "]",
-        "item_image[0.375,1.25;5.25,1.6; minegistics_structures_collector.png ]",
-        "button[1.5,2.3;3,0.8;guess;Guess]"
-    }
+   local formspec = {
+     "formspec_version[4]",
+     "size[9.5,5]",
+     "label[3.25,0.5;Welcome to the store!]",
+
+     "item_image[.25,1;1.5,1.5;minegistics:Collector]",
+     "label[.5,2.75;Collector]",
+     "field[.25,3;1.5,.5;collector;;0]",
+
+     "item_image[1.75,1;1.5,1.5;minegistics:Factory]",
+     "label[2.1,2.75;Factory]",
+     "field[1.75,3;1.5,.5;factory;;0]",
+
+     "item_image[3.25,1;1.5,1.5;minegistics:Market]",
+     "label[3.6,2.75;Market]",
+     "field[3.25,3;1.5,.5;market;;0]",
+
+     "item_image[4.75,1;1.5,1.5;minegistics:Warehouse]",
+     "label[4.85,2.75;Warehouse]",
+     "field[4.75,3;1.5,.5;warehouse;;0]",
+
+     "item_image[6.25,1;1.5,1.5;carts:cart]",
+     "label[6.75,2.75;Cart]",
+     "field[6.25,3;1.5,.5;cart;;0]",
+
+     "item_image[7.75,1;1.5,1.5;carts:rail]",
+     "label[8.25,2.75;Rail]",
+     "field[7.75,3;1.5,.5;rail;;0]",
+
+     "button[3.25,4;3,.5;purchase;Buy]"
+  }
 
     -- table.concat is faster than string concatenation - `..`
     return table.concat(formspec, "")
 end
 
-minetest.register_chatcommand("game", {
+minetest.register_chatcommand("shop", {
     func = function(name)
-        guessing.show_to(name)
+        shop.show_to(name)
     end,
 })
 
-function guessing.show_to(name)
+function shop.show_to(name)
     local context = get_context(name)
-    context.target = context.target or math.random(1, 10)
 
-    local fs = guessing.get_formspec(name, context)
-    minetest.show_formspec(name, "guessing:game", fs)
+    local fs = shop.get_formspec(name, context)
+    minetest.show_formspec(name, "shop:shop", fs)
 end
 
-minetest.register_chatcommand("game", {
+minetest.register_chatcommand("shop", {
     func = function(name)
-        guessing.show_to(name)
+        shop.show_to(name)
     end,
 })
 
 minetest.register_on_player_receive_fields(function(player, formname, fields)
-    if formname ~= "guessing:game" then
+    if formname ~= "shop:shop" then
         return
     end
 
-    if fields.guess then
-        local name = player:get_player_name()
-        local context = get_context(name)
-        context.guess = tonumber(fields.number)
-        guessing.show_to(name)
+    if tonumber(fields.collector) ~= 0 then
+      
+    end
+    if tonumber(fields.market) ~= 0 then
+
+    end
+    if tonumber(fields.factory) ~= 0 then
+
+    end
+    if tonumber(fields.warehouse) ~= 0 then
+
+    end
+    if tonumber(fields.cart) ~= 0 then
+
+    end
+    if tonumber(fields.rail) ~= 0 then
+
     end
 end)
