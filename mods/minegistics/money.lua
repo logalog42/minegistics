@@ -31,6 +31,6 @@ end)
         loaded = true
     end
     if not player_money[name] then
-        player_money[name] = 10
+        player_money[name] = 1000
     end
 end)

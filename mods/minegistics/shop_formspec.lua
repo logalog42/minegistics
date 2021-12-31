@@ -36,6 +36,7 @@ local item_prices = {
 local function inventory_formspec(player)
     local formspec = {
         "size[8,7.5]",
+        "bgcolor[#353535;false]",
         "list[current_player;main;0,3.5;8,4;]",
         "list[current_player;craft;3,0;3,3;]",
         "list[current_player;craftpreview;7,1;1,1;]",
@@ -49,7 +50,11 @@ minetest.register_on_joinplayer(function(player)
         for item_name,item in pairs(items_for_sale) do
             item_buttons[index] = "button[3," .. 
                 index .. ";4,2;" .. item_name ..
-                ";" .. item_name .. " $" .. item_prices[item_name] .. "]"
+                ";" .. item_name .. "]" ..
+                "item_image[7," .. index + 0.6 .. 
+                ";0.6,0.6;" .. item .. "]" ..
+                "label[8," .. index + 0.6 .. ";" .. " $" .. 
+                item_prices[item_name] .."]"
             item_btn_keys[item_name] = item
             index = index + 1
         end
@@ -63,6 +68,7 @@ end)
 function shop_formspec(player)
     local formspec = {
         "size[10,16]",
+        "bgcolor[#353535;false]",
         table.concat(item_buttons),
         "label[3.5,11.5;".."Your balance: $" .. player_money[player:get_player_name()].."]",
         "button[3,13;4,2;Back;Back]"
