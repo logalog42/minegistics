@@ -189,7 +189,7 @@ minetest.register_abm({
         end
         if money_earned > 0 then
             for name,money in pairs(player_money) do
-                money = money + money_earned
+                player_money[name] = player_money[name] + money_earned
                 minetest.chat_send_all(
                   "Earned $" .. money_earned .. " from market at " ..
                   "(" .. pos.x .. ", " .. pos.y .. ", " .. pos.z .. ")"
