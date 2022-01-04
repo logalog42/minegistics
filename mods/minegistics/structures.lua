@@ -1,5 +1,5 @@
 minetest.register_on_punchnode(function(pos, node, puncher, pointed_thing)
-    if node.name == "minegistics_structures:Collector" then
+    if node.name == "minegistics:Collector" then
         local item = ItemStack("minegistics_structures:Collector")
         if puncher:get_inventory():add_item("main", item) then
             minetest.remove_node(pos)
@@ -158,9 +158,50 @@ minetest.register_abm({
     end
 })
 
-minetest.register_node("minegistics:Market", {
-   description = " Building changes any resources into money",
-   tiles = {"minegistics_structures_market.png"},
+--converts resources into money
+minetest.register_abm({
+    nodenames = {"minegistics:Market"},
+    interval = 10, -- Run every 1 second
+    chance = 1, -- Select every 1 in 1 nodes
+    action = function(pos, node, active_object_count, active_object_count_wider)
+        local lumps = {
+            "basenodes:coal_lump",
+            "basenodes:copper_lump", 
+            "basenodes:tin_lump",
+            "basenodes:iron_lump", 
+            "basenodes:gold_lump"
+        }
+        local meta = minetest.get_meta({ x = pos.x, y = pos.y, z = pos.z })
+        local inv = meta:get_inventory()
+        local items = {}
+        for _,lump in pairs(lumps) do
+            items[lump] = ItemStack(lump)
+        end
+        local money_earned = 0
+        local inventories = inv:get_lists()
+        for name, list in pairs(inventories) do
+            for index, item in pairs(items) do
+                while inv:contains_item(name, items[index]) do
+                    inv:remove_item(name, items[index])
+                    money_earned = money_earned + 1
+                end                 
+            end
+        end
+        if money_earned > 0 then
+            for name,money in pairs(player_money) do
+                player_money[name] = player_money[name] + money_earned
+                minetest.chat_send_all(
+                  "Earned $" .. money_earned .. " from market at " ..
+                  "(" .. pos.x .. ", " .. pos.y .. ", " .. pos.z .. ")"
+                )
+            end
+        end
+    end
+})
+
+minetest.register_node("minegistics:Factory", {
+   description = " Take resources output goods",
+   tiles = {"minegistics_structures_factory.png"},
    on_construct = function(pos)
 		local meta = minetest.get_meta(pos)
 		meta:set_string("formspec",
@@ -178,19 +219,11 @@ minetest.register_node("minegistics:Market", {
 		return inv:is_empty("main")
 	end,
 	allow_metadata_inventory_put = function(pos, listname, index, stack, player)
-		minetest.chat_send_player(player:get_player_name(), "Allow put: " .. stack:to_string())
 		return stack:get_count()
 	end,
 	allow_metadata_inventory_take = function(pos, listname, index, stack, player)
-		minetest.chat_send_player(player:get_player_name(), "Allow take: " .. stack:to_string())
 		return stack:get_count()
-	end,
-	on_metadata_inventory_put = function(pos, listname, index, stack, player)
-		minetest.chat_send_player(player:get_player_name(), "On put: " .. stack:to_string())
-	end,
-	on_metadata_inventory_take = function(pos, listname, index, stack, player)
-		minetest.chat_send_player(player:get_player_name(), "On take: " .. stack:to_string())
-	end,
+	end
 })
 
 minetest.register_node("minegistics:town", {
@@ -213,19 +246,11 @@ minetest.register_node("minegistics:town", {
 		return inv:is_empty("main")
 	end,
 	allow_metadata_inventory_put = function(pos, listname, index, stack, player)
-		minetest.chat_send_player(player:get_player_name(), "Allow put: " .. stack:to_string())
 		return stack:get_count()
 	end,
 	allow_metadata_inventory_take = function(pos, listname, index, stack, player)
-		minetest.chat_send_player(player:get_player_name(), "Allow take: " .. stack:to_string())
 		return stack:get_count()
-	end,
-	on_metadata_inventory_put = function(pos, listname, index, stack, player)
-		minetest.chat_send_player(player:get_player_name(), "On put: " .. stack:to_string())
-	end,
-	on_metadata_inventory_take = function(pos, listname, index, stack, player)
-		minetest.chat_send_player(player:get_player_name(), "On take: " .. stack:to_string())
-	end,
+	end
 })
 
 minetest.register_node("minegistics:Warehouse", {
@@ -248,19 +273,11 @@ minetest.register_node("minegistics:Warehouse", {
 		return inv:is_empty("main")
 	end,
 	allow_metadata_inventory_put = function(pos, listname, index, stack, player)
-		minetest.chat_send_player(player:get_player_name(), "Allow put: " .. stack:to_string())
 		return stack:get_count()
 	end,
 	allow_metadata_inventory_take = function(pos, listname, index, stack, player)
-		minetest.chat_send_player(player:get_player_name(), "Allow take: " .. stack:to_string())
 		return stack:get_count()
-	end,
-	on_metadata_inventory_put = function(pos, listname, index, stack, player)
-		minetest.chat_send_player(player:get_player_name(), "On put: " .. stack:to_string())
-	end,
-	on_metadata_inventory_take = function(pos, listname, index, stack, player)
-		minetest.chat_send_player(player:get_player_name(), "On take: " .. stack:to_string())
-	end,
+	end
 })
 
 minetest.register_node("minegistics:furnace", {
@@ -355,17 +372,9 @@ minetest.register_node("minegistics:Workshop", {
 		return inv:is_empty("main")
 	end,
 	allow_metadata_inventory_put = function(pos, listname, index, stack, player)
-		minetest.chat_send_player(player:get_player_name(), "Allow put: " .. stack:to_string())
 		return stack:get_count()
 	end,
 	allow_metadata_inventory_take = function(pos, listname, index, stack, player)
-		minetest.chat_send_player(player:get_player_name(), "Allow take: " .. stack:to_string())
 		return stack:get_count()
-	end,
-	on_metadata_inventory_put = function(pos, listname, index, stack, player)
-		minetest.chat_send_player(player:get_player_name(), "On put: " .. stack:to_string())
-	end,
-	on_metadata_inventory_take = function(pos, listname, index, stack, player)
-		minetest.chat_send_player(player:get_player_name(), "On take: " .. stack:to_string())
-	end,
+	end
 })

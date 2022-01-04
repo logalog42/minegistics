@@ -1,100 +1,112 @@
-shop = {}
-local _contexts = {}
-local products = {
-   "collector",
-   "factory",
-   "market",
-   "warehouse",
-   "cart",
-   "rail" }
-local function get_context(name)
-    local context = _contexts[name] or {}
-    _contexts[name] = context
-    return context
+--[[
+    Shop Menu
+    Author: Droog71
+    License: AGPLv3
+]]--
+
+
+local index = 1
+local item_buttons = {}
+local item_btn_keys = {}
+local loaded = false
+
+local items_for_sale = { 
+    ["Collector"] = "minegistics:Collector",
+    ["Factory"] = "minegistics:Factory",
+    ["Town"] = "minegistics:town",
+    ["Warehouse"] = "minegistics:Warehouse",
+    ["Market"] = "minegistics:Market",
+    ["Rail"] = "carts:rail",
+    ["Powered Rail"] = "carts:powerrail",
+    ["Brake Rail"] = "carts:brakerail",
+    ["Cart"] = "carts:cart"
+}
+local item_prices = { 
+    ["Collector"] = 2000,
+    ["Factory"] = 1000,
+    ["Town"] = 1000,
+    ["Warehouse"] = 1000,
+    ["Market"] = 5000,
+    ["Rail"] = 100,
+    ["Powered Rail"] = 500,
+    ["Brake Rail"] = 100,
+    ["Cart"] = 1000
+}
+
+--defines the inventory formspec
+local function inventory_formspec(player)
+    local formspec = {
+        "size[8,7.5]",
+        "bgcolor[#353535;false]",
+        "list[current_player;main;0,3.5;8,4;]",
+        "list[current_player;craft;3,0;3,3;]",
+        "list[current_player;craftpreview;7,1;1,1;]",
+        "button[0.5,1;2,0.5;Shop;Shop]"
+    }
+    return formspec
 end
 
-minetest.register_on_leaveplayer(function(player)
-    _contexts[player:get_player_name()] = nil
+minetest.register_on_joinplayer(function(player)
+    if loaded == false then
+        for item_name,item in pairs(items_for_sale) do
+            item_buttons[index] = "button[3," .. 
+                index .. ";4,2;" .. item_name ..
+                ";" .. item_name .. "]" ..
+                "item_image[7," .. index + 0.6 .. 
+                ";0.6,0.6;" .. item .. "]" ..
+                "label[8," .. index + 0.6 .. ";" .. " $" .. 
+                item_prices[item_name] .."]"
+            item_btn_keys[item_name] = item
+            index = index + 1
+        end
+        loaded = true
+    end
+    local formspec = inventory_formspec(player)
+    player:set_inventory_formspec(table.concat(formspec, ""))
 end)
 
-function shop.get_formspec(name, context)
-
-   local formspec = {
-     "formspec_version[4]",
-     "size[9.5,5]",
-     "label[3.25,0.5;Welcome to the store!]",
-
-     "item_image[.25,1;1.5,1.5;minegistics:Collector]",
-     "label[.5,2.75;Collector]",
-     "field[.25,3;1.5,.5;collector;;0]",
-
-     "item_image[1.75,1;1.5,1.5;minegistics:Factory]",
-     "label[2.1,2.75;Factory]",
-     "field[1.75,3;1.5,.5;factory;;0]",
-
-     "item_image[3.25,1;1.5,1.5;minegistics:Market]",
-     "label[3.6,2.75;Market]",
-     "field[3.25,3;1.5,.5;market;;0]",
-
-     "item_image[4.75,1;1.5,1.5;minegistics:Warehouse]",
-     "label[4.85,2.75;Warehouse]",
-     "field[4.75,3;1.5,.5;warehouse;;0]",
-
-     "item_image[6.25,1;1.5,1.5;carts:cart]",
-     "label[6.75,2.75;Cart]",
-     "field[6.25,3;1.5,.5;cart;;0]",
-
-     "item_image[7.75,1;1.5,1.5;carts:rail]",
-     "label[8.25,2.75;Rail]",
-     "field[7.75,3;1.5,.5;rail;;0]",
-
-     "button[3.25,4;3,.5;purchase;Buy]"
-  }
-
-    -- table.concat is faster than string concatenation - `..`
-    return table.concat(formspec, "")
+--defines the shop formspec
+function shop_formspec(player)
+    local formspec = {
+        "size[10,16]",
+        "bgcolor[#353535;false]",
+        table.concat(item_buttons),
+        "label[3.5,11.5;".."Your balance: $" .. player_money[player:get_player_name()].."]",
+        "button[3,13;4,2;Back;Back]"
+    }
+    return formspec
 end
 
-minetest.register_chatcommand("shop", {
-    func = function(name)
-        shop.show_to(name)
-    end,
-})
-
-function shop.show_to(name)
-    local context = get_context(name)
-
-    local fs = shop.get_formspec(name, context)
-    minetest.show_formspec(name, "shop:shop", fs)
-end
-
-minetest.register_chatcommand("shop", {
-    func = function(name)
-        shop.show_to(name)
-    end,
-})
-
+--handles clicked buttons
 minetest.register_on_player_receive_fields(function(player, formname, fields)
-    if formname ~= "shop:shop" then
-        return
-    end
-
-    if tonumber(fields.collector) ~= 0 then
-      
-    end
-    if tonumber(fields.market) ~= 0 then
-
-    end
-    if tonumber(fields.factory) ~= 0 then
-
-    end
-    if tonumber(fields.warehouse) ~= 0 then
-
-    end
-    if tonumber(fields.cart) ~= 0 then
-
-    end
-    if tonumber(fields.rail) ~= 0 then
-
-    end
+    if formname ~= "" then return end
+    local player_name = player:get_player_name()
+    for key, val in pairs(fields) do
+        if key == "Shop" then
+            local formspec = shop_formspec(player)
+            player:set_inventory_formspec(table.concat(formspec, ""))
+        elseif key == "Back" then
+            local formspec = inventory_formspec(player)
+            player:set_inventory_formspec(table.concat(formspec, ""))
+        else
+            for item_name,item in pairs(item_btn_keys) do
+                if key == item_name then
+                    local item = ItemStack(item)
+                    if player_money[player_name] >= item_prices[item_name] then
+                        if player:get_inventory():add_item("main", item) then
+                            player_money[player_name] = player_money[player_name] - item_prices[item_name]
+                            minetest.chat_send_player(
+                                player_name,"You bought a " .. item_name .. "!   " ..
+                                "$" .. player_money[player_name] .. " remaining."
+                            )
+                            local formspec = shop_formspec(player)
+                            player:set_inventory_formspec(table.concat(formspec, ""))
+                        end
+                    else
+                        minetest.chat_send_player(player_name, "You can't afford that!")
+                    end
+                end
+            end
+        end
+    end    
 end)

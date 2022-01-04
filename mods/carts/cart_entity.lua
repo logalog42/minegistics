@@ -27,6 +27,7 @@ local cart_entity = {
 	railtype = nil,
 	attached_items = {},
 	cartInv = {},
+  automation_timer = 0,
   load = true
 }
 
@@ -459,9 +460,14 @@ local function structure_check(self, dtime)
 end
 
 function cart_entity:on_step(dtime)
-  structure_check(self, dtime)
-	rail_on_step(self, dtime)
-	rail_sound(self, dtime)
+    structure_check(self, dtime)
+    rail_on_step(self, dtime)
+    rail_sound(self, dtime)
+    self.automation_timer = self.automation_timer + 1
+    if self.automation_timer >= 500 then
+        self:on_punch()
+        self.automation_timer = 0
+    end
 end
 
 minetest.register_entity("carts:cart", cart_entity)
