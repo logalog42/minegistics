@@ -158,41 +158,6 @@ minetest.register_abm({
     end
 })
 
-minetest.register_node("minegistics:Factory", {
-   description = " Take resources output goods",
-   tiles = {"minegistics_structures_factory.png"},
-   on_construct = function(pos)
-		local meta = minetest.get_meta(pos)
-		meta:set_string("formspec",
-				"size[8,9]"..
-				"list[current_name;main;0,0;8,4;]"..
-				"list[current_player;main;0,5;8,4;]" ..
-				"listring[]")
-		meta:set_string("infotext", "depot")
-		local inv = meta:get_inventory()
-		inv:set_size("main", 2*1)
-	end,
-	can_dig = function(pos,player)
-		local meta = minetest.get_meta(pos);
-		local inv = meta:get_inventory()
-		return inv:is_empty("main")
-	end,
-	allow_metadata_inventory_put = function(pos, listname, index, stack, player)
-		minetest.chat_send_player(player:get_player_name(), "Allow put: " .. stack:to_string())
-		return stack:get_count()
-	end,
-	allow_metadata_inventory_take = function(pos, listname, index, stack, player)
-		minetest.chat_send_player(player:get_player_name(), "Allow take: " .. stack:to_string())
-		return stack:get_count()
-	end,
-	on_metadata_inventory_put = function(pos, listname, index, stack, player)
-		minetest.chat_send_player(player:get_player_name(), "On put: " .. stack:to_string())
-	end,
-	on_metadata_inventory_take = function(pos, listname, index, stack, player)
-		minetest.chat_send_player(player:get_player_name(), "On take: " .. stack:to_string())
-	end,
-})
-
 minetest.register_node("minegistics:Market", {
    description = " Building changes any resources into money",
    tiles = {"minegistics_structures_market.png"},
@@ -276,6 +241,113 @@ minetest.register_node("minegistics:Warehouse", {
 		meta:set_string("infotext", "depot")
 		local inv = meta:get_inventory()
 		inv:set_size("main", 5*4)
+	end,
+	can_dig = function(pos,player)
+		local meta = minetest.get_meta(pos);
+		local inv = meta:get_inventory()
+		return inv:is_empty("main")
+	end,
+	allow_metadata_inventory_put = function(pos, listname, index, stack, player)
+		minetest.chat_send_player(player:get_player_name(), "Allow put: " .. stack:to_string())
+		return stack:get_count()
+	end,
+	allow_metadata_inventory_take = function(pos, listname, index, stack, player)
+		minetest.chat_send_player(player:get_player_name(), "Allow take: " .. stack:to_string())
+		return stack:get_count()
+	end,
+	on_metadata_inventory_put = function(pos, listname, index, stack, player)
+		minetest.chat_send_player(player:get_player_name(), "On put: " .. stack:to_string())
+	end,
+	on_metadata_inventory_take = function(pos, listname, index, stack, player)
+		minetest.chat_send_player(player:get_player_name(), "On take: " .. stack:to_string())
+	end,
+})
+
+minetest.register_node("minegistics:furnace", {
+   description = "A Building that takes in material, fuel and then ouputs a resource",
+   tiles = {"minegistics_structures_furnace"},
+   on_construct = function(pos)
+      local meta = minetest.get_meta(pos)
+      meta:set_string("formspec",
+            "size[3,4]"..
+            "list[current_name;main;0,0;8,4;]"..
+            "list[current_player;main;0,5;8,4;]" ..
+            "listring[]")
+      meta:set_string("infotext", "depot")
+      local inv = meta:get_inventory()
+      inv:set_size("main", 5*4)
+   end,
+   can_dig = function(pos,player)
+      local meta = minetest.get_meta(pos);
+      local inv = meta:get_inventory()
+      return inv:is_empty("main")
+   end,
+   allow_metadata_inventory_put = function(pos, listname, index, stack, player)
+      minetest.chat_send_player(player:get_player_name(), "Allow put: " .. stack:to_string())
+      return stack:get_count()
+   end,
+   allow_metadata_inventory_take = function(pos, listname, index, stack, player)
+      minetest.chat_send_player(player:get_player_name(), "Allow take: " .. stack:to_string())
+      return stack:get_count()
+   end,
+   on_metadata_inventory_put = function(pos, listname, index, stack, player)
+      minetest.chat_send_player(player:get_player_name(), "On put: " .. stack:to_string())
+   end,
+   on_metadata_inventory_take = function(pos, listname, index, stack, player)
+      minetest.chat_send_player(player:get_player_name(), "On take: " .. stack:to_string())
+   end,
+})
+
+
+minetest.register_node("minegistics:Factory", {
+   description = " Take resources output goods",
+   tiles = {"minegistics_structures_factory.png"},
+   on_construct = function(pos)
+		local meta = minetest.get_meta(pos)
+		meta:set_string("formspec",
+				"size[3,4]"..
+				"list[current_name;main;0,0;8,4;]"..
+				"list[current_player;main;0,5;8,4;]" ..
+				"listring[]")
+		meta:set_string("infotext", "depot")
+		local inv = meta:get_inventory()
+		inv:set_size("main", 2*1)
+	end,
+	can_dig = function(pos,player)
+		local meta = minetest.get_meta(pos);
+		local inv = meta:get_inventory()
+		return inv:is_empty("main")
+	end,
+	allow_metadata_inventory_put = function(pos, listname, index, stack, player)
+		minetest.chat_send_player(player:get_player_name(), "Allow put: " .. stack:to_string())
+		return stack:get_count()
+	end,
+	allow_metadata_inventory_take = function(pos, listname, index, stack, player)
+		minetest.chat_send_player(player:get_player_name(), "Allow take: " .. stack:to_string())
+		return stack:get_count()
+	end,
+	on_metadata_inventory_put = function(pos, listname, index, stack, player)
+		minetest.chat_send_player(player:get_player_name(), "On put: " .. stack:to_string())
+	end,
+	on_metadata_inventory_take = function(pos, listname, index, stack, player)
+		minetest.chat_send_player(player:get_player_name(), "On take: " .. stack:to_string())
+	end,
+})
+
+
+minetest.register_node("minegistics:Workshop", {
+   description = " Take material output resources",
+   tiles = {"minegistics_structures_workshop.png"},
+   on_construct = function(pos)
+		local meta = minetest.get_meta(pos)
+		meta:set_string("formspec",
+				"size[3,4]"..
+				"list[current_name;input;0,0;1,1;]"..
+				"list[current_player;output;1.5,4;1,1;]" ..
+				"listring[]")
+		meta:set_string("infotext", "depot")
+		local inv = meta:get_inventory()
+		inv:set_size("main", 2*1)
 	end,
 	can_dig = function(pos,player)
 		local meta = minetest.get_meta(pos);
