@@ -12,30 +12,7 @@ minetest.register_on_punchnode(function(pos, node, puncher, pointed_thing)
     end
 end)
 
-minetest.register_node("minegistics:Collector", {
-   description = " Building to gather resources",
-   tiles = {"minegistics_structures_collector.png"},
-   on_construct = function(pos)
-     local meta = minetest.get_meta(pos)
-     meta:set_string("formspec",
-         "size[8,9]"..
-         "list[current_name;main;0,0;8,4;]"..
-         "list[current_player;main;0,5;8,4;]" ..
-         "listring[]")
-     meta:set_string("infotext", "collector")
-     local inv = meta:get_inventory()
-     inv:set_size("main", 5*1)
-  end,
-  allow_metadata_inventory_take = function(pos, listname, index, stack, player)
-     minetest.chat_send_player(player:get_player_name(), "Allow take: " .. stack:to_string())
-     return stack:get_count()
-  end,
-  on_metadata_inventory_take = function(pos, listname, index, stack, player)
-     minetest.chat_send_player(player:get_player_name(), "On take: " .. stack:to_string())
-  end,
-
-})
-
+--Collects Coal
 minetest.register_abm({
     nodenames = {"minegistics:Collector"},
     neighbors = {"basenodes:stone_with_coal"},
@@ -52,6 +29,7 @@ minetest.register_abm({
     end
 })
 
+--Collects Iron
 minetest.register_abm({
     nodenames = {"minegistics:Collector"},
     neighbors = {"basenodes:stone_with_iron"},
@@ -68,6 +46,7 @@ minetest.register_abm({
       end
 })
 
+--Collects Copper
 minetest.register_abm({
     nodenames = {"minegistics:Collector"},
     neighbors = {"basenodes:stone_with_copper"},
@@ -84,6 +63,7 @@ minetest.register_abm({
       end
 })
 
+--Collects Tin
 minetest.register_abm({
     nodenames = {"minegistics:Collector"},
     neighbors = {"basenodes:stone_with_tin"},
@@ -100,6 +80,7 @@ minetest.register_abm({
       end
 })
 
+--Collects Gold
 minetest.register_abm({
     nodenames = {"minegistics:Collector"},
     neighbors = {"basenodes:stone_with_gold"},
@@ -116,6 +97,7 @@ minetest.register_abm({
       end
 })
 
+--Collects Cobblestone
 minetest.register_abm({
     nodenames = {"minegistics:Collector"},
     neighbors = {"basenodes:cobblestone"},
@@ -130,6 +112,7 @@ minetest.register_abm({
     end
 })
 
+--Collects Gravel
 minetest.register_abm({
     nodenames = {"minegistics:Collector"},
     neighbors = {"basenodes:gravel"},
@@ -144,6 +127,7 @@ minetest.register_abm({
     end
 })
 
+--Collects Sand
 minetest.register_abm({
     nodenames = {"minegistics:Collector"},
     neighbors = {"basenode:sand"},
@@ -166,9 +150,9 @@ minetest.register_abm({
     action = function(pos, node, active_object_count, active_object_count_wider)
         local lumps = {
             "basenodes:coal_lump",
-            "basenodes:copper_lump", 
+            "basenodes:copper_lump",
             "basenodes:tin_lump",
-            "basenodes:iron_lump", 
+            "basenodes:iron_lump",
             "basenodes:gold_lump"
         }
         local meta = minetest.get_meta({ x = pos.x, y = pos.y, z = pos.z })
@@ -184,7 +168,7 @@ minetest.register_abm({
                 while inv:contains_item(name, items[index]) do
                     inv:remove_item(name, items[index])
                     money_earned = money_earned + 1
-                end                 
+                end
             end
         end
         if money_earned > 0 then
@@ -199,19 +183,47 @@ minetest.register_abm({
     end
 })
 
+minetest.register_node("minegistics:Collector", {
+   description = " Building to gather resources",
+   tiles = {"minegistics_structures_collector.png"},
+   on_construct = function(pos)
+     local meta = minetest.get_meta(pos)
+     meta:set_string("formspec",
+         "size[8,9]"..
+         "list[current_name;main;0,0;5,1;]"..
+         "list[current_player;main;0,5;8,4;]" ..
+         "listring[]")
+     meta:set_string("infotext", "collector")
+     local inv = meta:get_inventory()
+     inv:set_size("main", 5*1)
+  end,
+  can_dig = function(pos,player)
+     local meta = minetest.get_meta(pos);
+     local inv = meta:get_inventory()
+     return inv:is_empty("main")
+  end,
+  allow_metadata_inventory_take = function(pos, listname, index, stack, player)
+     return stack:get_count()
+  end,
+  on_metadata_inventory_take = function(pos, listname, index, stack, player)
+     return stack:get_count()
+  end,
+})
+
 minetest.register_node("minegistics:Factory", {
    description = " Take resources output goods",
    tiles = {"minegistics_structures_factory.png"},
    on_construct = function(pos)
 		local meta = minetest.get_meta(pos)
 		meta:set_string("formspec",
-				"size[8,9]"..
-				"list[current_name;main;0,0;8,4;]"..
-				"list[current_player;main;0,5;8,4;]" ..
-				"listring[]")
+         "size[3,4]"..
+         "list[current_name;input;.5,1;2,1;]"..
+         "list[current_name;output;2,3;1,1;]" ..
+         "listring[]")
 		meta:set_string("infotext", "depot")
 		local inv = meta:get_inventory()
-		inv:set_size("main", 5*1)
+		inv:set_size("input", 2*1)
+      inv:set_size("output", 1*1)
 	end,
 	can_dig = function(pos,player)
 		local meta = minetest.get_meta(pos);
@@ -244,6 +256,31 @@ minetest.register_node("minegistics:town", {
 		local meta = minetest.get_meta(pos);
 		local inv = meta:get_inventory()
 		return inv:is_empty("main")
+	end,
+	allow_metadata_inventory_put = function(pos, listname, index, stack, player)
+		return stack:get_count()
+	end,
+	allow_metadata_inventory_take = function(pos, listname, index, stack, player)
+		return stack:get_count()
+	end
+})
+
+minetest.register_node("minegistics:market", {
+   description = " Building changes material, resources, and product into money",
+   tiles = {"minegistics_structures_market.png"},
+   on_construct = function(pos)
+		local meta = minetest.get_meta(pos)
+      meta:set_string("formspec",
+				"size[8,9]"..
+				"list[current_name;main;0,0;8,4;]"..
+				"list[current_player;main;0,5;8,4;]" ..
+				"listring[]")
+		meta:set_string("infotext", "depot")
+		local inv = meta:get_inventory()
+		inv:set_size("main", 5*4)
+	end,
+	can_dig = function(pos,player)
+		return  minetest.chat_send_player(player:get_player_name(), "Sorry the Market can't be moved once placed.")
 	end,
 	allow_metadata_inventory_put = function(pos, listname, index, stack, player)
 		return stack:get_count()
@@ -299,58 +336,13 @@ minetest.register_node("minegistics:furnace", {
       local inv = meta:get_inventory()
       return inv:is_empty("main")
    end,
-   allow_metadata_inventory_put = function(pos, listname, index, stack, player)
-      minetest.chat_send_player(player:get_player_name(), "Allow put: " .. stack:to_string())
-      return stack:get_count()
-   end,
-   allow_metadata_inventory_take = function(pos, listname, index, stack, player)
-      minetest.chat_send_player(player:get_player_name(), "Allow take: " .. stack:to_string())
-      return stack:get_count()
-   end,
    on_metadata_inventory_put = function(pos, listname, index, stack, player)
-      minetest.chat_send_player(player:get_player_name(), "On put: " .. stack:to_string())
+      return stack:get_count()
    end,
    on_metadata_inventory_take = function(pos, listname, index, stack, player)
-      minetest.chat_send_player(player:get_player_name(), "On take: " .. stack:to_string())
+      return stack:get_count()
    end,
 })
-
-
-minetest.register_node("minegistics:Factory", {
-   description = " Take resources output goods",
-   tiles = {"minegistics_structures_factory.png"},
-   on_construct = function(pos)
-		local meta = minetest.get_meta(pos)
-		meta:set_string("formspec",
-				"size[3,4]"..
-				"list[current_name;main;0,0;8,4;]"..
-				"list[current_player;main;0,5;8,4;]" ..
-				"listring[]")
-		meta:set_string("infotext", "depot")
-		local inv = meta:get_inventory()
-		inv:set_size("main", 2*1)
-	end,
-	can_dig = function(pos,player)
-		local meta = minetest.get_meta(pos);
-		local inv = meta:get_inventory()
-		return inv:is_empty("main")
-	end,
-	allow_metadata_inventory_put = function(pos, listname, index, stack, player)
-		minetest.chat_send_player(player:get_player_name(), "Allow put: " .. stack:to_string())
-		return stack:get_count()
-	end,
-	allow_metadata_inventory_take = function(pos, listname, index, stack, player)
-		minetest.chat_send_player(player:get_player_name(), "Allow take: " .. stack:to_string())
-		return stack:get_count()
-	end,
-	on_metadata_inventory_put = function(pos, listname, index, stack, player)
-		minetest.chat_send_player(player:get_player_name(), "On put: " .. stack:to_string())
-	end,
-	on_metadata_inventory_take = function(pos, listname, index, stack, player)
-		minetest.chat_send_player(player:get_player_name(), "On take: " .. stack:to_string())
-	end,
-})
-
 
 minetest.register_node("minegistics:Workshop", {
    description = " Take material output resources",
@@ -359,17 +351,18 @@ minetest.register_node("minegistics:Workshop", {
 		local meta = minetest.get_meta(pos)
 		meta:set_string("formspec",
 				"size[3,4]"..
-				"list[current_name;input;0,0;1,1;]"..
-				"list[current_player;output;1.5,4;1,1;]" ..
+				"list[current_name;input;1,.5;1,1;]"..
+				"list[current_name;output;0.5,2;2,1;]" ..
 				"listring[]")
 		meta:set_string("infotext", "depot")
 		local inv = meta:get_inventory()
-		inv:set_size("main", 2*1)
+		inv:set_size("input", 1*1)
+      inv:set_size("output", 2*1)
 	end,
 	can_dig = function(pos,player)
 		local meta = minetest.get_meta(pos);
 		local inv = meta:get_inventory()
-		return inv:is_empty("main")
+		return inv:is_empty("input")
 	end,
 	allow_metadata_inventory_put = function(pos, listname, index, stack, player)
 		return stack:get_count()
