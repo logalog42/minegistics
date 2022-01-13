@@ -210,7 +210,7 @@ minetest.register_node("basenodes:gravel", {
 
 minetest.register_node("basenodes:wood", {
 	description = "lumber",
-	tiles ={"default_wood.png"},
+	tiles ={"default_tree_top.png","default_tree.png"},
 })
 
 minetest.register_node("basenodes:cement", {
@@ -220,7 +220,7 @@ minetest.register_node("basenodes:cement", {
 
 minetest.register_node("basenodes:glass", {
 	description = "Glass",
-	tiles ={"glass.png"},
+	tiles ={"default_glass.png"},
 })
 
 minetest.register_node("basenodes:leaves", {
