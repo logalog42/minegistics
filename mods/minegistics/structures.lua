@@ -33,15 +33,16 @@ minetest.register_node("minegistics:Factory", {
    tiles = {"minegistics_structures_factory.png"},
    on_construct = function(pos)
 		local meta = minetest.get_meta(pos)
-		meta:set_string("formspec",
-         "size[3,4]"..
-         "list[current_name;input;.5,1;2,1;]"..
-         "list[current_name;output;2,3;1,1;]" ..
-         "listring[]")
+    meta:set_string("formspec",
+      "size[8,7.5]" ..
+      "list[current_player;main;0,3.5;8,4;]"..
+			"list[current_name;input;3,.5;2,1;]"..
+			"list[current_name;output;3.5,2;1,1;]"..
+			"listring[]")
 		meta:set_string("infotext", "depot")
 		local inv = meta:get_inventory()
 		inv:set_size("input", 2*1)
-      inv:set_size("output", 1*1)
+    inv:set_size("output", 1*1)
 	end,
 	can_dig = function(pos,player)
 		local meta = minetest.get_meta(pos);
@@ -168,14 +169,15 @@ minetest.register_node("minegistics:Workshop", {
    on_construct = function(pos)
 		local meta = minetest.get_meta(pos)
 		meta:set_string("formspec",
-				"size[3,4]"..
-				"list[current_name;input;1,.5;1,1;]"..
-				"list[current_name;output;0.5,2;2,1;]" ..
-				"listring[]")
+      "size[8,7.5]" ..
+      "list[current_player;main;0,3.5;8,4;]"..
+			"list[current_name;input;3.5,.5;1,1;]"..
+			"list[current_name;output;3,2;2,1;]"..
+			"listring[]")
 		meta:set_string("infotext", "depot")
 		local inv = meta:get_inventory()
 		inv:set_size("input", 1*1)
-      inv:set_size("output", 2*1)
+    inv:set_size("output", 2*1)
 	end,
 	can_dig = function(pos,player)
 		local meta = minetest.get_meta(pos);
