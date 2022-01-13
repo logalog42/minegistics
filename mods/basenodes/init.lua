@@ -36,32 +36,32 @@ minetest.register_craftitem("basenodes:iron_lump", {
 
 minetest.register_craftitem("basenodes:fat", {
 	description = ("fat"),
-	inventory_image = "default_fat.png"
+	inventory_image = "fat.png"
 })
 
 minetest.register_craftitem("basenodes:leather", {
 	description = ("Leather"),
-	inventory_image = "default_leather.png"
+	inventory_image = "leather.png"
 })
 
 minetest.register_craftitem("basenodes:meat", {
 	description = ("Meat"),
-	inventory_image = "default_meat.png"
+	inventory_image = "meat.png"
 })
 
 minetest.register_craftitem("basenodes:milk", {
 	description = ("Moo milk"),
-	inventory_image = "default_milk.png"
+	inventory_image = "milk.png"
 })
 
 minetest.register_craftitem("basenodes:fruit", {
 	description = ("fruit"),
-	inventory_image = "default_fruit.png"
+	inventory_image = "fruit.png"
 })
 
 minetest.register_craftitem("basenodes:wheat", {
 	description = ("wheat"),
-	inventory_image = "default_wheat.png"
+	inventory_image = "wheat.png"
 })
 
 minetest.register_craftitem("basenodes:cotton", {
@@ -76,7 +76,7 @@ minetest.register_craftitem("basenodes:clay", {
 
 minetest.register_craftitem("basenodes:steel_lump", {
 	description = ("Steel lump"),
-	inventory_image = "default_steel_lump.png"
+	inventory_image = "steel_lump.png"
 })
 
 minetest.register_craftitem("basenodes:steel_ingot", {
@@ -86,7 +86,7 @@ minetest.register_craftitem("basenodes:steel_ingot", {
 
 minetest.register_craftitem("basenodes:iron_ingot", {
 	description = ("Iron Ingot"),
-	inventory_image = "default_iron_ingot.png"
+	inventory_image = "iron_ingot.png"
 })
 
 minetest.register_craftitem("basenodes:copper_ingot", {
@@ -101,77 +101,77 @@ minetest.register_craftitem("basenodes:bronze_ingot", {
 
 minetest.register_craftitem("basenodes:mechanical_parts", {
 	description = ("Mechanical Parts"),
-	inventory_image = "default_mechanical_parts.png"
+	inventory_image = "mechanical_parts.png"
 })
 
 minetest.register_craftitem("basenodes:copper_wire", {
 	description = ("Copper Wire"),
-	inventory_image = "default_copper_wire.png"
+	inventory_image = "copper_wire.png"
 })
 
 minetest.register_craftitem("basenodes:tallow", {
 	description = ("Tallow"),
-	inventory_image = "default_tallow.png"
+	inventory_image = "tallow.png"
 })
 
 minetest.register_craftitem("basenodes:lye", {
 	description = ("Lye"),
-	inventory_image = "default_lye.png"
+	inventory_image = "lye.png"
 })
 
 minetest.register_craftitem("basenodes:ash", {
 	description = ("Ash"),
-	inventory_image = "default_ash.png"
+	inventory_image = "ash.png"
 })
 
 minetest.register_craftitem("basenodes:potash", {
 	description = ("potash"),
-	inventory_image = "default_potash.png"
+	inventory_image = "potash.png"
 })
 
 minetest.register_craftitem("basenodes:pearlash", {
 	description = ("pearlash"),
-	inventory_image = "default_pearlash.png"
+	inventory_image = "pearlash.png"
 })
 
 minetest.register_craftitem("basenodes:luxury_tools", {
 	description = ("Luxury Tools"),
-	inventory_image = "default_luxury_tools.png"
+	inventory_image = "luxury_tools.png"
 })
 
 minetest.register_craftitem("basenodes:building_material", {
 	description = ("Building Material"),
-	inventory_image = "default_building_material.png"
+	inventory_image = "building_material.png"
 })
 
 minetest.register_craftitem("basenodes:soap", {
 	description = ("It makes water wetter to make you clean."),
-	inventory_image = "default_soap.png"
+	inventory_image = "soap.png"
 })
 
 minetest.register_craftitem("basenodes:luxury_furniture", {
 	description = ("Luxury Furniture"),
-	inventory_image = "default_luxury_furniture.png"
+	inventory_image = "luxury_furniture.png"
 })
 
 minetest.register_craftitem("basenodes:furniture", {
 	description = ("A place to rest your head."),
-	inventory_image = "default_furniture.png"
+	inventory_image = "furniture.png"
 })
 
 minetest.register_craftitem("basenodes:luxury_meals", {
 	description = ("Why is fish eggs so fancy?"),
-	inventory_image = "default_luxury_meals.png"
+	inventory_image = "luxury_meals.png"
 })
 
 minetest.register_craftitem("basenodes:simple_meals", {
 	description = ("Plain ole meat and potatoes"),
-	inventory_image = "default_simple_meal.png"
+	inventory_image = "simple_meal.png"
 })
 
 minetest.register_craftitem("basenodes:ceramics", {
 	description = ("Need something for your tea."),
-	inventory_image = "default_ceramics.png"
+	inventory_image = "ceramics.png"
 })
 --
 -- Node definitions
@@ -215,12 +215,12 @@ minetest.register_node("basenodes:wood", {
 
 minetest.register_node("basenodes:cement", {
 	description = "Cement",
-	tiles ={"default_cement.png"},
+	tiles ={"cement.png"},
 })
 
 minetest.register_node("basenodes:glass", {
 	description = "Glass",
-	tiles ={"default_glass.png"},
+	tiles ={"glass.png"},
 })
 
 minetest.register_node("basenodes:leaves", {
