@@ -53,11 +53,7 @@ minetest.register_node("basenodes:stone", {
 
 minetest.register_node("basenodes:dirt_with_grass", {
 	description = "Dirt with Grass",
-	tiles ={"default_grass.png",
-		-- a little dot on the bottom to distinguish it from dirt
-		"default_dirt.png^basenodes_dirt_with_grass_bottom.png",
-		{name = "default_dirt.png^default_grass_side.png",
-		tileable_vertical = false}},
+	tiles ={"default_grass.png"},
 })
 
 minetest.register_node("basenodes:dirt", {
@@ -113,6 +109,14 @@ minetest.register_node("basenodes:stone_with_gold", {
 	description = ("Gold Ore"),
 	tiles = {"default_stone.png^default_mineral_gold.png"},
 })
+
+base_ores = {
+    ["basenodes:stone_with_coal"] = "basenodes:coal_lump",
+    ["basenodes:stone_with_tin"] = "basenodes:tin_lump",
+    ["basenodes:stone_with_copper"] = "basenodes:copper_lump",
+    ["basenodes:stone_with_iron"] = "basenodes:iron_lump",
+    ["basenodes:stone_with_gold"] = "basenodes:gold_lump"
+}
 
 minetest.register_node("basenodes:river_water_source", {
 	description = "River Water Source".."\n"..

@@ -1,3 +1,10 @@
+--[[
+    Minegistics
+      logalog
+      Droog71
+    License: AGPLv3
+]]--
+
 local give_if_not_gotten_already = function(inv, list, item)
 	if not inv:contains_item(list, item) then
 		inv:add_item(list, item)
@@ -5,12 +12,14 @@ local give_if_not_gotten_already = function(inv, list, item)
 end
 
 local give_initial_stuff = function(player)
-	local inv = player:get_inventory()
-	give_if_not_gotten_already(inv, "main", "minegistics:Market" .. " 1")
-	give_if_not_gotten_already(inv, "main", "minegistics:Collector" .. " 2")
-   give_if_not_gotten_already(inv, "main", "carts:cart" .. " 2")
-   give_if_not_gotten_already(inv, "main", "carts:rail" .. " 20")
-
+  local inv = player:get_inventory()
+  give_if_not_gotten_already(inv, "main", "minegistics:Market" .. " 1")
+  give_if_not_gotten_already(inv, "main", "minegistics:Town" .. " 1")
+  give_if_not_gotten_already(inv, "main", "minegistics:Collector" .. " 2")
+  give_if_not_gotten_already(inv, "main", "minegistics:PowerPlant" .. " 1")
+  give_if_not_gotten_already(inv, "main", "minegistics_trains:train" .. " 3")
+  give_if_not_gotten_already(inv, "main", "minegistics_trains:rail" .. " 100")
+  give_if_not_gotten_already(inv, "main", "basenodes:coal_lump" .. " 100")
 	minetest.log("action", "[give_initial_stuff] Giving initial stuff to "..player:get_player_name())
 end
 
