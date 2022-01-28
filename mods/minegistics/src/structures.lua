@@ -165,9 +165,11 @@ minetest.register_node("minegistics:Factory", {
    on_construct = function(pos)
       table.insert(power_consumers, pos)
       local meta = minetest.get_meta(pos)
+      local selected_id = 1
       meta:set_string("formspec",
           "size[8,9]"..
           "list[current_name;main;0,0;8,4;]"..
+          "dropdown[1,1;2,1;items; coal_product.png , coal_product; " .. selected_id .. "]"..
           "list[current_player;main;0,5;8,4;]" ..
           "listring[]")
       meta:set_string("infotext", "factory")
@@ -268,13 +270,13 @@ minetest.register_abm({
                     while inv:contains_item(name, lumps[index]) do
                         inv:remove_item(name, lumps[index])
                         money_earned = money_earned + item_worth[item:get_name()]
-                    end                 
+                    end
                 end
                 for index, item in pairs(items) do
                     while inv:contains_item(name, items[index]) do
                         inv:remove_item(name, items[index])
                         money_earned = money_earned + item_worth[item:get_name()]
-                    end                 
+                    end
                 end
             end
             if money_earned > 0 then
@@ -327,7 +329,7 @@ minetest.register_abm({
                         stack:set_count(item_amount)
                         inv:add_item("main", stack)
                         working = true
-                    end                 
+                    end
                 end
             end
             if working then
