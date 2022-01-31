@@ -40,6 +40,11 @@ minetest.register_craftitem("basenodes:flint", {
 	inventory_image = "default_flint.png"
 })
 
+minetest.register_craftitem("basenodes:planks", {
+   description = ("Lumber"),
+   inventory_image = "default_wood.png"
+})
+
 --
 -- Node definitions
 --
@@ -120,7 +125,8 @@ base_ores = {
     ["basenodes:stone_with_tin"] = "basenodes:tin_lump",
     ["basenodes:stone_with_copper"] = "basenodes:copper_lump",
     ["basenodes:stone_with_iron"] = "basenodes:iron_lump",
-    ["basenodes:stone_with_gold"] = "basenodes:gold_lump"
+    ["basenodes:stone_with_gold"] = "basenodes:gold_lump",
+    ["basenodes:trunk"] = "basenodes:planks"
 }
 
 minetest.register_node("basenodes:river_water_source", {
