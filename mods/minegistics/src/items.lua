@@ -7,10 +7,15 @@
 
 resources = {
       "basenodes:coal_lump",
-      "basenodes:copper_lump", 
+      "basenodes:copper_lump",
       "basenodes:tin_lump",
-      "basenodes:iron_lump", 
-      "basenodes:gold_lump"
+      "basenodes:iron_lump",
+      "basenodes:gold_lump",
+      "minegistics:fat_resource",
+      "minegistics:fruit_resource",
+      "minegistics:leather_resource",
+      "minegistics:meat_resource",
+      "minegistics:vessels_milk_bottle_resource"
   }
 
 products = {
@@ -53,6 +58,11 @@ minetest.register_craftitem("minegistics:tin_product", {
 minetest.register_craftitem("minegistics:gold_product", {
 	description = ("Gold Product: Produced by factories."),
 	inventory_image = "gold_product.png"
+})
+
+minetest.register_craftitem("minegistics:iron_product", {
+	description = ("Iron Product: Produced by factories."),
+	inventory_image = "iron_product.png"
 })
 
 minetest.register_craftitem("minegistics:iron_product", {
