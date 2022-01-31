@@ -71,6 +71,11 @@ minetest.register_node("basenodes:gravel", {
 	tiles ={"default_gravel.png"},
 })
 
+minetest.register_node("basenodes:trunk", {
+   descriptions = "Woods",
+   tiles={"default_tree.png"}
+})
+
 minetest.register_node("basenodes:leaves", {
 	description = "Normal Leaves",
 	drawtype = "allfaces_optional",

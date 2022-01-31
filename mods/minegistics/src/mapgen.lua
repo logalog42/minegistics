@@ -45,6 +45,13 @@ minetest.register_on_generated(function(minp, maxp, blockseed)
                     end
                 end
             end
+            for y = -1,-1,1 do
+               local vi = area:index(x, y, z)
+               local rand_gen = math.random(1,100)
+               if rand_gen >= 90 and data[area:index(x,y-1,z)] == minetest.get_content_id("basenodes:dirth_with_grass") then
+                  data[area:index(x, y, z)] = minetest.get_content_id("basenodes:trunk")
+                  data[area:index(x, y+1, z)] = minetest.get_content_id("basenodes:leaves")
+            end
         end
     end
     vm:set_data(data)
