@@ -228,17 +228,26 @@ minetest.register_abm({
     action = function(pos, node, active_object_count, active_object_count_wider)
         minetest.forceload_block(pos, false)
         if power_stable(pos) then
-            local under = vector.new(pos.x, pos.y - 1, pos.z)
+            local next_to = {
+               vector.new(pos.x, pos.y - 1, pos.z),
+               vector.new(pos.x + 1, pos.y, pos.z),
+               vector.new(pos.x - 1, pos.y, pos.z),
+               vector.new(pos.x, pos.y, pos.z + 1),
+               vector.new(pos.x, pos.y, pos.z - 1)
+            }
+
             for node,ore in pairs(base_ores) do
-                if minetest.get_node(under).name == node then
-                    local meta = minetest.get_meta(pos)
-                    local inv = meta:get_inventory()
-                    local stack = ItemStack(ore)
-                    stack:set_count(10)
-                    if inv:add_item("main", stack) then
+               for key,direction in ipairs(next_to) do
+                  if minetest.get_node(direction).name == node then
+                     local meta = minetest.get_meta(pos)
+                     local inv = meta:get_inventory()
+                     local stack = ItemStack(ore)
+                     stack:set_count(10)
+                     if inv:add_item("main", stack) then
                         smoke(pos)
-                    end
-                end
+                     end
+                  end
+               end
             end
         end
     end

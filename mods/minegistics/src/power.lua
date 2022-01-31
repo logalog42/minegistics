@@ -90,7 +90,10 @@ minetest.register_abm({
         if inv:contains_item("main", "basenodes:coal_lump") then
             inv:remove_item("main", "basenodes:coal_lump")
             has_fuel = true
-        end 
+         elseif inv:contains_item("main", "basenodes:planks") then
+            inv:remove_item("main", "basenodes:planks")
+            has_fuel = true
+        end
         local active = is_active(pos)
         if has_fuel then
             if active == false then

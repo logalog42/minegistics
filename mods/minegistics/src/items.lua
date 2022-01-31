@@ -15,7 +15,8 @@ resources = {
       "minegistics:fruit_resource",
       "minegistics:leather_resource",
       "minegistics:meat_resource",
-      "minegistics:vessels_milk_bottle_resource"
+      "minegistics:vessels_milk_bottle_resource",
+      "basenodes:planks"
   }
 
 products = {
@@ -28,6 +29,7 @@ products = {
 
 item_worth = {
     ["basenodes:coal_lump"] = 1,
+    ["basenodes:planks"] = 1,
     ["basenodes:tin_lump"] = 2,
     ["basenodes:copper_lump"] = 3,
     ["basenodes:iron_lump"] = 4,
