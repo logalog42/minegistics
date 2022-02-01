@@ -76,9 +76,11 @@ minetest.register_node("basenodes:gravel", {
 	tiles ={"default_gravel.png"},
 })
 
-minetest.register_node("basenodes:trunk", {
+minetest.register_node("basenodes:tree", {
    descriptions = "Woods",
-   tiles={"default_tree.png"}
+   drawtype="mesh",
+   mesh = "minegistics_tree.obj",
+   tiles={"minegistics_tree.png"}
 })
 
 minetest.register_node("basenodes:leaves", {
@@ -126,7 +128,7 @@ base_ores = {
     ["basenodes:stone_with_copper"] = "basenodes:copper_lump",
     ["basenodes:stone_with_iron"] = "basenodes:iron_lump",
     ["basenodes:stone_with_gold"] = "basenodes:gold_lump",
-    ["basenodes:trunk"] = "basenodes:planks"
+    ["basenodes:tree"] = "basenodes:planks"
 }
 
 minetest.register_node("basenodes:river_water_source", {
