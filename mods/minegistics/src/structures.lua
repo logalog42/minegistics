@@ -225,7 +225,7 @@ minetest.register_abm({
     nodenames = {"minegistics:Collector"},
     interval = 10,
     chance = 1,
-    action = function(pos)
+    action = function(pos, node, active_object_count, active_object_count_wider)
         minetest.forceload_block(pos, false)
         if power_stable(pos) then
             local next_to = {
@@ -258,7 +258,7 @@ minetest.register_abm({
     nodenames = {"minegistics:Market"},
     interval = 10,
     chance = 1,
-    action = function(pos)
+    action = function(pos, node, active_object_count, active_object_count_wider)
         minetest.forceload_block(pos, false)
         if power_stable(pos) then
             local meta = minetest.get_meta(pos)
@@ -316,7 +316,7 @@ minetest.register_abm({
     nodenames = {"minegistics:Factory"},
     interval = 10,
     chance = 1,
-    action = function(pos)
+    action = function(pos, node, active_object_count, active_object_count_wider)
         minetest.forceload_block(pos, false)
         if power_stable(pos) then
             local meta = minetest.get_meta({ x = pos.x, y = pos.y, z = pos.z })

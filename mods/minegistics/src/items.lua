@@ -5,11 +5,6 @@
     License: AGPLv3
 ]]--
 
-fuels = {
-      "basenodes:coal_lump",
-      "basenodes:planks"
-}
-
 resources = {
       "basenodes:coal_lump",
       "basenodes:copper_lump",
@@ -22,7 +17,7 @@ resources = {
       "minegistics:meat_resource",
       "minegistics:vessels_milk_bottle_resource",
       "basenodes:planks"
-}
+  }
 
 products = {
     ["basenodes:coal_lump"] = "minegistics:coal_product",
