@@ -6,11 +6,11 @@
 ]]--
 
 local ores = {
-    "basenodes:stone_with_coal",
-    "basenodes:stone_with_iron",
-    "basenodes:stone_with_copper",
-    "basenodes:stone_with_tin",
-    "basenodes:stone_with_gold"
+    "minegistics_basenodes:stone_with_coal",
+    "minegistics_basenodes:stone_with_iron",
+    "minegistics_basenodes:stone_with_copper",
+    "minegistics_basenodes:stone_with_tin",
+    "minegistics_basenodes:stone_with_gold"
 }
 
 minetest.register_on_generated(function(minp, maxp, blockseed)
@@ -26,9 +26,9 @@ if minp.y > 0 or maxp.y < 0 then return end
             if rand_gen >= 2 then
                local rand_node = math.random(1,100)
                if rand_node >= 15 then
-                  data[area:index(x, y, z)] = minetest.get_content_id("basenodes:dirt_with_grass")
+                  data[area:index(x, y, z)] = minetest.get_content_id("minegistics_basenodes:dirt_with_grass")
                else
-                  data[area:index(x, y, z)] = minetest.get_content_id("basenodes:stone")
+                  data[area:index(x, y, z)] = minetest.get_content_id("minegistics_basenodes:stone")
                end
             else
                local rand_ore = math.random(1,100)
@@ -38,11 +38,11 @@ if minp.y > 0 or maxp.y < 0 then return end
                else
                   local rand_node = math.random(1,100)
                   if rand_node >= 15 then
-                     data[area:index(x, y, z)] = minetest.get_content_id("basenodes:dirt_with_grass")
+                     data[area:index(x, y, z)] = minetest.get_content_id("minegistics_basenodes:dirt_with_grass")
                   else
-                     data[area:index(x, y, z)] = minetest.get_content_id("basenodes:dirt_with_grass")
-                     data[area:index(x, y+1, z)] = minetest.get_content_id("basenodes:trunk")
-                     data[area:index(x, y+2, z)] = minetest.get_content_id("basenodes:leaves")
+                     data[area:index(x, y, z)] = minetest.get_content_id("minegistics_basenodes:dirt_with_grass")
+                     data[area:index(x, y+1, z)] = minetest.get_content_id("minegistics_basenodes:trunk")
+                     data[area:index(x, y+2, z)] = minetest.get_content_id("minegistics_basenodes:leaves")
                   end
                end
             end

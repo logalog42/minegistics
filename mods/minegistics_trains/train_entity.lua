@@ -443,13 +443,13 @@ local function structure_check(self, dtime)
             elseif structure_name == "power_plant" then
                 local contents = direction:get_inventory()
                 for i, lump in pairs(resources) do
-                    if self.trainInv["basenodes:coal_lump"] == nil then
-                        self.trainInv["basenodes:coal_lump"] = 0
+                    if self.trainInv["minegistics_basenodes:coal_lump"] == nil then
+                        self.trainInv["minegistics_basenodes:coal_lump"] = 0
                     end
-                    if self.trainInv["basenodes:coal_lump"] > 0 then
-                        contents:add_item("main", "basenodes:coal_lump" ..
-                            " " .. self.trainInv["basenodes:coal_lump"])
-                        self.trainInv["basenodes:coal_lump"] =  0
+                    if self.trainInv["minegistics_basenodes:coal_lump"] > 0 then
+                        contents:add_item("main", "minegistics_basenodes:coal_lump" ..
+                            " " .. self.trainInv["minegistics_basenodes:coal_lump"])
+                        self.trainInv["minegistics_basenodes:coal_lump"] =  0
                     end
                 end
                 empty_train(self)
