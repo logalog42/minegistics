@@ -5,6 +5,11 @@
     License: AGPLv3
 ]]--
 
+fuels = {
+      "minegistics_basenodes:coal_lump",
+      "minegistics_basenodes:planks"
+}
+
 resources = {
       "minegistics_basenodes:coal_lump",
       "minegistics_basenodes:copper_lump",

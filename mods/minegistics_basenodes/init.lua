@@ -128,7 +128,7 @@ base_ores = {
     ["minegistics_basenodes:stone_with_copper"] = "minegistics_basenodes:copper_lump",
     ["minegistics_basenodes:stone_with_iron"] = "minegistics_basenodes:iron_lump",
     ["minegistics_basenodes:stone_with_gold"] = "minegistics_basenodes:gold_lump",
-    ["minegistics_basenodes:trunk"] = "minegistics_basenodes:planks"
+    ["minegistics_basenodes:tree"] = "minegistics_basenodes:planks"
 }
 
 minetest.register_node("minegistics_basenodes:river_water_source", {
