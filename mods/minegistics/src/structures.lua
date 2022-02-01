@@ -169,7 +169,7 @@ minetest.register_node("minegistics:Factory", {
       meta:set_string("formspec",
           "size[8,9]"..
           "list[current_name;main;0,0;8,4;]"..
-          "dropdown[1,1;2,1;items; coal_product.png , coal_product; " .. selected_id .. "]"..
+          --"dropdown[1,1;2,1;items; coal_product.png , coal_product; " .. selected_id .. "]"..
           "list[current_player;main;0,5;8,4;]" ..
           "listring[]")
       meta:set_string("infotext", "factory")
@@ -225,7 +225,7 @@ minetest.register_abm({
     nodenames = {"minegistics:Collector"},
     interval = 10,
     chance = 1,
-    action = function(pos, node, active_object_count, active_object_count_wider)
+    action = function(pos)
         minetest.forceload_block(pos, false)
         if power_stable(pos) then
             local next_to = {
@@ -258,12 +258,12 @@ minetest.register_abm({
     nodenames = {"minegistics:Market"},
     interval = 10,
     chance = 1,
-    action = function(pos, node, active_object_count, active_object_count_wider)
+    action = function(pos)
         minetest.forceload_block(pos, false)
-        if power_stable(pos) then
-            local meta = minetest.get_meta(pos)
-            local inv = meta:get_inventory()
+        local meta = minetest.get_meta(pos)
+        if power_stable(pos) and meta:get_int("has_town") == 1 then
             meta:set_int("has_town", 0)
+            local inv = meta:get_inventory()
             local items = {}
             local lumps = {}
             for _,lump in pairs(resources) do
@@ -316,7 +316,7 @@ minetest.register_abm({
     nodenames = {"minegistics:Factory"},
     interval = 10,
     chance = 1,
-    action = function(pos, node, active_object_count, active_object_count_wider)
+    action = function(pos)
         minetest.forceload_block(pos, false)
         if power_stable(pos) then
             local meta = minetest.get_meta({ x = pos.x, y = pos.y, z = pos.z })

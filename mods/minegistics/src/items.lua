@@ -5,35 +5,40 @@
     License: AGPLv3
 ]]--
 
+fuels = {
+      "minegistics_basenodes:coal_lump",
+      "minegistics_basenodes:planks"
+}
+
 resources = {
-      "basenodes:coal_lump",
-      "basenodes:copper_lump",
-      "basenodes:tin_lump",
-      "basenodes:iron_lump",
-      "basenodes:gold_lump",
+      "minegistics_basenodes:coal_lump",
+      "minegistics_basenodes:copper_lump",
+      "minegistics_basenodes:tin_lump",
+      "minegistics_basenodes:iron_lump",
+      "minegistics_basenodes:gold_lump",
       "minegistics:fat_resource",
       "minegistics:fruit_resource",
       "minegistics:leather_resource",
       "minegistics:meat_resource",
       "minegistics:vessels_milk_bottle_resource",
-      "basenodes:planks"
+      "minegistics_basenodes:planks"
   }
 
 products = {
-    ["basenodes:coal_lump"] = "minegistics:coal_product",
-    ["basenodes:copper_lump"] = "minegistics:copper_product",
-    ["basenodes:gold_lump"] = "minegistics:gold_product",
-    ["basenodes:iron_lump"] = "minegistics:iron_product",
-    ["basenodes:tin_lump"] = "minegistics:tin_product",
+    ["minegistics_basenodes:coal_lump"] = "minegistics:coal_product",
+    ["minegistics_basenodes:copper_lump"] = "minegistics:copper_product",
+    ["minegistics_basenodes:gold_lump"] = "minegistics:gold_product",
+    ["minegistics_basenodes:iron_lump"] = "minegistics:iron_product",
+    ["minegistics_basenodes:tin_lump"] = "minegistics:tin_product",
 }
 
 item_worth = {
-    ["basenodes:coal_lump"] = 1,
-    ["basenodes:planks"] = 1,
-    ["basenodes:tin_lump"] = 2,
-    ["basenodes:copper_lump"] = 3,
-    ["basenodes:iron_lump"] = 4,
-    ["basenodes:gold_lump"] = 5,
+    ["minegistics_basenodes:coal_lump"] = 1,
+    ["minegistics_basenodes:planks"] = 1,
+    ["minegistics_basenodes:tin_lump"] = 2,
+    ["minegistics_basenodes:copper_lump"] = 3,
+    ["minegistics_basenodes:iron_lump"] = 4,
+    ["minegistics_basenodes:gold_lump"] = 5,
     ["minegistics:coal_product"] = 6,
     ["minegistics:tin_product"] = 7,
     ["minegistics:copper_product"] = 8,

@@ -87,11 +87,11 @@ minetest.register_abm({
         local meta = minetest.get_meta(pos)
         local inv = meta:get_inventory()
         local has_fuel = false
-        if inv:contains_item("main", "basenodes:coal_lump") then
-            inv:remove_item("main", "basenodes:coal_lump")
+        if inv:contains_item("main", "minegistics_basenodes:coal_lump") then
+            inv:remove_item("main", "minegistics_basenodes:coal_lump")
             has_fuel = true
-         elseif inv:contains_item("main", "basenodes:planks") then
-            inv:remove_item("main", "basenodes:planks")
+         elseif inv:contains_item("main", "minegistics_basenodes:planks") then
+            inv:remove_item("main", "minegistics_basenodes:planks")
             has_fuel = true
         end
         local active = is_active(pos)

@@ -417,7 +417,7 @@ local function structure_check(self, dtime)
                 if structure_name == "market" and self.town_train == true then
                     direction:set_int("has_town", 1)
                     spawn_passengers(pos)
-                elseif structure_name == "warehouse" or direction:get_int("has_town") == 1 then
+                else
                     local contents = direction:get_inventory()
                     for i, lump in pairs(resources) do
                         if self.trainInv[lump] == nil then
@@ -442,14 +442,13 @@ local function structure_check(self, dtime)
                 end
             elseif structure_name == "power_plant" then
                 local contents = direction:get_inventory()
-                for i, lump in pairs(resources) do
-                    if self.trainInv["basenodes:coal_lump"] == nil then
-                        self.trainInv["basenodes:coal_lump"] = 0
+                for i, fuel in pairs(fuels) do
+                    if self.trainInv[fuel] == nil then
+                        self.trainInv[fuel] = 0
                     end
-                    if self.trainInv["basenodes:coal_lump"] > 0 then
-                        contents:add_item("main", "basenodes:coal_lump" ..
-                            " " .. self.trainInv["basenodes:coal_lump"])
-                        self.trainInv["basenodes:coal_lump"] =  0
+                    if self.trainInv[fuel] > 0 then
+                        contents:add_item("main", fuel .. " " .. self.trainInv[fuel])
+                        self.trainInv[fuel] =  0
                     end
                 end
                 empty_train(self)
