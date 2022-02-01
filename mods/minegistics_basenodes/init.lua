@@ -76,9 +76,11 @@ minetest.register_node("minegistics_basenodes:gravel", {
 	tiles ={"default_gravel.png"},
 })
 
-minetest.register_node("minegistics_basenodes:trunk", {
+minetest.register_node("minegistics_basenodes:tree", {
    descriptions = "Woods",
-   tiles={"default_tree.png"}
+   drawtype="mesh",
+   mesh = "minegistics_tree.obj",
+   tiles={"minegistics_tree.png"}
 })
 
 minetest.register_node("minegistics_basenodes:leaves", {

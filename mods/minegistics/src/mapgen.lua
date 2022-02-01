@@ -41,8 +41,7 @@ if minp.y > 0 or maxp.y < 0 then return end
                      data[area:index(x, y, z)] = minetest.get_content_id("minegistics_basenodes:dirt_with_grass")
                   else
                      data[area:index(x, y, z)] = minetest.get_content_id("minegistics_basenodes:dirt_with_grass")
-                     data[area:index(x, y+1, z)] = minetest.get_content_id("minegistics_basenodes:trunk")
-                     data[area:index(x, y+2, z)] = minetest.get_content_id("minegistics_basenodes:leaves")
+                     data[area:index(x, y+1, z)] = minetest.get_content_id("minegistics_basenodes:tree")
                   end
                end
             end
