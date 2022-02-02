@@ -102,8 +102,8 @@ minetest.register_abm({
             minetest.add_particlespawner({
                 amount = 300,
                 time = 6,
-                minpos = {x=pos.x-1,y=pos.y+4,z=pos.z-1},
-                maxpos = {x=pos.x+1,y=pos.y+5,z=pos.z+1},
+                minpos = {x=pos.x,y=pos.y+1,z=pos.z},
+                maxpos = {x=pos.x,y=pos.y+2,z=pos.z},
                 minvel = {x=0.1, y=0.1, z=0.1},
                 maxvel = {x=0.1, y=0.2, z=0.1},
                 minacc = {x=-0.1,y=0.1,z=-0.1},
