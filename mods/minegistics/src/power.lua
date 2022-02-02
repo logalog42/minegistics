@@ -8,6 +8,8 @@
 power_producers = {}
 power_consumers = {}
 
+--TODO Add power lines and sub stations
+
 minetest.register_node("minegistics:PowerPlant", {
    description = "Power Plant: Generates power. Requires coal for fuel.\n" ..
       "One power plant is needed for every 5 buildings.\n" ..

@@ -19,6 +19,8 @@ minetest.settings:set_bool("menu_clouds", false)
 minetest.settings:set_bool("smooth_lighting", true)
 minetest.register_item(":", { type = "none", wield_image = "blank.png"})
 
+--TODO create a power bar for hud for easy referance
+
  --initializes the player and loads saved game
  minetest.register_on_joinplayer(function(player)
     player:hud_set_flags({hotbar = true, healthbar = false})
@@ -34,7 +36,7 @@ minetest.register_item(":", { type = "none", wield_image = "blank.png"})
     player:set_clouds({density = 0})
     local name = player:get_player_name()
     if loaded == false then
-        local file = io.open(minetest.get_worldpath() .. DIR_DELIM .. "save_data.json", "r")  
+        local file = io.open(minetest.get_worldpath() .. DIR_DELIM .. "save_data.json", "r")
         if file then
             local data = minetest.parse_json(file:read "*a")
             if data then
