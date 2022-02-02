@@ -153,6 +153,12 @@ minetest.register_node("minegistics:Warehouse", {
 	end
 })
 
+--TODO Create a kiln building 1 resource and fuel then output 1 resource
+
+--TODO Create a workshop building which takes 1 resource and outputs 2 resources
+
+--TODO Change the formspec to input two resources and output selected Product
+
 minetest.register_node("minegistics:Factory", {
    description = "Factory: Converts resources into products.\n" ..
     "Both can be sold but products are worth more.",
@@ -252,6 +258,8 @@ minetest.register_abm({
         end
     end
 })
+
+--TODO Create demands of specific items
 
 --converts resources into money
 minetest.register_abm({

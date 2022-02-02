@@ -5,6 +5,8 @@
     License: AGPLv3
 ]]--
 
+--TODO Set a limit to the size train will take from a location
+
 local train_entity = {
 	initial_properties = {
 		physical = false,
@@ -14,7 +16,7 @@ local train_entity = {
 		visual_size = {x=1, y=1},
 		textures = {"trains_train.png"}
 	},
-  
+
 	punched = false,
 	velocity = {x=0, y=0, z=0},
 	old_dir = {x=1, y=0, z=0},
@@ -73,7 +75,7 @@ function train_entity:on_punch(puncher, time_from_last_punch, tool_capabilities,
 		if self.sound_handle then
 			minetest.sound_stop(self.sound_handle)
 		end
-    
+
 		for _, obj_ in ipairs(self.attached_items) do
 			if obj_ then
 				obj_:set_detach()
@@ -274,7 +276,7 @@ local function rail_on_step(self, dtime)
         add_item_to_train(self, ent)
 			end
 		end
-    
+
 		self.punched = false
 		update.vel = true
 	end
@@ -331,9 +333,9 @@ function add_item_to_train(train, item_ent)
         if item_amount == nil then item_amount = 1 end
         for lump, amount in pairs(train.trainInv) do
             if lump == item_name then
-                if train.trainInv[lump] == nil then train.trainInv[lump] = 0 end            
+                if train.trainInv[lump] == nil then train.trainInv[lump] = 0 end
                 train.trainInv[lump] = train.trainInv[lump] + item_amount
-            end                
+            end
         end
     end
 end
@@ -379,8 +381,8 @@ local function structure_check(self, dtime)
                 for i, lump in ipairs(resources) do
                     while (contents:contains_item("main", (lump .. " 10"))) do
                         contents:remove_item("main", (lump .. " 10"))
-                        if self.trainInv[lump] == nil then 
-                            self.trainInv[lump] = 0 
+                        if self.trainInv[lump] == nil then
+                            self.trainInv[lump] = 0
                         end
                         self.trainInv[lump] = self.trainInv[lump] + 10
                         attach_to_train(self, lump .. " 10")
@@ -390,7 +392,7 @@ local function structure_check(self, dtime)
                 local ore_hauler = false
                 local contents = direction:get_inventory()
                 for i, lump in pairs(resources) do
-                    if self.trainInv[lump] == nil then 
+                    if self.trainInv[lump] == nil then
                         self.trainInv[lump] = 0
                     end
                     if self.trainInv[lump] > 0 then
@@ -429,7 +431,7 @@ local function structure_check(self, dtime)
                         end
                     end
                     for input, output in pairs(products) do
-                        if self.trainInv[output] == nil then 
+                        if self.trainInv[output] == nil then
                             self.trainInv[output] = 0
                         end
                         if self.trainInv[output] > 0 then
