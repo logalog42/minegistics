@@ -6,7 +6,7 @@
 ]]--
 
 minetest.register_node("minegistics:Collector", {
-   description = "Collector: Gathers resources.\n" ..
+   description = "Collector: Gathers material.\n" ..
     "Place on a resource node and connect to a\n" ..
     "factory or market with rails and a train.",
    tiles = {"buildings.png"},
@@ -155,12 +155,12 @@ minetest.register_node("minegistics:Warehouse", {
 
 --TODO Create a kiln building 1 resource and fuel then output 1 resource
 
---TODO Create a workshop building which takes 1 resource and outputs 2 resources
+--TODO Create a workshop building which takes 1 resource and outputs 2 material
 
---TODO Change the formspec to input two resources and output selected Product
+--TODO Change the formspec to input two material and output selected Product
 
 minetest.register_node("minegistics:Factory", {
-   description = "Factory: Converts resources into products.\n" ..
+   description = "Factory: Converts material into products.\n" ..
     "Both can be sold but products are worth more.",
    tiles = {"buildings.png"},
    groups = {dig_immediate=2},
@@ -175,7 +175,7 @@ minetest.register_node("minegistics:Factory", {
       meta:set_string("formspec",
           "size[8,9]"..
           "list[current_name;main;0,0;8,4;]"..
-          --"dropdown[1,1;2,1;items; coal_product.png , coal_product; " .. selected_id .. "]"..
+          "dropdown[1,1;2,1;items; coal_product.png , coal_product; " .. selected_id .. "]"..
           "list[current_player;main;0,5;8,4;]" ..
           "listring[]")
       meta:set_string("infotext", "factory")
@@ -261,7 +261,7 @@ minetest.register_abm({
 
 --TODO Create demands of specific items
 
---converts resources into money
+--converts material into money
 minetest.register_abm({
     nodenames = {"minegistics:Market"},
     interval = 10,
@@ -274,7 +274,7 @@ minetest.register_abm({
             local inv = meta:get_inventory()
             local items = {}
             local lumps = {}
-            for _,lump in pairs(resources) do
+            for _,lump in pairs(material) do
                 lumps[lump] = ItemStack(lump)
             end
             for _,product in pairs(products) do
@@ -319,7 +319,7 @@ minetest.register_abm({
     end
 })
 
---converts resources into products
+--converts material into products
 minetest.register_abm({
     nodenames = {"minegistics:Factory"},
     interval = 10,
@@ -331,7 +331,7 @@ minetest.register_abm({
             local inv = meta:get_inventory()
             local items = {}
             local working = false
-            for _,lump in pairs(resources) do
+            for _,lump in pairs(material) do
                 items[lump] = ItemStack(lump)
             end
             local inventories = inv:get_lists()

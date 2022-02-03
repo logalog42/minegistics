@@ -378,7 +378,7 @@ local function structure_check(self, dtime)
             local structure_name = direction:get_string("infotext")
             if structure_name == "collector" then
                 local contents = direction:get_inventory()
-                for i, lump in ipairs(resources) do
+                for i, lump in ipairs(material) do
                     while (contents:contains_item("main", (lump .. " 10"))) do
                         contents:remove_item("main", (lump .. " 10"))
                         if self.trainInv[lump] == nil then
@@ -391,7 +391,7 @@ local function structure_check(self, dtime)
             elseif structure_name == "factory" then
                 local ore_hauler = false
                 local contents = direction:get_inventory()
-                for i, lump in pairs(resources) do
+                for i, lump in pairs(material) do
                     if self.trainInv[lump] == nil then
                         self.trainInv[lump] = 0
                     end
@@ -421,7 +421,7 @@ local function structure_check(self, dtime)
                     spawn_passengers(pos)
                 else
                     local contents = direction:get_inventory()
-                    for i, lump in pairs(resources) do
+                    for i, lump in pairs(material) do
                         if self.trainInv[lump] == nil then
                             self.trainInv[lump] = 0
                         end
@@ -498,7 +498,7 @@ minetest.register_entity("minegistics_trains:train", train_entity)
 
 minetest.register_craftitem("minegistics_trains:train", {
 	description = "Train: " ..
-  "Carries resources from one building to another.\n" ..
+  "Carries material from one building to another.\n" ..
   "Must be placed on a rail. (Shift+Click to pick up)",
 	inventory_image = "train_wield.png",
 	wield_image = "train_wield.png",

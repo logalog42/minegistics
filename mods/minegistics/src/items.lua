@@ -7,29 +7,53 @@
 
 fuels = {
       "minegistics_basenodes:coal_lump",
-      "minegistics_basenodes:planks"
+      "minegistics_basenodes:planks",
+      "minegistics:fuel_charcoal",
+      "minegistics:fuel_coal_coke"
 }
 
-resources = {
+--Items that are gathered by the collectors
+
+material = {
       "minegistics_basenodes:coal_lump",
       "minegistics_basenodes:copper_lump",
       "minegistics_basenodes:tin_lump",
       "minegistics_basenodes:iron_lump",
       "minegistics_basenodes:gold_lump",
-      "minegistics:fat_resource",
-      "minegistics:fruit_resource",
-      "minegistics:leather_resource",
-      "minegistics:meat_resource",
-      "minegistics:vessels_milk_bottle_resource",
+      "minegistics:material_fat",
+      "minegistics:material_fruit",
+      "minegistics:material_leather",
+      "minegistics:material_meat",
+      "minegistics:material_milk",
       "minegistics_basenodes:planks"
   }
 
+--Items that are produced through a kiln, factory, or workshop
+
 products = {
-    ["minegistics_basenodes:coal_lump"] = "minegistics:coal_product",
-    ["minegistics_basenodes:copper_lump"] = "minegistics:copper_product",
-    ["minegistics_basenodes:gold_lump"] = "minegistics:gold_product",
-    ["minegistics_basenodes:iron_lump"] = "minegistics:iron_product",
-    ["minegistics_basenodes:tin_lump"] = "minegistics:tin_product",
+   ["minegistics:product_ash"] = {},
+   ["minegistics:product_copper_wire"] = {},
+   ["minegistics:product_furniture"] = {},
+   ["minegistics:product_lye"] = {},
+   ["minegistics:product_mechanical_parts"] = {},
+   ["minegistics:product_pearlash"] = {},
+   ["minegistics:product_potash"] = {},
+   ["minegistics:product_steel_lump"] = {},
+   ["minegistics:product_tallow"] = {},
+   ["minegistics:product_cement"] = {}
+}
+
+--Highest level of production used to upgrade towns/markets or make lots of money
+
+goods = {
+   ["minegistics:good_building_material"] = {},
+   ["minegistics:good_ceramic"] = {},
+   ["minegistics:good_luxury_furniture"] = {},
+   ["minegistics:good_luxury_meal"] = {},
+   ["minegistics:good_luxury_tools"] = {},
+   ["minegistics:good_simple_meal"] = {},
+   ["minegistics:good_soap"] = {},
+   ["minegistics:good_toys"] = {}
 }
 
 item_worth = {
