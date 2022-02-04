@@ -89,14 +89,71 @@ item_worth = {
    ["minegistics:product_ash"] =2,
    ["minegistics:product_bronze_ingot"] = 2,
    ["minegistics:product_copper_ingot"] = 2,
-   ["minegisitcs:product_copper_wire"] = 2,
-   ["minegisitcs:product_gold_ingot"] = 2
+   ["minegistics:product_copper_wire"] = 2,
+   ["minegistics:product_gold_ingot"] = 2,
+   ["minegistics:product_iron_ingot"] = 2,
+   ["minegistics:product_lye"] = 2,
+   ["minegistics:product_mechanical_parts"] = 2,
+   ["minegistics:product_pearlash"] = 2,
+   ["minegistics:product_potash"] = 2,
+   ["minegistics:product_steel_ingot"] = 2,
+   ["minegistics:product_steel_lump"] = 2,
+   ["minegistics:production_tallow"] = 2,
+   ["minegistics:good_building_material"] = 3,
+   ["minegistics:good_cement"] = 3,
+   ["minegistics:good_ceramic"] = 3,
+   ["minegistics:good_simple_furniture"] = 3,
+   ["minegistics:good_glass"] = 3,
+   ["minegistics:good_luxury_furniture"]= 3,
+   ["minegistics:good_luxury_meal"] = 3,
+   ["minegistics:good_luxury_tools"] = 3,
+   ["minegistics:good_simple_meal"] = 3,
+   ["minegistics:good_soap"] = 3,
+   ["minegistics:good_toys"] = 3
+
 }
 
-minetest.register_craftitem("minegistics:coal_product", {
-	description = ("Coal Product: Produced by factories."),
+--
+-- Craftitems
+--
+
+-- Register Craftitems
+
+minetest.register_craftitem("minegistics:material_coal_lump", {
+	description = ("Coal Lump"),
+	inventory_image = "default_coal_lump.png",
+	groups = {coal = 1, flammable = 1}
+})
+
+minetest.register_craftitem("minegistics:fuel_charcoal", {
+	description = ("Charcoal is just wood burned once."),
 	inventory_image = "coal_product.png",
 	groups = {coal = 1, flammable = 1}
+})
+
+minetest.register_craftitem("minegistics:material_copper_lump", {
+	description = ("Copper Lump"),
+	inventory_image = "default_copper_lump.png"
+})
+
+minetest.register_craftitem("minegistics:material_tin_lump", {
+   description = ("Tin lump"),
+   inventory_image = "default_tin_lump.png"
+})
+
+minetest.register_craftitem("minegistics:material_gold_lump", {
+	description = ("Gold Lump"),
+	inventory_image = "default_gold_lump.png"
+})
+
+minetest.register_craftitem("minegistics:material_iron_lump", {
+	description = ("Iron Lump"),
+	inventory_image = "default_iron_lump.png"
+})
+
+minetest.register_craftitem("minegistics:material_wood", {
+   description = ("Lumber"),
+   inventory_image = "default_wood.png"
 })
 
 minetest.register_craftitem("minegistics:copper_product", {

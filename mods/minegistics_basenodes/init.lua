@@ -3,49 +3,6 @@ local WATER_VISC = 1
 local LAVA_VISC = 7
 
 --
--- Craftitems
---
-
--- Register Craftitems
-
-
-minetest.register_craftitem("minegistics_basenodes:coal_lump", {
-	description = ("Coal Lump"),
-	inventory_image = "default_coal_lump.png",
-	groups = {coal = 1, flammable = 1}
-})
-
-minetest.register_craftitem("minegistics_basenodes:copper_lump", {
-	description = ("Copper Lump"),
-	inventory_image = "default_copper_lump.png"
-})
-
-minetest.register_craftitem("minegistics_basenodes:tin_lump", {
-   description = ("Tin lump"),
-   inventory_image = "default_tin_lump.png"
-})
-
-minetest.register_craftitem("minegistics_basenodes:gold_lump", {
-	description = ("Gold Lump"),
-	inventory_image = "default_gold_lump.png"
-})
-
-minetest.register_craftitem("minegistics_basenodes:iron_lump", {
-	description = ("Iron Lump"),
-	inventory_image = "default_iron_lump.png"
-})
-
-minetest.register_craftitem("minegistics_basenodes:flint", {
-	description = ("Flint"),
-	inventory_image = "default_flint.png"
-})
-
-minetest.register_craftitem("minegistics_basenodes:planks", {
-   description = ("Lumber"),
-   inventory_image = "default_wood.png"
-})
-
---
 -- Node definitions
 --
 
@@ -81,14 +38,6 @@ minetest.register_node("minegistics_basenodes:tree", {
    drawtype="mesh",
    mesh = "minegistics_tree.obj",
    tiles={"minegistics_tree.png"}
-})
-
-minetest.register_node("minegistics_basenodes:leaves", {
-	description = "Normal Leaves",
-	drawtype = "allfaces_optional",
-	tiles = {"default_leaves.png"},
-	paramtype = "light",
-	is_ground_content = false,
 })
 
 minetest.register_node("minegistics_basenodes:cobble", {
