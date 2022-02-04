@@ -114,20 +114,26 @@ item_worth = {
 }
 
 --
--- Craftitems
+-- Registration Craftitems
 --
 
--- Register Craftitems
-
-minetest.register_craftitem("minegistics:material_coal_lump", {
-	description = ("Coal Lump"),
-	inventory_image = "default_coal_lump.png",
-	groups = {coal = 1, flammable = 1}
-})
+-- Fuel Craftitems
 
 minetest.register_craftitem("minegistics:fuel_charcoal", {
 	description = ("Charcoal is just wood burned once."),
-	inventory_image = "coal_product.png",
+	inventory_image = "fuel_charcoal.png",
+	groups = {coal = 1, flammable = 1}
+})
+
+minetest.register_craftitem("minegistics:fuel_coal_coke", {
+   description = ("A lump of coal coke"),
+   inventory_image = "fuel_coal_coke.png",
+   groups = {coal = 1, flammable = 1}
+})
+
+minetest.register_craftitem("minegistics:fuel_coal_lump", {
+	description = ("Coal Lump"),
+	inventory_image = "fuel_coal_lump.png",
 	groups = {coal = 1, flammable = 1}
 })
 
