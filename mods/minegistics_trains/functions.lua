@@ -65,6 +65,7 @@ function trains:check_front_up_down(pos, dir_, check_up, railtype)
 	cur = vector.add(pos, dir)
 	if trains:is_rail(cur, railtype) then
 		return dir
+--TODO Need to add elseif to check for structures.
 	end
 	-- Up
 	if check_up then
@@ -73,6 +74,7 @@ function trains:check_front_up_down(pos, dir_, check_up, railtype)
 		if trains:is_rail(cur, railtype) then
 			return dir
 		end
+	--TODO Need to add elseif to check for structures.
 	end
 	-- Down
 	dir.y = -1
@@ -80,6 +82,7 @@ function trains:check_front_up_down(pos, dir_, check_up, railtype)
 	if trains:is_rail(cur, railtype) then
 		return dir
 	end
+	--TODO Need to add elseif to check for structures.
 	return nil
 end
 
