@@ -15,3 +15,4 @@ trains.path_distance_max = 3
 dofile(trains.modpath.."/functions.lua")
 dofile(trains.modpath.."/rails.lua")
 dofile(trains.modpath.."/train_entity.lua")
+dofile(trains.modpath.."/new_rail.lua")
