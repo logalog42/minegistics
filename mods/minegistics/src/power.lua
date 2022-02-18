@@ -15,7 +15,7 @@ minetest.register_node("minegistics:PowerPlant", {
       "One power plant is needed for every 5 buildings.\n" ..
       "Must be placed within 200 meters of the buildings it powers.",
    tiles = {"buildings.png"},
-   groups = {dig_immediate=2},
+   groups = {dig_immediate=2, structures=1},
    drawtype = 'mesh',
    mesh = "power_plant.obj",
    wield_image = "power_plant_wield.png",

@@ -10,12 +10,11 @@ minetest.register_node("minegistics:Collector", {
     "Place on a resource node and connect to a\n" ..
     "factory or market with rails and a train.",
    tiles = {"buildings.png"},
-   groups = {dig_immediate=2},
+   groups = {dig_immediate=2, structures=1},
    drawtype = 'mesh',
    mesh = "collector.obj",
    wield_image = "collector_wield.png",
    inventory_image = "collector_wield.png",
-   groups = {dig_immediate=2},
    on_construct = function(pos)
       table.insert(power_consumers, pos)
       local meta = minetest.get_meta(pos)
@@ -47,7 +46,7 @@ minetest.register_node("minegistics:Market", {
     "Must be connected by rail to a factory or collector.\n" ..
     "Must also be connected to a town.",
    tiles = {"buildings.png"},
-   groups = {dig_immediate=2},
+   groups = {dig_immediate=2, structures=1},
    drawtype = 'mesh',
    mesh = "market.obj",
    wield_image = "market_wield.png",
@@ -90,7 +89,7 @@ minetest.register_node("minegistics:Town", {
   description = "Town: Required to earn money from markets.\n" ..
     "Connect to a market with rails and add a train.",
   tiles = {"buildings.png"},
-  groups = {dig_immediate=2},
+  groups = {dig_immediate=2, structures=1},
   drawtype = 'mesh',
   mesh = "town.obj",
   wield_image = "town_wield.png",
@@ -114,7 +113,7 @@ minetest.register_node("minegistics:Town", {
 minetest.register_node("minegistics:Warehouse", {
    description = "Warehouse: Stores items.",
    tiles = {"buildings.png"},
-   groups = {dig_immediate=2},
+   groups = {dig_immediate=2, structures=1},
    drawtype = 'mesh',
    mesh = "warehouse.obj",
    wield_image = "warehouse_wield.png",
@@ -163,7 +162,7 @@ minetest.register_node("minegistics:Factory", {
    description = "Factory: Converts resources into products.\n" ..
     "Both can be sold but products are worth more.",
    tiles = {"buildings.png"},
-   groups = {dig_immediate=2},
+   groups = {dig_immediate=2, structures=1},
    drawtype = 'mesh',
    mesh = "factory.obj",
    wield_image = "factory_wield.png",

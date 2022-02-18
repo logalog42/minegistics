@@ -1,7 +1,15 @@
 minetest.register_node("minegistics_trains:new", {
    drawtype = "nodebox",
    paramtype = "light",
-   groups = {dig_immediate=2, new=1},
+   groups = {dig_immediate=2, new=1, rail=1},
+   tiles = {
+      "train_new_top.png",
+      "train_new_bottom.png",
+      "train_new_side.png",
+      "train_new_side.png",
+      "train_new_side.png",
+      "train_new_side.png"
+   },
    node_box = {
       type = "connected",
       connect_sides = {"front", "left", "back", "right"},
@@ -158,6 +166,6 @@ minetest.register_node("minegistics_trains:new", {
       }
    },
 
-   connects_to = {"group:new"},
+   connects_to = {"group:new", "group:structures"},
 
 })
