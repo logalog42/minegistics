@@ -8,13 +8,19 @@
 minegistics = {}
 local loaded = false
 minegistics.modpath = minetest.get_modpath("minegistics")
-dofile(minegistics.modpath .. DIR_DELIM .. "src" .. DIR_DELIM .. "structures.lua")
 dofile(minegistics.modpath .. DIR_DELIM .. "src" .. DIR_DELIM .. "mapgen.lua")
 dofile(minegistics.modpath .. DIR_DELIM .. "src" .. DIR_DELIM .. "power.lua")
 dofile(minegistics.modpath .. DIR_DELIM .. "src" .. DIR_DELIM .. "items.lua")
 dofile(minegistics.modpath .. DIR_DELIM .. "src" .. DIR_DELIM .. "formspec.lua")
 dofile(minegistics.modpath .. DIR_DELIM .. "src" .. DIR_DELIM .. "initial_items.lua")
 dofile(minegistics.modpath .. DIR_DELIM .. "src" .. DIR_DELIM .. "welcome_message.lua")
+dofile(minegistics.modpath .. DIR_DELIM .. "structures" .. DIR_DELIM .. "collector.lua")
+dofile(minegistics.modpath .. DIR_DELIM .. "structures" .. DIR_DELIM .. "factory.lua")
+dofile(minegistics.modpath .. DIR_DELIM .. "structures" .. DIR_DELIM .. "farm.lua")
+dofile(minegistics.modpath .. DIR_DELIM .. "structures" .. DIR_DELIM .. "market.lua")
+dofile(minegistics.modpath .. DIR_DELIM .. "structures" .. DIR_DELIM .. "town.lua")
+dofile(minegistics.modpath .. DIR_DELIM .. "structures" .. DIR_DELIM .. "warehouse.lua")
+dofile(minegistics.modpath .. DIR_DELIM .. "structures" .. DIR_DELIM .. "workshop.lua")
 minetest.settings:set_bool("menu_clouds", false)
 minetest.settings:set_bool("smooth_lighting", true)
 minetest.register_item(":", { type = "none", wield_image = "blank.png"})
@@ -73,3 +79,27 @@ minetest.register_on_shutdown(function()
     local save_path = minetest.get_worldpath() .. DIR_DELIM .. "save_data.json"
     minetest.safe_file_write(save_path, save_data)
 end)
+
+--smoke
+function smoke(pos)
+    local rand = math.random(1,6)
+    minetest.after(rand, function()
+        minetest.add_particlespawner({
+            amount = 300,
+            time = 3,
+            minpos = {x=pos.x,y=pos.y+1,z=pos.z},
+            maxpos = {x=pos.x,y=pos.y+2,z=pos.z},
+            minvel = {x=0.1, y=0.1, z=0.1},
+            maxvel = {x=0.1, y=0.2, z=0.1},
+            minacc = {x=-0.1,y=0.1,z=-0.1},
+            maxacc = {x=0.1,y=0.2,z=0.1},
+            minexptime = 1,
+            maxexptime = 2,
+            minsize = 10,
+            maxsize = 12,
+            collisiondetection = false,
+            vertical = false,
+            texture = "dirt.png"
+        })
+    end)
+end
