@@ -9,7 +9,7 @@ money = 100
 local item_buttons = {}
 local item_btn_keys = {}
 
-local items_for_sale = { 
+local items_for_sale = {
     ["Collector"] = "minegistics:Collector",
     ["Power Plant"] = "minegistics:PowerPlant",
     ["Factory"] = "minegistics:Factory",
@@ -17,11 +17,11 @@ local items_for_sale = {
     ["Warehouse"] = "minegistics:Warehouse",
     ["Market"] = "minegistics:Market",
     ["Rail"] = "minegistics_trains:rail",
-    ["Powered Rail"] = "minegistics_trains:powerrail",
-    ["Brake Rail"] = "minegistics_trains:brakerail",
+    ["Powered Rail"] = "minegistics_trains:power_rail",
+    ["Brake Rail"] = "minegistics_trains:brake_rail",
     ["Train"] = "minegistics_trains:train"
 }
-item_prices = { 
+item_prices = {
     ["Collector"] = 300,
     ["Factory"] = 400,
     ["Town"] = 200,
@@ -43,11 +43,11 @@ function inventory_formspec(player)
         "list[current_player;main;0,3.5;8,4;]",
         "button[3,0.9;2,0.5;Power;Power " .. power_check .. "]",
         "tooltip[Power;" ..
-        "View power grid status." .. 
+        "View power grid status." ..
         ";#353535;#FFFFFF]",
         "button[3,1.9;2,0.5;Shop;Shop]",
         "tooltip[Shop;" ..
-        "Purchase buildings, trains and rails." .. 
+        "Purchase buildings, trains and rails." ..
         ";#353535;#FFFFFF]",
     }
     return formspec
@@ -71,7 +71,7 @@ function power_formspec(player)
             end
             local stable = local_consumers <= local_producers * 5
             local stable_display = stable and "stable" or "unstable"
-            power_info = power_info .. local_consumers .. " consumers and " .. 
+            power_info = power_info .. local_consumers .. " consumers and " ..
             local_producers .. " producers for power plant at (" ..
             pos.x .. ", " .. pos.y .. ", " .. pos.z .. ")" ..
             " (" .. stable_display .. ")\n"
@@ -100,14 +100,14 @@ function shop_formspec(player)
     local index = 1
     for item_name,item in pairs(items_for_sale) do
         local stack = ItemStack(item)
-        item_buttons[index] = "button[3," .. 
+        item_buttons[index] = "button[3," ..
             index .. ";4,2;" .. item_name ..
             ";" .. item_name .. "]" ..
-            "item_image[7," .. index + 0.6 .. 
+            "item_image[7," .. index + 0.6 ..
             ";0.6,0.6;" .. item .. "]" ..
             "tooltip[" .. item_name .. ";" ..
             stack:get_description() .. ";#353535;#FFFFFF]" ..
-            "label[8," .. index + 0.6 .. ";" .. " $" .. 
+            "label[8," .. index + 0.6 .. ";" .. " $" ..
             item_prices[item_name] .."]"
         item_btn_keys[item_name] = item
         index = index + 1
@@ -160,6 +160,6 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
                     end
                 end
             end
-        end 
+        end
     end
 end)
