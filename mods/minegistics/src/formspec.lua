@@ -6,6 +6,7 @@
 ]]--
 
 money = 100
+show_money_on_hud = true
 local item_buttons = {}
 local item_btn_keys = {}
 
@@ -36,19 +37,20 @@ item_prices = {
 
 --defines the inventory formspec
 function inventory_formspec(player)
-    local power_check = power_display == true and "#" or ""
+    local display = show_money_on_hud and "true" or "false"
     local formspec = {
         "size[8,7.5]",
         "bgcolor[#2d2d2d;false]",
         "list[current_player;main;0,3.5;8,4;]",
-        "button[3,0.9;2,0.5;Power;Power " .. power_check .. "]",
+        "button[3,0.5;2,0.5;Power;Power]",
         "tooltip[Power;" ..
         "View power grid status." ..
         ";#353535;#FFFFFF]",
-        "button[3,1.9;2,0.5;Shop;Shop]",
+        "button[3,1.5;2,0.5;Shop;Shop]",
         "tooltip[Shop;" ..
         "Purchase buildings, trains and rails." ..
         ";#353535;#FFFFFF]",
+        "checkbox[3.05,2.3;display;Show balance on HUD;" .. display .. "]",
     }
     return formspec
 end
@@ -76,7 +78,6 @@ function power_formspec(player)
             pos.x .. ", " .. pos.y .. ", " .. pos.z .. ")" ..
             " (" .. stable_display .. ")\n"
         end
-    local power_check = power_display == true and "#" or ""
     local formspec = {
         "size[11,11]",
         "bgcolor[#353535;false]",
@@ -137,6 +138,8 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
             elseif key == "Power" then
                 local formspec = power_formspec(player)
                 player:set_inventory_formspec(table.concat(formspec, ""))
+            elseif key == "display" then
+                show_money_on_hud = not show_money_on_hud
             else
                 for item_name,item in pairs(item_btn_keys) do
                     if key == item_name then

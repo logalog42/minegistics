@@ -23,7 +23,6 @@ local train_entity = {
 	old_pos = nil,
 	old_switch = 0,
 	railtype = nil,
-	attached_items = {},
 	trainInv = {},
   automation_timer = 0,
   town_train = false,
@@ -75,13 +74,6 @@ function train_entity:on_punch(puncher, time_from_last_punch, tool_capabilities,
 		if self.sound_handle then
 			minetest.sound_stop(self.sound_handle)
 		end
-
-		for _, obj_ in ipairs(self.attached_items) do
-			if obj_ then
-				obj_:set_detach()
-			end
-		end
-
 		local inv = puncher:get_inventory()
 		if not minetest.is_creative_enabled(puncher:get_player_name())
 				or not inv:contains_item("main", "minegistics_trains:train") then
@@ -271,8 +263,6 @@ local function rail_on_step(self, dtime)
 
 			if ent and ent.name == "__builtin:item" and ent.physical_state then
 				ent:disable_physics()
-				obj_:set_attach(self.object, "", {x=0, y=0, z=0}, {x=0, y=0, z=0})
-				self.attached_items[#self.attached_items + 1] = obj_
         add_item_to_train(self, ent)
 			end
 		end
@@ -320,7 +310,7 @@ local function rail_on_step(self, dtime)
 	rail_on_step_event(railparams.on_step, self, dtime)
 end
 
---adjusts inventory based on attached items
+--adjusts inventory using spawned items
 function add_item_to_train(train, item_ent)
     if item_ent then
         local inv_item = minetest.deserialize(item_ent:get_staticdata())
@@ -340,27 +330,14 @@ function add_item_to_train(train, item_ent)
     end
 end
 
---attaches an itemstack to the train
-function attach_to_train(train, item)
-    local item_obj = minetest.add_item(train.object:get_pos(), ItemStack(item))
-    local item_ent = item_obj:get_luaentity()
-    if item_ent and item_ent.name == "__builtin:item" and item_ent.physical_state then
-        item_ent:disable_physics()
-        item_obj:set_attach(train.object, "", {x=0, y=0, z=0}, {x=0, y=0, z=0})
-        train.attached_items[#train.attached_items + 1] = item_obj
-    end
+--enables filled train mesh.
+function set_train_filled(train)
+    train.object:set_properties({mesh = "train_2.obj", textures = {"trains_train_2.png"}})
 end
 
---removes all itemstacks from the train
-function empty_train(train)
-  for _, obj in pairs(train.attached_items) do
-    if obj then
-      local ent = obj:get_luaentity()
-      if ent then
-          obj:remove()
-      end
-    end
-  end
+--enables empty train mesh.
+function set_train_empty(train)
+    train.object:set_properties({mesh = "train.obj", textures = {"trains_train.png"}})
 end
 
 --checks if the train is moving and if stopped check for a structure next to it.
@@ -377,6 +354,7 @@ local function structure_check(self, dtime)
         for i, direction in ipairs(directions) do
             local structure_name = direction:get_string("infotext")
             if structure_name == "collector" then
+                local found_item = false
                 local contents = direction:get_inventory()
                 for i, lump in ipairs(resources) do
                     while (contents:contains_item("main", (lump .. " 10"))) do
@@ -385,8 +363,11 @@ local function structure_check(self, dtime)
                             self.trainInv[lump] = 0
                         end
                         self.trainInv[lump] = self.trainInv[lump] + 10
-                        attach_to_train(self, lump .. " 10")
+                        found_item = true
                     end
+                end
+                if found_item then
+                    set_train_filled(self)
                 end
             elseif structure_name == "factory" then
                 local ore_hauler = false
@@ -401,8 +382,9 @@ local function structure_check(self, dtime)
                         ore_hauler = true
                     end
                 end
-                empty_train(self)
+                set_train_empty(self)
                 if ore_hauler == false then
+                    local found_item = false
                     for input, output in pairs(products) do
                         while (contents:contains_item("main", (output .. " 10"))) do
                             contents:remove_item("main", (output .. " 10"))
@@ -410,8 +392,11 @@ local function structure_check(self, dtime)
                                 self.trainInv[output] = 0
                             end
                             self.trainInv[output] = self.trainInv[output] + 10
-                            attach_to_train(self, output .. " 10")
+                            found_item = true
                         end
+                    end
+                    if found_item then
+                        set_train_filled(self)
                     end
                 end
                 self:on_punch()
@@ -439,7 +424,7 @@ local function structure_check(self, dtime)
                             self.trainInv[output] =  0
                         end
                     end
-                    empty_train(self)
+                    set_train_empty(self)
                     self:on_punch()
                 end
             elseif structure_name == "power_plant" then
@@ -453,7 +438,7 @@ local function structure_check(self, dtime)
                         self.trainInv[fuel] =  0
                     end
                 end
-                empty_train(self)
+                set_train_empty(self)
                 self:on_punch()
             elseif structure_name == "town" then
               self.town_train = true
@@ -470,6 +455,7 @@ function train_entity:on_step(dtime)
     self.automation_timer = self.automation_timer + 1
     if self.automation_timer >= 500 then
         self:on_punch()
+        self.town_train = false
         self.automation_timer = 0
     end
 end

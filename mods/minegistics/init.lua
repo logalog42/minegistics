@@ -11,6 +11,7 @@ minegistics.modpath = minetest.get_modpath("minegistics")
 dofile(minegistics.modpath .. DIR_DELIM .. "src" .. DIR_DELIM .. "mapgen.lua")
 dofile(minegistics.modpath .. DIR_DELIM .. "src" .. DIR_DELIM .. "power.lua")
 dofile(minegistics.modpath .. DIR_DELIM .. "src" .. DIR_DELIM .. "items.lua")
+dofile(minegistics.modpath .. DIR_DELIM .. "src" .. DIR_DELIM .. "hud.lua")
 dofile(minegistics.modpath .. DIR_DELIM .. "src" .. DIR_DELIM .. "formspec.lua")
 dofile(minegistics.modpath .. DIR_DELIM .. "src" .. DIR_DELIM .. "initial_items.lua")
 dofile(minegistics.modpath .. DIR_DELIM .. "src" .. DIR_DELIM .. "welcome_message.lua")
@@ -78,6 +79,11 @@ minetest.register_on_shutdown(function()
     local save_data = minetest.write_json(save_vars)
     local save_path = minetest.get_worldpath() .. DIR_DELIM .. "save_data.json"
     minetest.safe_file_write(save_path, save_data)
+end)
+
+--main game loop
+minetest.register_globalstep(function(dtime)   
+    update_shared_hud()
 end)
 
 --smoke
