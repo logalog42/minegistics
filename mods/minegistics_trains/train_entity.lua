@@ -257,18 +257,20 @@ local function rail_on_step(self, dtime)
 	self.old_switch = switch_keys
 
 	if self.punched then
-
+    local found_item = false
 		for _, obj_ in pairs(minetest.get_objects_inside_radius(pos, 1)) do
 			local ent = obj_:get_luaentity()
-
 			if ent and ent.name == "__builtin:item" and ent.physical_state then
-				ent:disable_physics()
         add_item_to_train(self, ent)
+        obj_:remove()
+        found_item = true
 			end
 		end
-
 		self.punched = false
 		update.vel = true
+    if found_item then
+      set_train_filled(self)
+    end
 	end
 
 	railparams = railparams or get_railparams(pos)
@@ -321,10 +323,10 @@ function add_item_to_train(train, item_ent)
         local item_name = item_table[1]
         local item_amount = item_table[2]
         if item_amount == nil then item_amount = 1 end
-        for lump, amount in pairs(train.trainInv) do
-            if lump == item_name then
-                if train.trainInv[lump] == nil then train.trainInv[lump] = 0 end
-                train.trainInv[lump] = train.trainInv[lump] + item_amount
+        for item, amount in pairs(train.trainInv) do
+            if item == item_name then
+                if train.trainInv[item] == nil then train.trainInv[item] = 0 end
+                train.trainInv[item] = train.trainInv[item] + item_amount
             end
         end
     end
