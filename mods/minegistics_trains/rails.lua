@@ -1,6 +1,7 @@
 minetest.register_node("minegistics_trains:rail", {
    drawtype = "nodebox",
    paramtype = "light",
+   use_texture_alpha = "clip",
    groups = {dig_immediate=2, new=1, rail=1},
    tiles = {
       "train_new_top.png",
@@ -173,6 +174,7 @@ minetest.register_node("minegistics_trains:rail", {
 minetest.register_node("minegistics_trains:brake_rail", {
    drawtype = "nodebox",
    paramtype = "light",
+   use_texture_alpha = "clip",
    groups = {dig_immediate=2, new=1, rail=1},
    tiles = {
       "train_new_top_brake.png",
@@ -345,6 +347,7 @@ minetest.register_node("minegistics_trains:brake_rail", {
 minetest.register_node("minegistics_trains:power_rail", {
    drawtype = "nodebox",
    paramtype = "light",
+   use_texture_alpha = "clip",
    groups = {dig_immediate=2, new=1, rail=1},
    tiles = {
       "train_new_top_power.png",

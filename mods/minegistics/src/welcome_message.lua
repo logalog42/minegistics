@@ -21,7 +21,7 @@ local function greeting_formspec(player)
 end
 
 --shows the greeting formspec
-minetest.register_on_joinplayer(function(player)
+minetest.register_on_newplayer(function(player)
 	local cb = function(player)
 		if not player or not player:is_player() then
 			return

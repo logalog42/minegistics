@@ -52,7 +52,7 @@ skybox.set = function(player, number)
 			player:set_sky(sky[2], "skybox", textures, true)
 		end
 		player:set_clouds(sky[4])
-		player:set_attribute("minegistics:skyboxskybox", sky[1])
+		player:get_meta():set_string("minegistics:skybox", sky[1])
 	end
 end
 
@@ -75,7 +75,7 @@ skybox.clear = function(player)
 	player:set_moon({visible = true})
 	player:set_stars({visible = true})
 
-	player:set_attribute("minegistics:skyboxskybox", "off")
+	player:get_meta():set_string("minegistics:skybox", "off")
 end
 
 skybox.add = function(def)
@@ -91,7 +91,7 @@ end
 --
 
 minetest.register_on_joinplayer(function(player)
-	local sky = player:get_attribute("minegistics:skyboxskybox")
+	local sky = player:get_meta():get_string("minegistics:skybox")
 	if not sky or sky == "" then
 		skybox.clear(player)
 	else
