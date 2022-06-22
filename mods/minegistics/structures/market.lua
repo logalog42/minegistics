@@ -22,10 +22,10 @@ minetest.register_node("minegistics:Market", {
       local meta = minetest.get_meta(pos)
       meta:set_string("formspec",
           "size[8,9]"..
-          "list[current_name;main;0,0;8,4;]"..
+          "list[context;main;0,0;8,4;]"..
           "list[current_player;main;0,5;8,4;]" ..
           "listring[]")
-      meta:set_string("infotext", "market")
+      meta:set_string("infotext", "Market")
       local inv = meta:get_inventory()
       inv:set_size("main", 5*1)
 	end,

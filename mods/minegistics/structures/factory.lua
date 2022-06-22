@@ -17,14 +17,12 @@ minetest.register_node("minegistics:Factory", {
    on_construct = function(pos)
       table.insert(power_consumers, pos)
       local meta = minetest.get_meta(pos)
-      local selected_id = 1
       meta:set_string("formspec",
           "size[8,9]"..
-          "list[current_name;main;0,0;8,4;]"..
-          --"dropdown[1,1;2,1;items; coal_product.png , coal_product; " .. selected_id .. "]"..
+          "list[context;main;0,0;8,4;]"..
           "list[current_player;main;0,5;8,4;]" ..
           "listring[]")
-      meta:set_string("infotext", "factory")
+      meta:set_string("infotext", "Factory")
       local inv = meta:get_inventory()
       inv:set_size("main", 5*1)
 	end,
@@ -58,7 +56,7 @@ minetest.register_abm({
     action = function(pos)
         minetest.forceload_block(pos, false)
         if power_stable(pos) then
-            local meta = minetest.get_meta({ x = pos.x, y = pos.y, z = pos.z })
+            local meta = minetest.get_meta(pos)
             local inv = meta:get_inventory()
             local items = {}
             local working = false

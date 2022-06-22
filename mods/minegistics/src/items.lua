@@ -25,6 +25,7 @@ resources = {
   }
 
 products = {
+    ["minegistics_basenodes:planks"] = "minegistics:coal_product",
     ["minegistics_basenodes:coal_lump"] = "minegistics:coal_product",
     ["minegistics_basenodes:copper_lump"] = "minegistics:copper_product",
     ["minegistics_basenodes:gold_lump"] = "minegistics:gold_product",

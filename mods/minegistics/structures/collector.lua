@@ -20,10 +20,10 @@ minetest.register_node("minegistics:Collector", {
       local meta = minetest.get_meta(pos)
       meta:set_string("formspec",
           "size[8,9]"..
-          "list[current_name;main;0,0;8,4;]"..
+          "list[context;main;0,0;8,4;]"..
           "list[current_player;main;0,5;8,4;]" ..
           "listring[]")
-      meta:set_string("infotext", "collector")
+      meta:set_string("infotext", "Collector")
       local inv = meta:get_inventory()
       inv:set_size("main", 5*1)
   end,
@@ -55,13 +55,13 @@ minetest.register_abm({
                vector.new(pos.x, pos.y, pos.z + 1),
                vector.new(pos.x, pos.y, pos.z - 1)
             }
-
             for node,ore in pairs(base_ores) do
                for key,direction in ipairs(next_to) do
                   if minetest.get_node(direction).name == node then
                      local meta = minetest.get_meta(pos)
                      local inv = meta:get_inventory()
                      local stack = ItemStack(ore)
+                     meta:set_string("collecting", ore)
                      stack:set_count(10)
                      if inv:add_item("main", stack) then
                         smoke(pos)

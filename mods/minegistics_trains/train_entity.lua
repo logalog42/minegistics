@@ -23,7 +23,7 @@ local train_entity = {
 	old_pos = nil,
 	old_switch = 0,
 	railtype = nil,
-	trainInv = {},
+	train_inv = {},
   automation_timer = 0,
   town_train = false,
 }
@@ -38,7 +38,7 @@ function train_entity:on_activate(staticdata, dtime_s)
 		return
 	end
 	self.railtype = data.railtype
-  self.trainInv = data.trainInv
+  self.train_inv = data.train_inv
   self.town_train = data.town_train
 	if data.old_dir then
 		self.old_dir = data.old_dir
@@ -49,7 +49,7 @@ function train_entity:get_staticdata()
 	return minetest.serialize({
       railtype = self.railtype,
       old_dir = self.old_dir,
-      trainInv = self.trainInv,
+      train_inv = self.train_inv,
       town_train = self.town_train,
 	})
 end
@@ -257,20 +257,8 @@ local function rail_on_step(self, dtime)
 	self.old_switch = switch_keys
 
 	if self.punched then
-    local found_item = false
-		for _, obj_ in pairs(minetest.get_objects_inside_radius(pos, 1)) do
-			local ent = obj_:get_luaentity()
-			if ent and ent.name == "__builtin:item" and ent.physical_state then
-        add_item_to_train(self, ent)
-        obj_:remove()
-        found_item = true
-			end
-		end
 		self.punched = false
 		update.vel = true
-    if found_item then
-      set_train_filled(self)
-    end
 	end
 
 	railparams = railparams or get_railparams(pos)
@@ -312,139 +300,121 @@ local function rail_on_step(self, dtime)
 	rail_on_step_event(railparams.on_step, self, dtime)
 end
 
---adjusts inventory using spawned items
-function add_item_to_train(train, item_ent)
-    if item_ent then
-        local inv_item = minetest.deserialize(item_ent:get_staticdata())
-        local item_table = {}
-        for str in string.gmatch(inv_item["itemstring"], "([^".." ".."]+)") do
-            table.insert(item_table, str)
-        end
-        local item_name = item_table[1]
-        local item_amount = item_table[2]
-        if item_amount == nil then item_amount = 1 end
-        for item, amount in pairs(train.trainInv) do
-            if item == item_name then
-                if train.trainInv[item] == nil then train.trainInv[item] = 0 end
-                train.trainInv[item] = train.trainInv[item] + item_amount
-            end
-        end
-    end
-end
-
 --enables filled train mesh.
-function set_train_filled(train)
+local function set_train_filled(train)
     train.object:set_properties({mesh = "train_2.obj", textures = {"trains_train_2.png"}})
 end
 
 --enables empty train mesh.
-function set_train_empty(train)
+local function set_train_empty(train)
     train.object:set_properties({mesh = "train.obj", textures = {"trains_train.png"}})
 end
 
 --checks if the train is moving and if stopped check for a structure next to it.
-local function structure_check(self, dtime)
-    local vel = self.object:get_velocity()
-    local pos = self.object:get_pos()
-    local north = minetest.get_meta({x=(pos.x + 1), y=pos.y, z=pos.z})
-    local south = minetest.get_meta({x=(pos.x - 1), y=pos.y, z=pos.z})
-    local east = minetest.get_meta({x=pos.x, y=pos.y, z=(pos.z + 1)})
-    local west = minetest.get_meta({x=pos.x, y=pos.y, z=(pos.z - 1)})
-    local directions = {north, south, east, west}
-
+local function structure_check(train, dtime)
+    local vel = train.object:get_velocity()
+    local pos = train.object:get_pos()
+    local directions = { 
+        vector.new(pos.x + 1, pos.y, pos.z),
+        vector.new(pos.x - 1, pos.y, pos.z),
+        vector.new(pos.x, pos.y, pos.z + 1),
+        vector.new(pos.x, pos.y, pos.z - 1)
+    }
     if vel.x == 0 and vel.y == 0 and vel.z == 0 then
         for i, direction in ipairs(directions) do
-            local structure_name = direction:get_string("infotext")
-            if structure_name == "collector" then
+            local structure_name = minetest.get_node(direction).name
+            local contents = minetest.get_inventory({type="node", pos=direction})
+            if structure_name == "minegistics:Collector" then
                 local found_item = false
-                local contents = direction:get_inventory()
-                for i, lump in ipairs(resources) do
+                for _, lump in ipairs(resources) do
                     while (contents:contains_item("main", (lump .. " 10"))) do
                         contents:remove_item("main", (lump .. " 10"))
-                        if self.trainInv[lump] == nil then
-                            self.trainInv[lump] = 0
+                        if train.object:get_pos() == pos then
+                            if train.train_inv[lump] == nil then
+                                train.train_inv[lump] = 0
+                            end
+                            train.train_inv[lump] = train.train_inv[lump] + 10
+                            found_item = true
                         end
-                        self.trainInv[lump] = self.trainInv[lump] + 10
-                        found_item = true
                     end
                 end
                 if found_item then
-                    set_train_filled(self)
+                    set_train_filled(train)
                 end
-            elseif structure_name == "factory" then
+            elseif structure_name == "minegistics:Factory" then
                 local ore_hauler = false
-                local contents = direction:get_inventory()
-                for i, lump in pairs(resources) do
-                    if self.trainInv[lump] == nil then
-                        self.trainInv[lump] = 0
+                for _, lump in pairs(resources) do
+                    if train.train_inv[lump] == nil then
+                        train.train_inv[lump] = 0
                     end
-                    if self.trainInv[lump] > 0 then
-                        contents:add_item("main", lump .. " " .. self.trainInv[lump])
-                        self.trainInv[lump] =  0
+                    if train.train_inv[lump] > 0 then
+                        if lump == "minegistics_basenodes:planks" then
+                            minetest.chat_send_all("ERROR ERROR ERROR ERROR")
+                        end
+                        contents:add_item("main", lump .. " " .. train.train_inv[lump])
+                        train.train_inv[lump] =  0
                         ore_hauler = true
                     end
                 end
-                set_train_empty(self)
+                set_train_empty(train)
                 if ore_hauler == false then
                     local found_item = false
-                    for input, output in pairs(products) do
+                    for _, output in pairs(products) do
                         while (contents:contains_item("main", (output .. " 10"))) do
                             contents:remove_item("main", (output .. " 10"))
-                            if self.trainInv[output] == nil then
-                                self.trainInv[output] = 0
+                            if train.train_inv[output] == nil then
+                                train.train_inv[output] = 0
                             end
-                            self.trainInv[output] = self.trainInv[output] + 10
+                            train.train_inv[output] = train.train_inv[output] + 10
                             found_item = true
                         end
                     end
                     if found_item then
-                        set_train_filled(self)
+                        set_train_filled(train)
                     end
                 end
-                self:on_punch()
-            elseif structure_name == "market" or structure_name == "warehouse" then
-                if structure_name == "market" and self.town_train == true then
-                    direction:set_int("has_town", 1)
+                train:on_punch()
+            elseif structure_name == "minegistics:Market" or structure_name == "minegistics:Warehouse" then
+                if structure_name == "minegistics:Market" and train.town_train == true then
+                    minetest.get_meta(direction):set_int("has_town", 1)
                     spawn_passengers(pos)
                 else
-                    local contents = direction:get_inventory()
-                    for i, lump in pairs(resources) do
-                        if self.trainInv[lump] == nil then
-                            self.trainInv[lump] = 0
+                    for _, lump in pairs(resources) do
+                        if train.train_inv[lump] == nil then
+                            train.train_inv[lump] = 0
                         end
-                        if self.trainInv[lump] > 0 then
-                            contents:add_item("main", lump .. " " .. self.trainInv[lump])
-                            self.trainInv[lump] =  0
+                        if train.train_inv[lump] > 0 then
+                            contents:add_item("main", lump .. " " .. train.train_inv[lump])
+                            train.train_inv[lump] =  0
                         end
                     end
                     for input, output in pairs(products) do
-                        if self.trainInv[output] == nil then
-                            self.trainInv[output] = 0
+                        if train.train_inv[output] == nil then
+                            train.train_inv[output] = 0
                         end
-                        if self.trainInv[output] > 0 then
-                            contents:add_item("main", output .. " " .. self.trainInv[output])
-                            self.trainInv[output] =  0
+                        if train.train_inv[output] > 0 then
+                            contents:add_item("main", output .. " " .. train.train_inv[output])
+                            train.train_inv[output] =  0
                         end
                     end
-                    set_train_empty(self)
-                    self:on_punch()
+                    set_train_empty(train)
+                    train:on_punch()
                 end
-            elseif structure_name == "power_plant" then
-                local contents = direction:get_inventory()
-                for i, fuel in pairs(fuels) do
-                    if self.trainInv[fuel] == nil then
-                        self.trainInv[fuel] = 0
+            elseif structure_name == "minegistics:PowerPlant" then
+                for _, fuel in pairs(fuels) do
+                    if train.train_inv[fuel] == nil then
+                        train.train_inv[fuel] = 0
                     end
-                    if self.trainInv[fuel] > 0 then
-                        contents:add_item("main", fuel .. " " .. self.trainInv[fuel])
-                        self.trainInv[fuel] =  0
+                    if train.train_inv[fuel] > 0 then
+                        contents:add_item("main", fuel .. " " .. train.train_inv[fuel])
+                        train.train_inv[fuel] =  0
                     end
                 end
-                set_train_empty(self)
-                self:on_punch()
-            elseif structure_name == "town" then
-              self.town_train = true
-              spawn_passengers(pos)
+                set_train_empty(train)
+                train:on_punch()
+            elseif structure_name == "minegistics:Town" then
+                train.town_train = true
+                spawn_passengers(pos)
             end
         end
     end
