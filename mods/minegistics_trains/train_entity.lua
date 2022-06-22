@@ -404,7 +404,7 @@ local function structure_check(train, dtime)
                             train_inv[lump] = 0
                         end
                         if train_inv[lump] > 0 then
-                            contents:add_item("main", lump .. " " .. train_oninv[lump])
+                            contents:add_item("main", lump .. " " .. train_inv[lump])
                             train_inv[lump] =  0
                         end
                     end
