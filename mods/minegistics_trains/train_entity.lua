@@ -7,6 +7,8 @@
 
 --TODO Set a limit to the size train will take from a location
 
+local crowd_sound = false
+
 local train_entity = {
 	initial_properties = {
 		physical = false,
@@ -388,6 +390,14 @@ local function structure_check(train, dtime)
                 if structure_name == "minegistics:Market" and train.town_train == true then
                     minetest.get_meta(direction):set_int("has_town", 1)
                     spawn_passengers(pos)
+                    if crowd_sound == false then
+                        minetest.sound_play('trains_people', {
+                            pos = pos,
+                            loop = false,
+                            max_hear_distance = 16
+                        })
+                        crowd_sound = true
+                    end
                 else
                     for _, lump in pairs(resources) do
                         if train_inv[lump] == nil then
@@ -425,6 +435,14 @@ local function structure_check(train, dtime)
             elseif structure_name == "minegistics:Town" then
                 train.town_train = true
                 spawn_passengers(pos)
+                if crowd_sound == false then
+                    minetest.sound_play('trains_people', {
+                        pos = pos,
+                        loop = false,
+                        max_hear_distance = 16
+                    })
+                    crowd_sound = true
+                end
             end
         end
     end
@@ -439,6 +457,7 @@ function train_entity:on_step(dtime)
         self:on_punch()
         self.town_train = false
         self.automation_timer = 0
+        crowd_sound = false
     end
 end
 
