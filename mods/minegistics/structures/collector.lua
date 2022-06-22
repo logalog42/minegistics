@@ -5,6 +5,8 @@
     License: AGPLv3
 ]]--
 
+local abm_timer = 0
+
 minetest.register_node("minegistics:Collector", {
    description = "Collector: Gathers resources.\n" ..
     "Place on a resource node and connect to a\n" ..
@@ -43,32 +45,59 @@ minetest.register_node("minegistics:Collector", {
 
 minetest.register_abm({
     nodenames = {"minegistics:Collector"},
-    interval = 10,
+    interval = 1,
     chance = 1,
     action = function(pos)
-        minetest.forceload_block(pos, false)
-        if power_stable(pos) then
-            local next_to = {
-               vector.new(pos.x, pos.y - 1, pos.z),
-               vector.new(pos.x + 1, pos.y, pos.z),
-               vector.new(pos.x - 1, pos.y, pos.z),
-               vector.new(pos.x, pos.y, pos.z + 1),
-               vector.new(pos.x, pos.y, pos.z - 1)
-            }
-            for node,ore in pairs(base_ores) do
-               for key,direction in ipairs(next_to) do
-                  if minetest.get_node(direction).name == node then
-                     local meta = minetest.get_meta(pos)
-                     local inv = meta:get_inventory()
-                     local stack = ItemStack(ore)
-                     meta:set_string("collecting", ore)
-                     stack:set_count(10)
-                     if inv:add_item("main", stack) then
-                        smoke(pos)
-                     end
-                  end
-               end
+        abm_timer = abm_timer + 1
+        if abm_timer >= math.random(8, 16) then
+            minetest.forceload_block(pos, false)
+            if power_stable(pos) then
+                local next_to = {
+                   vector.new(pos.x, pos.y - 1, pos.z),
+                   vector.new(pos.x + 1, pos.y, pos.z),
+                   vector.new(pos.x - 1, pos.y, pos.z),
+                   vector.new(pos.x, pos.y, pos.z + 1),
+                   vector.new(pos.x, pos.y, pos.z - 1)
+                }
+                for node,ore in pairs(base_ores) do
+                   for key,direction in ipairs(next_to) do
+                      if minetest.get_node(direction).name == node then
+                         local meta = minetest.get_meta(pos)
+                         local inv = meta:get_inventory()
+                         local stack = ItemStack(ore)
+                         meta:set_string("collecting", ore)
+                         stack:set_count(10)
+                         if inv:add_item("main", stack) then
+                            minetest.sound_play('collector', {
+                                pos = pos,
+                                loop = false,
+                                max_hear_distance = 16
+                            })
+                            if minetest.settings:get_bool("minegistics_particles", true) then
+                                minetest.add_particlespawner({
+                                    amount = 300,
+                                    time = 3,
+                                    minpos = {x=pos.x,y=pos.y+1,z=pos.z},
+                                    maxpos = {x=pos.x,y=pos.y+2,z=pos.z},
+                                    minvel = {x=0.1, y=0.1, z=0.1},
+                                    maxvel = {x=0.1, y=0.2, z=0.1},
+                                    minacc = {x=-0.1,y=0.1,z=-0.1},
+                                    maxacc = {x=0.1,y=0.2,z=0.1},
+                                    minexptime = 1,
+                                    maxexptime = 2,
+                                    minsize = 10,
+                                    maxsize = 12,
+                                    collisiondetection = false,
+                                    vertical = false,
+                                    texture = "dirt.png"
+                                })
+                            end
+                         end
+                      end
+                   end
+                end
             end
+            abm_timer = 0
         end
     end
 })

@@ -5,6 +5,8 @@
     License: AGPLv3
 ]]--
 
+local abm_timer = 0
+
 power_producers = {}
 power_consumers = {}
 
@@ -82,51 +84,62 @@ end
 
 minetest.register_abm({
     nodenames = {"minegistics:PowerPlant"},
-    interval = 10,
+    interval = 1,
     chance = 1,
     action = function(pos, node, active_object_count, active_object_count_wider)
-        minetest.forceload_block(pos, false)
-        local meta = minetest.get_meta(pos)
-        local inv = meta:get_inventory()
-        local has_fuel = false
-        if inv:contains_item("main", "minegistics_basenodes:coal_lump") then
-            inv:remove_item("main", "minegistics_basenodes:coal_lump")
-            has_fuel = true
-         elseif inv:contains_item("main", "minegistics_basenodes:planks") then
-            inv:remove_item("main", "minegistics_basenodes:planks")
-            has_fuel = true
-        end
-        local active = is_active(pos)
-        if has_fuel then
-            if active == false then
-                table.insert(power_producers, pos)
+        abm_timer = abm_timer + 1
+        if abm_timer >= math.random(8, 16) then
+            minetest.forceload_block(pos, false)
+            local meta = minetest.get_meta(pos)
+            local inv = meta:get_inventory()
+            local has_fuel = false
+            if inv:contains_item("main", "minegistics_basenodes:coal_lump") then
+                inv:remove_item("main", "minegistics_basenodes:coal_lump")
+                has_fuel = true
+             elseif inv:contains_item("main", "minegistics_basenodes:planks") then
+                inv:remove_item("main", "minegistics_basenodes:planks")
+                has_fuel = true
             end
-            minetest.add_particlespawner({
-                amount = 300,
-                time = 6,
-                minpos = {x=pos.x,y=pos.y+1,z=pos.z},
-                maxpos = {x=pos.x,y=pos.y+2,z=pos.z},
-                minvel = {x=0.1, y=0.1, z=0.1},
-                maxvel = {x=0.1, y=0.2, z=0.1},
-                minacc = {x=-0.1,y=0.1,z=-0.1},
-                maxacc = {x=0.1,y=0.2,z=0.1},
-                minexptime = 2,
-                maxexptime = 4,
-                minsize = 10,
-                maxsize = 12,
-                collisiondetection = false,
-                vertical = false,
-                texture = "black_smoke.png"
-            })
-        else
-            if active == true then
-                for i,p in pairs(power_producers) do
-                    if p.x == pos.x and p.y == pos.y and p.z == pos.z then
-                        table.remove(power_producers, i)
-                        break
+            local active = is_active(pos)
+            if has_fuel then
+                if active == false then
+                    table.insert(power_producers, pos)
+                end
+                minetest.sound_play('power_plant', {
+                    pos = pos,
+                    loop = false,
+                    max_hear_distance = 16
+                })
+                if minetest.settings:get_bool("minegistics_particles", true) then
+                    minetest.add_particlespawner({
+                        amount = 300,
+                        time = 6,
+                        minpos = {x=pos.x,y=pos.y+1,z=pos.z},
+                        maxpos = {x=pos.x,y=pos.y+2,z=pos.z},
+                        minvel = {x=0.1, y=0.1, z=0.1},
+                        maxvel = {x=0.1, y=0.2, z=0.1},
+                        minacc = {x=-0.1,y=0.1,z=-0.1},
+                        maxacc = {x=0.1,y=0.2,z=0.1},
+                        minexptime = 2,
+                        maxexptime = 4,
+                        minsize = 10,
+                        maxsize = 12,
+                        collisiondetection = false,
+                        vertical = false,
+                        texture = "black_smoke.png"
+                    })
+                end
+            else
+                if active == true then
+                    for i,p in pairs(power_producers) do
+                        if p.x == pos.x and p.y == pos.y and p.z == pos.z then
+                            table.remove(power_producers, i)
+                            break
+                        end
                     end
                 end
             end
+            abm_timer = 0
         end
     end
 })

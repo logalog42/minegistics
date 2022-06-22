@@ -23,10 +23,17 @@ local train_entity = {
 	old_pos = nil,
 	old_switch = 0,
 	railtype = nil,
-	train_inv = {},
   automation_timer = 0,
   town_train = false,
 }
+
+local function get_object_id(object)
+    for id, entity in pairs(minetest.luaentities) do
+        if entity.object == object then
+            return id
+        end
+    end
+end
 
 function train_entity:on_activate(staticdata, dtime_s)
 	self.object:set_armor_groups({immortal=1})
@@ -43,13 +50,13 @@ function train_entity:on_activate(staticdata, dtime_s)
 	if data.old_dir then
 		self.old_dir = data.old_dir
 	end
+  table.insert(train_cargo, get_object_id(self.object), {})
 end
 
 function train_entity:get_staticdata()
 	return minetest.serialize({
       railtype = self.railtype,
       old_dir = self.old_dir,
-      train_inv = self.train_inv,
       town_train = self.town_train,
 	})
 end
@@ -314,6 +321,11 @@ end
 local function structure_check(train, dtime)
     local vel = train.object:get_velocity()
     local pos = train.object:get_pos()
+    local train_inv = train_cargo[get_object_id(train.object)]
+    if train_inv == nil then
+        table.insert(train_cargo, get_object_id(train.object), {})
+        train_inv = train_cargo[get_object_id(train.object)]
+    end
     local directions = { 
         vector.new(pos.x + 1, pos.y, pos.z),
         vector.new(pos.x - 1, pos.y, pos.z),
@@ -329,13 +341,11 @@ local function structure_check(train, dtime)
                 for _, lump in ipairs(resources) do
                     while (contents:contains_item("main", (lump .. " 10"))) do
                         contents:remove_item("main", (lump .. " 10"))
-                        if train.object:get_pos() == pos then
-                            if train.train_inv[lump] == nil then
-                                train.train_inv[lump] = 0
-                            end
-                            train.train_inv[lump] = train.train_inv[lump] + 10
-                            found_item = true
+                        if train_inv[lump] == nil then
+                            train_inv[lump] = 0
                         end
+                        train_inv[lump] = train_inv[lump] + 10
+                        found_item = true
                     end
                 end
                 if found_item then
@@ -344,15 +354,15 @@ local function structure_check(train, dtime)
             elseif structure_name == "minegistics:Factory" then
                 local ore_hauler = false
                 for _, lump in pairs(resources) do
-                    if train.train_inv[lump] == nil then
-                        train.train_inv[lump] = 0
+                    if train_inv[lump] == nil then
+                        train_inv[lump] = 0
                     end
-                    if train.train_inv[lump] > 0 then
+                    if train_inv[lump] > 0 then
                         if lump == "minegistics_basenodes:planks" then
                             minetest.chat_send_all("ERROR ERROR ERROR ERROR")
                         end
-                        contents:add_item("main", lump .. " " .. train.train_inv[lump])
-                        train.train_inv[lump] =  0
+                        contents:add_item("main", lump .. " " .. train_inv[lump])
+                        train_inv[lump] =  0
                         ore_hauler = true
                     end
                 end
@@ -362,10 +372,10 @@ local function structure_check(train, dtime)
                     for _, output in pairs(products) do
                         while (contents:contains_item("main", (output .. " 10"))) do
                             contents:remove_item("main", (output .. " 10"))
-                            if train.train_inv[output] == nil then
-                                train.train_inv[output] = 0
+                            if train_inv[output] == nil then
+                                train_inv[output] = 0
                             end
-                            train.train_inv[output] = train.train_inv[output] + 10
+                            train_inv[output] = train_inv[output] + 10
                             found_item = true
                         end
                     end
@@ -380,21 +390,21 @@ local function structure_check(train, dtime)
                     spawn_passengers(pos)
                 else
                     for _, lump in pairs(resources) do
-                        if train.train_inv[lump] == nil then
-                            train.train_inv[lump] = 0
+                        if train_inv[lump] == nil then
+                            train_inv[lump] = 0
                         end
-                        if train.train_inv[lump] > 0 then
-                            contents:add_item("main", lump .. " " .. train.train_inv[lump])
-                            train.train_inv[lump] =  0
+                        if train_inv[lump] > 0 then
+                            contents:add_item("main", lump .. " " .. train_oninv[lump])
+                            train_inv[lump] =  0
                         end
                     end
                     for input, output in pairs(products) do
-                        if train.train_inv[output] == nil then
-                            train.train_inv[output] = 0
+                        if train_inv[output] == nil then
+                            train_inv[output] = 0
                         end
-                        if train.train_inv[output] > 0 then
-                            contents:add_item("main", output .. " " .. train.train_inv[output])
-                            train.train_inv[output] =  0
+                        if train_inv[output] > 0 then
+                            contents:add_item("main", output .. " " .. train_inv[output])
+                            train_inv[output] =  0
                         end
                     end
                     set_train_empty(train)
@@ -402,12 +412,12 @@ local function structure_check(train, dtime)
                 end
             elseif structure_name == "minegistics:PowerPlant" then
                 for _, fuel in pairs(fuels) do
-                    if train.train_inv[fuel] == nil then
-                        train.train_inv[fuel] = 0
+                    if train_inv[fuel] == nil then
+                        train_inv[fuel] = 0
                     end
-                    if train.train_inv[fuel] > 0 then
-                        contents:add_item("main", fuel .. " " .. train.train_inv[fuel])
-                        train.train_inv[fuel] =  0
+                    if train_inv[fuel] > 0 then
+                        contents:add_item("main", fuel .. " " .. train_inv[fuel])
+                        train_inv[fuel] =  0
                     end
                 end
                 set_train_empty(train)
@@ -433,23 +443,25 @@ function train_entity:on_step(dtime)
 end
 
 function spawn_passengers(pos)
-    minetest.add_particlespawner({
-        amount = 1,
-        time = 1,
-        minpos = {x=pos.x-0.1,y=pos.y,z=pos.z-0.1},
-        maxpos = {x=pos.x+0.1,y=pos.y+1,z=pos.z+0.1},
-        minvel = {x=0.1, y=0.01, z=0.1},
-        maxvel = {x=0.1, y=0.05, z=0.1},
-        minacc = {x=-0.1,y=0.1,z=-0.1},
-        maxacc = {x=0.1,y=0.2,z=0.1},
-        minexptime = 1,
-        maxexptime = 2,
-        minsize = 1,
-        maxsize = 2,
-        collisiondetection = false,
-        vertical = false,
-        texture = "people.png"
-    })
+    if minetest.settings:get_bool("minegistics_particles", true) then
+        minetest.add_particlespawner({
+            amount = 1,
+            time = 1,
+            minpos = {x=pos.x-0.1,y=pos.y,z=pos.z-0.1},
+            maxpos = {x=pos.x+0.1,y=pos.y+1,z=pos.z+0.1},
+            minvel = {x=0.1, y=0.01, z=0.1},
+            maxvel = {x=0.1, y=0.05, z=0.1},
+            minacc = {x=-0.1,y=0.1,z=-0.1},
+            maxacc = {x=0.1,y=0.2,z=0.1},
+            minexptime = 1,
+            maxexptime = 2,
+            minsize = 1,
+            maxsize = 2,
+            collisiondetection = false,
+            vertical = false,
+            texture = "people.png"
+        })
+    end
 end
 
 minetest.register_entity("minegistics_trains:train", train_entity)

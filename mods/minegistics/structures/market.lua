@@ -7,6 +7,8 @@
 
 --TODO Create demands of specific items
 
+local abm_timer = 0
+
 minetest.register_node("minegistics:Market", {
    description = "Market: Changes any item into money.\n" ..
     "Must be connected by rail to a factory or collector.\n" ..
@@ -54,57 +56,61 @@ minetest.register_node("minegistics:Market", {
 --converts resources into money
 minetest.register_abm({
     nodenames = {"minegistics:Market"},
-    interval = 10,
+    interval = 1,
     chance = 1,
     action = function(pos)
-        minetest.forceload_block(pos, false)
-        local meta = minetest.get_meta(pos)
-        if power_stable(pos) and meta:get_int("has_town") == 1 then
-            meta:set_int("has_town", 0)
-            local inv = meta:get_inventory()
-            local items = {}
-            local lumps = {}
-            for _,lump in pairs(resources) do
-                lumps[lump] = ItemStack(lump)
-            end
-            for _,product in pairs(products) do
-                items[product] = ItemStack(product)
-            end
-            local money_earned = 0
-            local inventories = inv:get_lists()
-            for name, list in pairs(inventories) do
-                for index, item in pairs(lumps) do
-                    while inv:contains_item(name, lumps[index]) do
-                        inv:remove_item(name, lumps[index])
-                        money_earned = money_earned + item_worth[item:get_name()]
+        abm_timer = abm_timer + 1
+        if abm_timer >= math.random(8, 16) then
+            minetest.forceload_block(pos, false)
+            local meta = minetest.get_meta(pos)
+            if power_stable(pos) and meta:get_int("has_town") == 1 then
+                meta:set_int("has_town", 0)
+                local inv = meta:get_inventory()
+                local items = {}
+                local lumps = {}
+                for _,lump in pairs(resources) do
+                    lumps[lump] = ItemStack(lump)
+                end
+                for _,product in pairs(products) do
+                    items[product] = ItemStack(product)
+                end
+                local money_earned = 0
+                local inventories = inv:get_lists()
+                for name, list in pairs(inventories) do
+                    for index, item in pairs(lumps) do
+                        while inv:contains_item(name, lumps[index]) do
+                            inv:remove_item(name, lumps[index])
+                            money_earned = money_earned + item_worth[item:get_name()]
+                        end
+                    end
+                    for index, item in pairs(items) do
+                        while inv:contains_item(name, items[index]) do
+                            inv:remove_item(name, items[index])
+                            money_earned = money_earned + item_worth[item:get_name()]
+                        end
                     end
                 end
-                for index, item in pairs(items) do
-                    while inv:contains_item(name, items[index]) do
-                        inv:remove_item(name, items[index])
-                        money_earned = money_earned + item_worth[item:get_name()]
+                if money_earned > 0 then
+                    money = math.floor(money + money_earned)
+                    for index,price in pairs(item_prices) do
+                        local increase = money_earned * 0.01
+                        item_prices[index] = math.floor(item_prices[index] + increase)
                     end
+                    for _,player in pairs(minetest.get_connected_players()) do
+                        local spec = player:get_inventory_formspec()
+                        local str = string.sub(spec,48,51)
+                        if str == "Shop" then
+                            local formspec = shop_formspec(player)
+                            player:set_inventory_formspec(table.concat(formspec, ""))
+                        end
+                    end
+                    minetest.chat_send_all(
+                      "Earned $" .. money_earned .. " from market at " ..
+                      "(" .. pos.x .. ", " .. pos.y .. ", " .. pos.z .. ")"
+                    )
                 end
             end
-            if money_earned > 0 then
-                money = math.floor(money + money_earned)
-                for index,price in pairs(item_prices) do
-                    local increase = money_earned * 0.01
-                    item_prices[index] = math.floor(item_prices[index] + increase)
-                end
-                for _,player in pairs(minetest.get_connected_players()) do
-                    local spec = player:get_inventory_formspec()
-                    local str = string.sub(spec,48,51)
-                    if str == "Shop" then
-                        local formspec = shop_formspec(player)
-                        player:set_inventory_formspec(table.concat(formspec, ""))
-                    end
-                end
-                minetest.chat_send_all(
-                  "Earned $" .. money_earned .. " from market at " ..
-                  "(" .. pos.x .. ", " .. pos.y .. ", " .. pos.z .. ")"
-                )
-            end
+            abm_timer = 0
         end
     end
 })

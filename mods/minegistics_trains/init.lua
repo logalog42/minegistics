@@ -11,6 +11,8 @@ trains.punch_speed_max = 4
 -- Maximal distance for the path correction (for dtime peaks)
 trains.path_distance_max = 3
 
+train_cargo = {}
+
 dofile(trains.modpath.."/functions.lua")
 dofile(trains.modpath.."/rails.lua")
 dofile(trains.modpath.."/train_entity.lua")
