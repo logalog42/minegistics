@@ -18,10 +18,10 @@ minetest.register_node("minegistics:Warehouse", {
       local meta = minetest.get_meta(pos)
       meta:set_string("formspec",
           "size[8,9]"..
-          "list[current_name;main;0,0;8,4;]"..
+          "list[context;main;0,0;8,4;]"..
           "list[current_player;main;0,5;8,4;]" ..
           "listring[]")
-      meta:set_string("infotext", "warehouse")
+      meta:set_string("infotext", "Warehouse")
       local inv = meta:get_inventory()
       inv:set_size("main", 6*4)
 	end,
@@ -32,7 +32,6 @@ minetest.register_node("minegistics:Warehouse", {
               break
           end
       end
-      minetest.forceload_free_block(pos, false)
   end,
 	can_dig = function(pos,player)
 		local meta = minetest.get_meta(pos);

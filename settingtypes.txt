@@ -1,0 +1,2 @@
+#Enables or disables particle effects.
+minegistics_particles (Particle Effects) bool true

@@ -85,27 +85,3 @@ end)
 minetest.register_globalstep(function(dtime)   
     update_shared_hud()
 end)
-
---smoke
-function smoke(pos)
-    local rand = math.random(1,6)
-    minetest.after(rand, function()
-        minetest.add_particlespawner({
-            amount = 300,
-            time = 3,
-            minpos = {x=pos.x,y=pos.y+1,z=pos.z},
-            maxpos = {x=pos.x,y=pos.y+2,z=pos.z},
-            minvel = {x=0.1, y=0.1, z=0.1},
-            maxvel = {x=0.1, y=0.2, z=0.1},
-            minacc = {x=-0.1,y=0.1,z=-0.1},
-            maxacc = {x=0.1,y=0.2,z=0.1},
-            minexptime = 1,
-            maxexptime = 2,
-            minsize = 10,
-            maxsize = 12,
-            collisiondetection = false,
-            vertical = false,
-            texture = "dirt.png"
-        })
-    end)
-end

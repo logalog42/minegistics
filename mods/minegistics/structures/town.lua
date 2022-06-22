@@ -17,7 +17,7 @@ minetest.register_node("minegistics:Town", {
   on_construct = function(pos)
       table.insert(power_consumers, pos)
       local meta = minetest.get_meta(pos)
-      meta:set_string("infotext", "town")
+      meta:set_string("infotext", "Town")
   end,
   after_dig_node = function(pos, oldnode, oldmetadata, digger)
       for i,p in pairs(power_consumers) do
@@ -26,6 +26,5 @@ minetest.register_node("minegistics:Town", {
               break
           end
       end
-      minetest.forceload_free_block(pos, false)
   end
 })
