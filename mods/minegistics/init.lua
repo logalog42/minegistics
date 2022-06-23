@@ -5,7 +5,7 @@
     License: AGPLv3
 ]]--
 
-money = 100
+money = 100000
 
 local loaded = false
 local enable_fog = minetest.settings:get_bool("enable_fog")
@@ -65,8 +65,8 @@ end)
 minetest.register_on_leaveplayer(function(player)
     if player then
         local name = player:get_player_name()
+        hud_ids[name] = nil
         hud_bg_ids[name] = nil
-        money_hud_ids[name] = nil
     end
 end)
 

@@ -60,32 +60,22 @@ minetest.register_abm({
     chance = 1,
     action = function(pos)
         abm_timer = abm_timer + 1
-        if abm_timer >= math.random(8, 16) then
+        if abm_timer >= math.random(8, 12) then
             minetest.forceload_block(pos, false)
             local meta = minetest.get_meta(pos)
             if power_stable(pos) and meta:get_int("has_town") == 1 then
                 meta:set_int("has_town", 0)
                 local inv = meta:get_inventory()
                 local items = {}
-                local lumps = {}
-                for _,lump in pairs(resources) do
-                    lumps[lump] = ItemStack(lump)
-                end
-                for _,product in pairs(products) do
-                    items[product] = ItemStack(product)
+                for item, worth in pairs(item_worth) do
+                    items[item] = ItemStack(item)
                 end
                 local money_earned = 0
                 local inventories = inv:get_lists()
                 for name, list in pairs(inventories) do
-                    for index, item in pairs(lumps) do
-                        while inv:contains_item(name, lumps[index]) do
-                            inv:remove_item(name, lumps[index])
-                            money_earned = money_earned + item_worth[item:get_name()]
-                        end
-                    end
                     for index, item in pairs(items) do
-                        while inv:contains_item(name, items[index]) do
-                            inv:remove_item(name, items[index])
+                        while inv:contains_item(name, item) do
+                            inv:remove_item(name, item)
                             money_earned = money_earned + item_worth[item:get_name()]
                         end
                     end

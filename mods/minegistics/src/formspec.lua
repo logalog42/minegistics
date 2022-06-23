@@ -19,19 +19,23 @@ local items_for_sale = {
     ["Rail"] = "minegistics_trains:rail",
     ["Powered Rail"] = "minegistics_trains:power_rail",
     ["Brake Rail"] = "minegistics_trains:brake_rail",
-    ["Train"] = "minegistics_trains:train"
+    ["Train"] = "minegistics_trains:train",
+    ["Workshop"] = "minegistics:Workshop",
+    ["Farm"] = "minegistics:Farm"
 }
 item_prices = {
+    ["Farm"] = 300,
     ["Collector"] = 300,
-    ["Factory"] = 400,
+    ["Factory"] = 500,
     ["Town"] = 200,
     ["Warehouse"] = 100,
     ["Market"] = 500,
     ["Rail"] = 20,
+    ["Workshop"] = 400,
     ["Powered Rail"] = 200,
     ["Brake Rail"] = 40,
     ["Train"] = 100,
-    ["Power Plant"] = 350
+    ["Power Plant"] = 350,
 }
 
 --defines the inventory formspec
@@ -117,8 +121,8 @@ function shop_formspec(player)
         "bgcolor[#353535;false]",
         "label[4.5,0.5;Shop]",
         table.concat(item_buttons),
-        "label[3.5,12;".."Your balance: $" .. money.."]",
-        "button[3,13;4,2;Back;Back]"
+        "label[3.5,13.6;".."Your balance: $" .. money.."]",
+        "button[3,14;4,2;Back;Back]"
     }
     return formspec
 end

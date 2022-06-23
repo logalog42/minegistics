@@ -329,6 +329,98 @@ local function set_train_empty(train)
     train.object:set_properties({mesh = "train.obj", textures = {"trains_train.png"}})
 end
 
+--deposits or withdraws items at a factory
+local function factory_transaction(train, train_inv, contents)
+    local supply_train = false
+    for output, inputs in pairs(factory_recipes) do
+        if train_inv[inputs[1]] == nil then
+            train_inv[inputs[1]] = 0
+        end
+        if train_inv[inputs[2]] == nil then
+            train_inv[inputs[2]] = 0
+        end
+        if train_inv[inputs[1]] > 0 then
+            contents:add_item("main", inputs[1] .. " " .. train_inv[inputs[1]])
+            train_inv[inputs[1]] =  0
+            supply_train = true
+        end
+        if train_inv[inputs[2]] > 0 then
+            contents:add_item("main", inputs[2] .. " " .. train_inv[inputs[2]])
+            train_inv[inputs[2]] =  0
+            supply_train = true
+        end
+    end
+    set_train_empty(train)
+    if supply_train == false then
+        local found_item = false
+        for output, inputs in pairs(factory_recipes) do
+            if (contents:contains_item("main", (output .. " 10"))) then
+                contents:remove_item("main", (output .. " 10"))
+                if train_inv[output] == nil then
+                    train_inv[output] = 0
+                end
+                train_inv[output] = train_inv[output] + 10
+                found_item = true
+            end
+        end
+        if found_item then
+            set_train_filled(train)
+        end
+    end
+    train:on_punch()
+end
+
+--deposits or withdraws items at a workshop
+local function workshop_transaction(train, train_inv, contents)
+    local ore_hauler = false
+    for input, output in pairs(workshop_recipes) do
+        if train_inv[input] == nil then
+            train_inv[input] = 0
+        end
+        if train_inv[input] > 0 then
+            contents:add_item("main", input .. " " .. train_inv[input])
+            train_inv[input] =  0
+            ore_hauler = true
+        end
+    end
+    set_train_empty(train)
+    if ore_hauler == false then
+        local found_item = false
+        for input, output in pairs(workshop_recipes) do
+            if (contents:contains_item("main", (output .. " 10"))) then
+                contents:remove_item("main", (output .. " 10"))
+                if train_inv[output] == nil then
+                    train_inv[output] = 0
+                end
+                train_inv[output] = train_inv[output] + 10
+                found_item = true
+            end
+        end
+        if found_item then
+            set_train_filled(train)
+        end
+    end
+    train:on_punch()
+end
+
+--withdraws items at a collector or farm.
+local function collect(train, train_inv, contents, list)
+    local found_item = false
+    for _, item in ipairs(list) do
+        if (contents:contains_item("main", (item .. " 10"))) then
+            contents:remove_item("main", (item .. " 10"))
+            if train_inv[item] == nil then
+                train_inv[item] = 0
+            end
+            train_inv[item] = train_inv[item] + 10
+            found_item = true
+        end
+    end
+    if found_item then
+        set_train_filled(train)
+    end
+end
+
 --checks if the train is moving and if stopped check for a structure next to it.
 local function structure_check(train, dtime)
     local vel = train.object:get_velocity()
@@ -349,94 +441,26 @@ local function structure_check(train, dtime)
             local structure_name = minetest.get_node(direction).name
             local contents = minetest.get_inventory({type="node", pos=direction})
             if structure_name == "minegistics:Collector" then
-                local found_item = false
-                for _, lump in ipairs(resources) do
-                    while (contents:contains_item("main", (lump .. " 10"))) do
-                        contents:remove_item("main", (lump .. " 10"))
-                        if train_inv[lump] == nil then
-                            train_inv[lump] = 0
-                        end
-                        train_inv[lump] = train_inv[lump] + 10
-                        found_item = true
-                    end
-                end
-                if found_item then
-                    set_train_filled(train)
-                end
+                collect(train, train_inv, contents, resources)
+            elseif structure_name == "minegistics:Farm" then
+                collect(train, train_inv, contents, farm_resources)
             elseif structure_name == "minegistics:Factory" then
-                local ore_hauler = false
-                for _, lump in pairs(resources) do
-                    if train_inv[lump] == nil then
-                        train_inv[lump] = 0
-                    end
-                    if train_inv[lump] > 0 then
-                        if lump == "minegistics_basenodes:planks" then
-                            minetest.chat_send_all("ERROR ERROR ERROR ERROR")
-                        end
-                        contents:add_item("main", lump .. " " .. train_inv[lump])
-                        train_inv[lump] =  0
-                        ore_hauler = true
-                    end
-                end
-                set_train_empty(train)
-                if ore_hauler == false then
-                    local found_item = false
-                    for _, output in pairs(products) do
-                        while (contents:contains_item("main", (output .. " 10"))) do
-                            contents:remove_item("main", (output .. " 10"))
-                            if train_inv[output] == nil then
-                                train_inv[output] = 0
-                            end
-                            train_inv[output] = train_inv[output] + 10
-                            found_item = true
-                        end
-                    end
-                    if found_item then
-                        set_train_filled(train)
-                    end
-                end
-                train:on_punch()
-            elseif structure_name == "minegistics:Market" or structure_name == "minegistics:Warehouse" then
-                if structure_name == "minegistics:Market" and train.town_train == true then
-                    minetest.get_meta(direction):set_int("has_town", 1)
-                    spawn_passengers(pos)
-                else
-                    for _, lump in pairs(resources) do
-                        if train_inv[lump] == nil then
-                            train_inv[lump] = 0
-                        end
-                        if train_inv[lump] > 0 then
-                            contents:add_item("main", lump .. " " .. train_oninv[lump])
-                            train_inv[lump] =  0
-                        end
-                    end
-                    for input, output in pairs(products) do
-                        if train_inv[output] == nil then
-                            train_inv[output] = 0
-                        end
-                        if train_inv[output] > 0 then
-                            contents:add_item("main", output .. " " .. train_inv[output])
-                            train_inv[output] =  0
-                        end
-                    end
-                    set_train_empty(train)
-                    train:on_punch()
-                end
-            elseif structure_name == "minegistics:PowerPlant" then
-                for _, fuel in pairs(fuels) do
-                    if train_inv[fuel] == nil then
-                        train_inv[fuel] = 0
-                    end
-                    if train_inv[fuel] > 0 then
-                        contents:add_item("main", fuel .. " " .. train_inv[fuel])
-                        train_inv[fuel] =  0
-                    end
-                end
-                set_train_empty(train)
-                train:on_punch()
+                factory_transaction(train, train_inv, contents)
+            elseif structure_name == "minegistics:Workshop" then
+                workshop_transaction(train, train_inv, contents)
             elseif structure_name == "minegistics:Town" then
                 train.town_train = true
-                spawn_passengers(pos)
+                spawn_passengers(train, pos)     
+            elseif structure_name == "minegistics:Market" and train.town_train == true then
+                minetest.get_meta(direction):set_int("has_town", 1)
+                spawn_passengers(train, pos)
+            elseif contents ~= nil then
+                for item, amount in pairs(train_inv) do
+                    contents:add_item("main", item .. " " .. amount)
+                    train_inv[item] =  0
+                end
+                set_train_empty(train)
+                train:on_punch()
             end
         end
     end
@@ -455,7 +479,15 @@ function train_entity:on_step(dtime)
     end
 end
 
-function spawn_passengers(pos)
+function spawn_passengers(train, pos)
+    if train.crowd_sound == false then
+        minetest.sound_play('trains_people', {
+            pos = pos,
+            loop = false,
+            max_hear_distance = 16
+        })
+        train.crowd_sound = true
+    end
     if minetest.settings:get_bool("minegistics_particles", true) then
         minetest.add_particlespawner({
             amount = 1,
@@ -507,7 +539,7 @@ minetest.register_craftitem("minegistics_trains:train", {
             return
         end
 
-        minetest.sound_play('trains_people', {
+        minetest.sound_play('trains_train_moving', {
             pos = pointed_thing.above,
             loop = false,
             max_hear_distance = 16

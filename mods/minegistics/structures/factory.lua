@@ -8,8 +8,7 @@
 local abm_timer = 0
 
 minetest.register_node("minegistics:Factory", {
-   description = "Factory: Converts resources into products.\n" ..
-    "Both can be sold but products are worth more.",
+   description = "Factory: Combines products to create more advanced items.",
    tiles = {"buildings.png"},
    groups = {dig_immediate=2, structures=1},
    drawtype = 'mesh',
@@ -57,27 +56,27 @@ minetest.register_abm({
     chance = 1,
     action = function(pos)
         abm_timer = abm_timer + 1
-        if abm_timer >= math.random(8, 16) then
+        if abm_timer >= math.random(8, 12) then
             minetest.forceload_block(pos, false)
             if power_stable(pos) then
                 local meta = minetest.get_meta(pos)
                 local inv = meta:get_inventory()
-                local items = {}
-                local working = false
-                for _,lump in pairs(resources) do
-                    items[lump] = ItemStack(lump)
-                end
                 local inventories = inv:get_lists()
+                local ingredients = {}
+                local working = false
+                for output, inputs in pairs(factory_recipes) do
+                    ingredients[output] = { ItemStack(inputs[1]), ItemStack(inputs[2]) }
+                end
                 for name, list in pairs(inventories) do
-                    for index, item in pairs(items) do
-                        while inv:contains_item(name, items[index]) do
-                            local item_name = items[index]:get_name()
-                            local item_amount = items[index]:get_count()
-                            local product = products[item_name]
-                            inv:remove_item(name, items[index])
-                            stack = ItemStack(product)
-                            stack:set_count(item_amount)
-                            inv:add_item("main", stack)
+                    for result, stacks in pairs(ingredients) do
+                        local result_stack = ItemStack(result)
+                        local s1 = stacks[1]:get_count()
+                        local s2 = stacks[2]:get_count()
+                        local lesser_stack = s1 < s2 and stacks[1] or stacks[2]
+                        while inv:contains_item(name, lesser_stack) do
+                            inv:remove_item(name, stacks[1])
+                            inv:remove_item(name, stacks[2])                          
+                            inv:add_item("main", result_stack)
                             working = true
                         end
                     end
