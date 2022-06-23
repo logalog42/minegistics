@@ -6,11 +6,8 @@
 ]]--
 
 local abm_timer = 0
-
 power_producers = {}
 power_consumers = {}
-
---TODO Add power lines and sub stations
 
 minetest.register_node("minegistics:PowerPlant", {
    description = "Power Plant: Generates power. Requires coal for fuel.\n" ..

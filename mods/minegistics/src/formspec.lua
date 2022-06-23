@@ -5,7 +5,6 @@
     License: AGPLv3
 ]]--
 
-money = 100
 show_money_on_hud = true
 local item_buttons = {}
 local item_btn_keys = {}

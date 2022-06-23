@@ -18,10 +18,6 @@ local skies = {
 	{"MinegisticSky", "#5f5f5e", 0.9, { density = 0 }},
 }
 
---
--- API
---
-
 skybox = {}
 
 skybox.set = function(player, number)
@@ -86,10 +82,6 @@ skybox.get_skies = function()
 	return table.copy(skies)
 end
 
---
--- registrations and load/save code
---
-
 minetest.register_on_joinplayer(function(player)
 	local sky = player:get_meta():get_string("minegistics:skybox")
 	if not sky or sky == "" then
@@ -104,39 +96,3 @@ minetest.register_on_joinplayer(function(player)
 		skybox.clear(player)
 	end
 end)
-
-minetest.register_privilege("skybox", {
-	description = "Change sky box for yourself",
-})
-
-minetest.register_chatcommand("skybox", {
-	params = "<skybox> or <number> or \"off\" or empty to list skyboxes",
-	description = "Change your sky box set",
-	privs = "skybox",
-	func = function(name, param)
-		local player = minetest.get_player_by_name(name)
-		if not player then
-			return
-		end
-		if param == nil or param == "" then
-			minetest.chat_send_player(name, "Available sky boxes:")
-			for _, v in ipairs(skies) do
-				minetest.chat_send_player(name, v[1])
-			end
-			return
-		elseif tonumber(param) ~= nil and tonumber(param) >= 1 and tonumber(param) <= table.getn(skies) then
-			skybox.set(player, tonumber(param))
-			return
-		elseif param == "off" or param == "0" then
-			skybox.clear(player)
-			return
-		end
-		for k, v in ipairs(skies) do
-			if v[1] == param then
-				skybox.set(player, k)
-				return
-			end
-		end
-		minetest.chat_send_player(name, "Could not find that sky box.")
-	end
-})
