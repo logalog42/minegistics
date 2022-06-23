@@ -101,6 +101,33 @@ function trains:get_rail_direction(pos_, dir, old_switch, railtype)
 	return {x=0, y=0, z=0}
 end
 
+function trains:check_front_up_down(pos, dir_, check_up, railtype)
+	local dir = vector.new(dir_)
+	local cur
+ 
+	-- Front
+	dir.y = 0
+	cur = vector.add(pos, dir)
+	if trains:is_rail(cur, railtype) then
+		return dir
+	end
+	-- Up
+	if check_up then
+		dir.y = 1
+		cur = vector.add(pos, dir)
+		if trains:is_rail(cur, railtype) then
+			return dir
+		end
+	end
+	-- Down
+	dir.y = -1
+	cur = vector.add(pos, dir)
+	if trains:is_rail(cur, railtype) then
+		return dir
+	end
+	return nil
+end
+
 function trains:pathfinder(pos_, old_pos, old_dir, distance,
   pf_switch, railtype)
 

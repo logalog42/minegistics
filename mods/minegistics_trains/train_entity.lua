@@ -91,6 +91,7 @@ function train_entity:on_punch(puncher, time_from_last_punch, tool_capabilities,
           minetest.sound_stop(self.sound_handle)
       end
       if can_collect_train(puncher) then
+        local inv = puncher:get_inventory()
         local leftover = inv:add_item("main", "minegistics_trains:train")
         if not leftover:is_empty() then
             minetest.add_item(self.object:get_pos(), leftover)
@@ -369,6 +370,9 @@ local function structure_check(train, dtime)
                         train_inv[lump] = 0
                     end
                     if train_inv[lump] > 0 then
+                        if lump == "minegistics_basenodes:planks" then
+                            minetest.chat_send_all("ERROR ERROR ERROR ERROR")
+                        end
                         contents:add_item("main", lump .. " " .. train_inv[lump])
                         train_inv[lump] =  0
                         ore_hauler = true
@@ -391,34 +395,48 @@ local function structure_check(train, dtime)
                         set_train_filled(train)
                     end
                 end
+                train:on_punch()
+            elseif structure_name == "minegistics:Market" or structure_name == "minegistics:Warehouse" then
+                if structure_name == "minegistics:Market" and train.town_train == true then
+                    minetest.get_meta(direction):set_int("has_town", 1)
+                    spawn_passengers(pos)
+                else
+                    for _, lump in pairs(resources) do
+                        if train_inv[lump] == nil then
+                            train_inv[lump] = 0
+                        end
+                        if train_inv[lump] > 0 then
+                            contents:add_item("main", lump .. " " .. train_oninv[lump])
+                            train_inv[lump] =  0
+                        end
+                    end
+                    for input, output in pairs(products) do
+                        if train_inv[output] == nil then
+                            train_inv[output] = 0
+                        end
+                        if train_inv[output] > 0 then
+                            contents:add_item("main", output .. " " .. train_inv[output])
+                            train_inv[output] =  0
+                        end
+                    end
+                    set_train_empty(train)
+                    train:on_punch()
+                end
+            elseif structure_name == "minegistics:PowerPlant" then
+                for _, fuel in pairs(fuels) do
+                    if train_inv[fuel] == nil then
+                        train_inv[fuel] = 0
+                    end
+                    if train_inv[fuel] > 0 then
+                        contents:add_item("main", fuel .. " " .. train_inv[fuel])
+                        train_inv[fuel] =  0
+                    end
+                end
+                set_train_empty(train)
+                train:on_punch()
             elseif structure_name == "minegistics:Town" then
                 train.town_train = true
                 spawn_passengers(pos)
-                if train.crowd_sound == false then
-                    minetest.sound_play('trains_people', {
-                        pos = pos,
-                        loop = false,
-                        max_hear_distance = 16
-                    })
-                    train.crowd_sound = true
-                end
-            elseif structure_name == "minegistics:Market" and train.town_train == true then
-                minetest.get_meta(direction):set_int("has_town", 1)
-                spawn_passengers(pos)
-                if train.crowd_sound == false then
-                    minetest.sound_play('trains_people', {
-                        pos = pos,
-                        loop = false,
-                        max_hear_distance = 16
-                    })
-                    train.crowd_sound = true
-                end
-            elseif contents ~= nil then
-                for item, amount in pairs(train_inv) do
-                    contents:add_item("main", item .. " " .. amount)
-                    train_inv[item] = 0
-                end
-                set_train_empty(train)
             end
         end
     end
@@ -429,7 +447,7 @@ function train_entity:on_step(dtime)
     rail_on_step(self, dtime)
     rail_sound(self, dtime)
     self.automation_timer = self.automation_timer + 1
-    if self.automation_timer >= 500 then
+    if self.automation_timer >= 1000 then
         self:on_punch()
         self.town_train = false
         self.automation_timer = 0
