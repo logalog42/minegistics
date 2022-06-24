@@ -25,10 +25,10 @@ dofile(minetest.get_modpath("minegistics") .. DIR_DELIM .. "src" .. DIR_DELIM ..
  minetest.register_on_joinplayer(function(player)
     player:hud_set_flags({hotbar = true, healthbar = false})
     player:set_properties({
-        textures = { "blank.png", "blank.png" },
+        textures = { "player_drone.png", "player_drone.png" },
         visual = "upright_sprite",
-        visual_size = { x = 1, y = 2 },
-        collisionbox = {-0.49, 0, -0.49, 0.49, 2, 0.49 },
+        visual_size = { x = 1, y = 1 },
+        collisionbox = {-0.49, 0, -0.49, 0.49, 1, 0.49 },
         initial_sprite_basepos = {x = 0, y = 0}
     })
     skybox.set(player, 1)
@@ -91,3 +91,12 @@ end)
 minetest.register_globalstep(function(dtime)   
     update_shared_hud()
 end)
+
+--gets the size of a table
+function get_table_size(table)
+    local size = 0
+    for k,v in pairs(table) do
+        size = size + 1
+    end
+    return size
+end

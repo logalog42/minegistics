@@ -155,15 +155,17 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
                         if money >= item_prices[item_name] then
                             if player:get_inventory():add_item("main", stack) then
                                 money = money - item_prices[item_name]
-                                minetest.chat_send_player(
-                                    player_name,"You bought a " .. item_name .. "!   " ..
-                                    "$" .. money .. " remaining."
+                                local players = minetest.get_connected_players()
+                                local player_count = get_table_size(players)
+                                local purchaser = player_count > 1 and player_name or "You"
+                                minetest.chat_send_all(purchaser .. " bought a " ..
+                                    item_name .. "!   " .. "$" .. money .. " remaining."
                                 )
                                 local formspec = shop_formspec(player)
                                 player:set_inventory_formspec(table.concat(formspec, ""))
                             end
                         else
-                            minetest.chat_send_player(player_name, "You can't afford that!")
+                            minetest.chat_send_player(player_name, "Insufficient funds!")
                         end
                     end
                 end

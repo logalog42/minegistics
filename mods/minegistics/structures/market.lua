@@ -8,6 +8,7 @@
 --TODO Create demands of specific items
 
 local abm_timer = 0
+local background = "form_bg.png"
 
 minetest.register_node("minegistics:Market", {
    description = "Market: Changes any item into money.\n" ..
@@ -33,11 +34,12 @@ minetest.register_node("minegistics:Market", {
       local formspec = {
           "size[8,9]",
           "list[context;main;0,0;8,4;]",
-          "list[current_player;main;0,5;8,4;]",
+          "list[current_player;main;0,5.25;8,4;]",
+          "image[0,1;9,4.75;"..background.."]",
           "scroll_container[1,2;12,4;recipe_scroll;vertical;0.05]",
           "label[0,0;" .. price_list .. "]",
           "scroll_container_end[]",
-          "scrollbar[7,1;0.25,4;vertical;recipe_scroll;0]",
+          "scrollbar[6.75,1.2;0.25,3.75;vertical;recipe_scroll;0]",
           "button[3.5,10;4,2;Back;Back]"
       }
       meta:set_string("formspec", table.concat(formspec, ""))
