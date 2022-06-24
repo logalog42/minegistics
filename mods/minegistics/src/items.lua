@@ -58,7 +58,7 @@ item_worth = {
     ["minegistics:tin_product"] = 3,
     ["minegistics:iron_product"] = 3,
     ["minegistics:furniture"] = 4,
-    ["minegistics:copper_product"] = 6,
+    ["minegistics:copper_wire"] = 6,
     ["minegistics:gold_product"] = 8,
     ["minegistics:building_materials"] = 10,
     ["minegistics:toys"] = 10,
@@ -68,11 +68,6 @@ item_worth = {
 minetest.register_craftitem("minegistics:coal_product", {
     description = ("Coal Product: Produced by workshops using coal lumps."),
     inventory_image = "coal_product.png",
-})
-
-minetest.register_craftitem("minegistics:copper_product", {
-    description = ("Copper Product: Produced by workshops using copper lumps."),
-    inventory_image = "copper_product.png"
 })
 
 minetest.register_craftitem("minegistics:copper_wire", {
