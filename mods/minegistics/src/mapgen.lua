@@ -8,8 +8,8 @@
 local ores = {
     "minegistics_basenodes:stone_with_coal",
     "minegistics_basenodes:stone_with_iron",
-    "minegistics_basenodes:stone_with_copper",
     "minegistics_basenodes:stone_with_tin",
+    "minegistics_basenodes:stone_with_copper",
     "minegistics_basenodes:stone_with_gold"
 }
 
@@ -32,8 +32,9 @@ if minp.y > 0 or maxp.y < 0 then return end
                end
             else
                local rand_ore = math.random(1,100)
-               if rand_ore >= 75 then
-                  local rand_node = math.random(1,5)
+               if rand_ore >= 70 then
+                  local max = rand_ore >= 90 and 5 or rand_ore >= 80 and 4 or 3
+                  local rand_node = math.random(1, max)
                   data[area:index(x, y, z)] = minetest.get_content_id(ores[rand_node])
                else
                   local rand_node = math.random(1,100)

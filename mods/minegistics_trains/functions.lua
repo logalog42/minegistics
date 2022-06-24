@@ -6,26 +6,6 @@ function trains:get_sign(z)
 	end
 end
 
-function trains:manage_attachment(player, obj)
-	if not player then
-		return
-	end
-	local status = obj ~= nil
-	local player_name = player:get_player_name()
-	if player_api.player_attached[player_name] == status then
-		return
-	end
-	player_api.player_attached[player_name] = status
-
-	if status then
-		player:set_attach(obj, "", {x=0, y=-4.5, z=0}, {x=0, y=0, z=0})
-		player:set_eye_offset({x=0, y=-4, z=0},{x=0, y=-4, z=0})
-	else
-		player:set_detach()
-		player:set_eye_offset({x=0, y=0, z=0},{x=0, y=0, z=0})
-	end
-end
-
 function trains:velocity_to_dir(v)
 	if math.abs(v.x) > math.abs(v.z) then
 		return {x=trains:get_sign(v.x), y=trains:get_sign(v.y), z=0}
@@ -54,36 +34,6 @@ function trains:is_rail(pos, railtype)
 		return true
 	end
 	return minetest.get_item_group(node, "connect_to_raillike") == railtype
-end
-
-function trains:check_front_up_down(pos, dir_, check_up, railtype)
-	local dir = vector.new(dir_)
-	local cur
-
-	-- Front
-	dir.y = 0
-	cur = vector.add(pos, dir)
-	if trains:is_rail(cur, railtype) then
-		return dir
---TODO Need to add elseif to check for structures.
-	end
-	-- Up
-	if check_up then
-		dir.y = 1
-		cur = vector.add(pos, dir)
-		if trains:is_rail(cur, railtype) then
-			return dir
-		end
-	--TODO Need to add elseif to check for structures.
-	end
-	-- Down
-	dir.y = -1
-	cur = vector.add(pos, dir)
-	if trains:is_rail(cur, railtype) then
-		return dir
-	end
-	--TODO Need to add elseif to check for structures.
-	return nil
 end
 
 function trains:get_rail_direction(pos_, dir, old_switch, railtype)
@@ -151,8 +101,35 @@ function trains:get_rail_direction(pos_, dir, old_switch, railtype)
 	return {x=0, y=0, z=0}
 end
 
+function trains:check_front_up_down(pos, dir_, check_up, railtype)
+	local dir = vector.new(dir_)
+	local cur
+ 
+	-- Front
+	dir.y = 0
+	cur = vector.add(pos, dir)
+	if trains:is_rail(cur, railtype) then
+		return dir
+	end
+	-- Up
+	if check_up then
+		dir.y = 1
+		cur = vector.add(pos, dir)
+		if trains:is_rail(cur, railtype) then
+			return dir
+		end
+	end
+	-- Down
+	dir.y = -1
+	cur = vector.add(pos, dir)
+	if trains:is_rail(cur, railtype) then
+		return dir
+	end
+	return nil
+end
+
 function trains:pathfinder(pos_, old_pos, old_dir, distance,
-		pf_switch, railtype)
+  pf_switch, railtype)
 
 	local pos = vector.round(pos_)
 	if vector.equals(old_pos, pos) then
@@ -184,45 +161,9 @@ function trains:pathfinder(pos_, old_pos, old_dir, distance,
 	return pf_pos, pf_dir
 end
 
-function trains:register_rail(name, def_overwrite, railparams)
-	local def = {
-		drawtype = "raillike",
-		paramtype = "light",
-		sunlight_propagates = true,
-		is_ground_content = false,
-		walkable = false,
-		selection_box = {
-			type = "fixed",
-			fixed = {-1/2, -1/2, -1/2, 1/2, -1/2+1/16, 1/2},
-		},
-	}
-	for k, v in pairs(def_overwrite) do
-		def[k] = v
-	end
-	if not def.inventory_image then
-		def.wield_image = def.tiles[1]
-		def.inventory_image = def.tiles[1]
-	end
-
-	if railparams then
-		trains.railparams[name] = table.copy(railparams)
-	end
-
-	minetest.register_node(name, def)
-end
-
-function trains:get_rail_groups(additional_groups)
-	-- Get the default rail groups and add more when a table is given
-	local groups = {
-		dig_immediate = 2,
-		attached_node = 1,
-		rail = 1,
-		connect_to_raillike = minetest.raillike_group("rail")
-	}
-	if type(additional_groups) == "table" then
-		for k, v in pairs(additional_groups) do
-			groups[k] = v
-		end
-	end
-	return groups
+function trains:register_rail(name, def, railparams)
+    if railparams then
+        trains.railparams[name] = table.copy(railparams)
+    end
+    minetest.register_node(name, def)
 end

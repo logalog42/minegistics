@@ -8,8 +8,7 @@
 local abm_timer = 0
 
 minetest.register_node("minegistics:Factory", {
-   description = "Factory: Converts resources into products.\n" ..
-    "Both can be sold but products are worth more.",
+   description = "Factory: Combines products to create more advanced items.",
    tiles = {"buildings.png"},
    groups = {dig_immediate=2, structures=1},
    drawtype = 'mesh',
@@ -18,12 +17,25 @@ minetest.register_node("minegistics:Factory", {
    inventory_image = "factory_wield.png",
    on_construct = function(pos)
       table.insert(power_consumers, pos)
+      local recipe_list = "-Recipes-\n"
+      for output, inputs in pairs(factory_recipes) do
+          local input_1_label = string.sub(inputs[1], 13, 100)
+          local input_2_label = string.sub(inputs[2], 13, 100)
+          local output_label = string.sub(output, 13, 100)
+          recipe_list = recipe_list .. input_1_label .. " + " .. input_2_label .. " -> " .. output_label .. "\n"
+      end
       local meta = minetest.get_meta(pos)
-      meta:set_string("formspec",
-          "size[8,9]"..
-          "list[context;main;0,0;8,4;]"..
-          "list[current_player;main;0,5;8,4;]" ..
-          "listring[]")
+      local formspec = {
+          "size[8,9]",
+          "list[context;main;0,0;8,4;]",
+          "list[current_player;main;0,5;8,4;]",
+          "scroll_container[1,2;12,4;recipe_scroll;vertical;0.05]",
+          "label[0,0;" .. recipe_list .. "]",
+          "scroll_container_end[]",
+          "scrollbar[7,1;0.25,4;vertical;recipe_scroll;0]",
+          "button[3.5,10;4,2;Back;Back]"
+      }
+      meta:set_string("formspec", table.concat(formspec, ""))
       meta:set_string("infotext", "Factory")
       local inv = meta:get_inventory()
       inv:set_size("main", 5*1)
@@ -57,27 +69,24 @@ minetest.register_abm({
     chance = 1,
     action = function(pos)
         abm_timer = abm_timer + 1
-        if abm_timer >= math.random(8, 16) then
+        if abm_timer >= math.random(8, 12) then
             minetest.forceload_block(pos, false)
             if power_stable(pos) then
                 local meta = minetest.get_meta(pos)
                 local inv = meta:get_inventory()
-                local items = {}
-                local working = false
-                for _,lump in pairs(resources) do
-                    items[lump] = ItemStack(lump)
-                end
                 local inventories = inv:get_lists()
+                local ingredients = {}
+                local working = false
+                for output, inputs in pairs(factory_recipes) do
+                    ingredients[output] = { ItemStack(inputs[1]), ItemStack(inputs[2]) }
+                end
                 for name, list in pairs(inventories) do
-                    for index, item in pairs(items) do
-                        while inv:contains_item(name, items[index]) do
-                            local item_name = items[index]:get_name()
-                            local item_amount = items[index]:get_count()
-                            local product = products[item_name]
-                            inv:remove_item(name, items[index])
-                            stack = ItemStack(product)
-                            stack:set_count(item_amount)
-                            inv:add_item("main", stack)
+                    for result, stacks in pairs(ingredients) do
+                        while inv:contains_item(name, stacks[1]) and inv:contains_item(name, stacks[2]) do
+                            inv:remove_item(name, stacks[1])
+                            inv:remove_item(name, stacks[2])  
+                            local result_stack = ItemStack(result)
+                            inv:add_item("main", result_stack)
                             working = true
                         end
                     end

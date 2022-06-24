@@ -49,7 +49,7 @@ minetest.register_abm({
     chance = 1,
     action = function(pos)
         abm_timer = abm_timer + 1
-        if abm_timer >= math.random(8, 16) then
+        if abm_timer >= math.random(8, 12) then
             minetest.forceload_block(pos, false)
             if power_stable(pos) then
                 local next_to = {
@@ -65,7 +65,6 @@ minetest.register_abm({
                          local meta = minetest.get_meta(pos)
                          local inv = meta:get_inventory()
                          local stack = ItemStack(ore)
-                         meta:set_string("collecting", ore)
                          stack:set_count(10)
                          if inv:add_item("main", stack) then
                             minetest.sound_play('collector', {

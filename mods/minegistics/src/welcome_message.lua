@@ -22,12 +22,12 @@ end
 
 --shows the greeting formspec
 minetest.register_on_newplayer(function(player)
-	local cb = function(player)
-		if not player or not player:is_player() then
-			return
-		end
-    local name = player:get_player_name()
-		minetest.show_formspec(name,"greeting",table.concat(greeting_formspec()))
-	end
-	minetest.after(2.0, cb, player)
+    local cb = function(player)
+        if not player or not player:is_player() then
+            return
+        end
+        local name = player:get_player_name()
+        minetest.show_formspec(name,"greeting",table.concat(greeting_formspec()))
+    end
+    minetest.after(2.0, cb, player)
 end)
