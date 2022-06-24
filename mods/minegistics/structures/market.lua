@@ -21,12 +21,26 @@ minetest.register_node("minegistics:Market", {
    inventory_image = "market_wield.png",
    on_construct = function(pos)
       table.insert(power_consumers, pos)
+      local price_list = "-Prices-\n"
+      for item, worth in pairs(item_worth) do
+          local item_label = string.sub(item, 13, 100)
+          if string.sub(item_label, 1, 9) == "basenodes" then
+              item_label = string.sub(item_label, 11, 100)
+          end
+          price_list = price_list .. item_label .. ": $" .. worth .. "\n"
+      end
       local meta = minetest.get_meta(pos)
-      meta:set_string("formspec",
-          "size[8,9]"..
-          "list[context;main;0,0;8,4;]"..
-          "list[current_player;main;0,5;8,4;]" ..
-          "listring[]")
+      local formspec = {
+          "size[8,9]",
+          "list[context;main;0,0;8,4;]",
+          "list[current_player;main;0,5;8,4;]",
+          "scroll_container[1,2;12,4;recipe_scroll;vertical;0.05]",
+          "label[0,0;" .. price_list .. "]",
+          "scroll_container_end[]",
+          "scrollbar[7,1;0.25,4;vertical;recipe_scroll;0]",
+          "button[3.5,10;4,2;Back;Back]"
+      }
+      meta:set_string("formspec", table.concat(formspec, ""))
       meta:set_string("infotext", "Market")
       local inv = meta:get_inventory()
       inv:set_size("main", 5*1)

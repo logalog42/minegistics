@@ -210,4 +210,4 @@ trains:register_rail("minegistics_trains:power_rail", {
    node_box = rail_node_box,
    collision_box = rail_collision_box,
    connects_to = {"group:new", "group:structures"},
-}, {acceleration = 5})
+}, {acceleration = 3})

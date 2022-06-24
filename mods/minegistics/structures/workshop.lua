@@ -18,12 +18,24 @@ minetest.register_node("minegistics:Workshop", {
    inventory_image = "workshop_wield.png",
    on_construct = function(pos)
       table.insert(power_consumers, pos)
+      local recipe_list = "-Recipes-\n"
+      for input, output in pairs(workshop_recipes) do
+          local input_label = string.sub(input, 23, 100)
+          local output_label = string.sub(output, 13, 100)
+          recipe_list = recipe_list .. input_label .. " -> " .. output_label .. "\n"
+      end
       local meta = minetest.get_meta(pos)
-      meta:set_string("formspec",
-          "size[8,9]"..
-          "list[context;main;0,0;8,4;]"..
-          "list[current_player;main;0,5;8,4;]" ..
-          "listring[]")
+      local formspec = {
+          "size[8,9]",
+          "list[context;main;0,0;8,4;]",
+          "list[current_player;main;0,5;8,4;]",
+          "scroll_container[1,2;12,4;recipe_scroll;vertical;0.05]",
+          "label[0,0;" .. recipe_list .. "]",
+          "scroll_container_end[]",
+          "scrollbar[7,1;0.25,4;vertical;recipe_scroll;0]",
+          "button[3.5,10;4,2;Back;Back]"
+      }
+      meta:set_string("formspec", table.concat(formspec, ""))
       meta:set_string("infotext", "Workshop")
       local inv = meta:get_inventory()
       inv:set_size("main", 5*1)

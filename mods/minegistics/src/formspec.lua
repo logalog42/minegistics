@@ -23,6 +23,7 @@ local items_for_sale = {
     ["Workshop"] = "minegistics:Workshop",
     ["Farm"] = "minegistics:Farm"
 }
+
 item_prices = {
     ["Farm"] = 300,
     ["Collector"] = 300,
@@ -61,26 +62,26 @@ end
 --defines the inventory formspec
 function power_formspec(player)
     local power_info = ""
-        for index,pos in pairs(power_producers) do
-            local local_consumers = 0
-            local local_producers = 0
-            for index,consumer in pairs(power_consumers) do
-                if vector.distance(consumer, pos) < 200 then
-                    local_consumers = local_consumers + 1
-                end
+    for index,pos in pairs(power_producers) do
+        local local_consumers = 0
+        local local_producers = 0
+        for index,consumer in pairs(power_consumers) do
+            if vector.distance(consumer, pos) < 200 then
+                local_consumers = local_consumers + 1
             end
-            for index,producer in pairs(power_producers) do
-                if vector.distance(producer, pos) < 200 then
-                    local_producers = local_producers + 1
-                end
-            end
-            local stable = local_consumers <= local_producers * 5
-            local stable_display = stable and "stable" or "unstable"
-            power_info = power_info .. local_consumers .. " consumers and " ..
-            local_producers .. " producers for power plant at (" ..
-            pos.x .. ", " .. pos.y .. ", " .. pos.z .. ")" ..
-            " (" .. stable_display .. ")\n"
         end
+        for index,producer in pairs(power_producers) do
+            if vector.distance(producer, pos) < 200 then
+                local_producers = local_producers + 1
+            end
+        end
+        local stable = local_consumers <= local_producers * 5
+        local stable_display = stable and "stable" or "unstable"
+        power_info = power_info .. local_consumers .. " consumers and " ..
+        local_producers .. " producers for power plant at (" ..
+        pos.x .. ", " .. pos.y .. ", " .. pos.z .. ")" ..
+        " (" .. stable_display .. ")\n"
+    end
     local formspec = {
         "size[11,11]",
         "bgcolor[#353535;false]",
@@ -88,6 +89,7 @@ function power_formspec(player)
         "scroll_container[1,1;12,8;power_scroll;vertical;0.1]",
         "label[1,1;" .. power_info .. "]",
         "scroll_container_end[]",
+        "scrollbar[10,1;0.25,8;vertical;power_scroll;0]",
         "button[3.5,10;4,2;Back;Back]"
     }
     return formspec

@@ -5,7 +5,7 @@
     License: AGPLv3
 ]]--
 
-money = 100000
+money = 100
 
 local loaded = false
 local enable_fog = minetest.settings:get_bool("enable_fog")

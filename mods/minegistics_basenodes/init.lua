@@ -30,11 +30,6 @@ minetest.register_craftitem("minegistics_basenodes:iron_lump", {
 	inventory_image = "default_iron_lump.png"
 })
 
-minetest.register_craftitem("minegistics_basenodes:planks", {
-   description = ("Lumber"),
-   inventory_image = "default_wood.png"
-})
-
 --
 -- Node definitions
 --
@@ -100,5 +95,5 @@ base_ores = {
     ["minegistics_basenodes:stone_with_copper"] = "minegistics_basenodes:copper_lump",
     ["minegistics_basenodes:stone_with_iron"] = "minegistics_basenodes:iron_lump",
     ["minegistics_basenodes:stone_with_gold"] = "minegistics_basenodes:gold_lump",
-    ["minegistics_basenodes:tree"] = "minegistics_basenodes:planks"
+    ["minegistics_basenodes:tree"] = "minegistics:lumber"
 }

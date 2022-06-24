@@ -7,7 +7,7 @@
 
 fuels = {
     "minegistics_basenodes:coal_lump",
-    "minegistics_basenodes:planks"
+    "minegistics:lumber"
 }
 
 resources = {
@@ -16,19 +16,18 @@ resources = {
     "minegistics_basenodes:tin_lump",
     "minegistics_basenodes:iron_lump",
     "minegistics_basenodes:gold_lump",
-    "minegistics_basenodes:planks"
+    "minegistics:lumber"
   }
 
 farm_resources = {
-    "minegistics:fat_resource",
-    "minegistics:fruit_resource",
-    "minegistics:leather_resource",
-    "minegistics:meat_resource",
-    "minegistics:vessels_milk_bottle_resource",
+    "minegistics:fat",
+    "minegistics:fruit",
+    "minegistics:leather",
+    "minegistics:meat",
+    "minegistics:vessels_milk_bottle",
 }
 
 workshop_recipes = {
-    ["minegistics_basenodes:planks"] = "minegistics:coal_product",
     ["minegistics_basenodes:coal_lump"] = "minegistics:coal_product",
     ["minegistics_basenodes:copper_lump"] = "minegistics:copper_wire",
     ["minegistics_basenodes:gold_lump"] = "minegistics:gold_product",
@@ -38,29 +37,31 @@ workshop_recipes = {
 
 factory_recipes = {
     ["minegistics:mechanical_parts"] = {"minegistics:iron_product", "minegistics:copper_wire"},
-    ["minegistics:building_material_good"] = {"minegistics:iron_product", "minegistics:minegistics_basenodes:planks"},
-    ["minegistics:toy_good"] = {"minegistics:tin_product", "minegistics:minegistics_basenodes:planks"}
+    ["minegistics:building_materials"] = {"minegistics:iron_product", "minegistics:lumber"},
+    ["minegistics:furniture"] = {"minegistics:leather", "minegistics:lumber"},
+    ["minegistics:toys"] = {"minegistics:tin_product", "minegistics:lumber"}
 }
 
 item_worth = {
-    ["minegistics:fat_resource"] = 1,
-    ["minegistics:fruit_resource"] = 1,
-    ["minegistics:leather_resource"] = 1,
-    ["minegistics:meat_resource"] = 1,
-    ["minegistics:vessels_milk_bottle_resource"] = 1,
+    ["minegistics:fat"] = 1,
+    ["minegistics:fruit"] = 1,
+    ["minegistics:leather"] = 1,
+    ["minegistics:meat"] = 1,
+    ["minegistics:vessels_milk_bottle"] = 1,
     ["minegistics_basenodes:coal_lump"] = 2,
-    ["minegistics_basenodes:planks"] = 2,
     ["minegistics_basenodes:tin_lump"] = 2,
     ["minegistics_basenodes:iron_lump"] = 2,
     ["minegistics_basenodes:copper_lump"] = 4,
     ["minegistics_basenodes:gold_lump"] = 6,
+    ["minegistics:lumber"] = 2,
     ["minegistics:coal_product"] = 3,
     ["minegistics:tin_product"] = 3,
     ["minegistics:iron_product"] = 3,
+    ["minegistics:furniture"] = 4,
     ["minegistics:copper_product"] = 6,
     ["minegistics:gold_product"] = 8,
-    ["minegistics:building_material_good"] = 10,
-    ["minegistics:toy_good"] = 10,
+    ["minegistics:building_materials"] = 10,
+    ["minegistics:toys"] = 10,
     ["minegistics:mechanical_parts"] = 12
 }
 
@@ -99,37 +100,47 @@ minetest.register_craftitem("minegistics:iron_product", {
     inventory_image = "iron_product.png"
 })
 
-minetest.register_craftitem("minegistics:building_material_good", {
+minetest.register_craftitem("minegistics:lumber", {
+   description = ("Lumber"),
+   inventory_image = "lumber.png"
+})
+
+minetest.register_craftitem("minegistics:building_materials", {
     description = ("Building Materials: Produced by factories using iron product and lumber."),
     inventory_image = "building_material_good.png"
 })
 
-minetest.register_craftitem("minegistics:toys_good", {
-    description = ("Iron Product: Produced by workshops using tin product and lumber."),
+minetest.register_craftitem("minegistics:toys", {
+    description = ("Toys: Produced by factories using tin product and lumber."),
     inventory_image = "toys_good.png"
 })
 
-minetest.register_craftitem("minegistics:fat_resource", {
+minetest.register_craftitem("minegistics:furniture", {
+    description = ("Furniture: Produced by factories using leather and lumber."),
+    inventory_image = "furniture_product.png"
+})
+
+minetest.register_craftitem("minegistics:fat", {
     description = ("Fat: Produced by farms."),
     inventory_image = "fat_resource.png"
 })
 
-minetest.register_craftitem("minegistics:fruit_resource", {
+minetest.register_craftitem("minegistics:fruit", {
     description = ("Fruit: Produced by farms."),
     inventory_image = "fruit_resource.png"
 })
 
-minetest.register_craftitem("minegistics:leather_resource", {
+minetest.register_craftitem("minegistics:leather", {
     description = ("Leather: Produced by farms."),
     inventory_image = "leather_resource.png"
 })
 
-minetest.register_craftitem("minegistics:meat_resource", {
+minetest.register_craftitem("minegistics:meat", {
     description = ("Meat: Produced by farms."),
     inventory_image = "meat_resource.png"
 })
 
-minetest.register_craftitem("minegistics:vessels_milk_bottle_resource", {
+minetest.register_craftitem("minegistics:vessels_milk_bottle", {
     description = ("Milk: Produced by farms."),
     inventory_image = "vessels_milk_bottle_resource.png"
 })

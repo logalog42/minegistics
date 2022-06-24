@@ -17,12 +17,25 @@ minetest.register_node("minegistics:Factory", {
    inventory_image = "factory_wield.png",
    on_construct = function(pos)
       table.insert(power_consumers, pos)
+      local recipe_list = "-Recipes-\n"
+      for output, inputs in pairs(factory_recipes) do
+          local input_1_label = string.sub(inputs[1], 13, 100)
+          local input_2_label = string.sub(inputs[2], 13, 100)
+          local output_label = string.sub(output, 13, 100)
+          recipe_list = recipe_list .. input_1_label .. " + " .. input_2_label .. " -> " .. output_label .. "\n"
+      end
       local meta = minetest.get_meta(pos)
-      meta:set_string("formspec",
-          "size[8,9]"..
-          "list[context;main;0,0;8,4;]"..
-          "list[current_player;main;0,5;8,4;]" ..
-          "listring[]")
+      local formspec = {
+          "size[8,9]",
+          "list[context;main;0,0;8,4;]",
+          "list[current_player;main;0,5;8,4;]",
+          "scroll_container[1,2;12,4;recipe_scroll;vertical;0.05]",
+          "label[0,0;" .. recipe_list .. "]",
+          "scroll_container_end[]",
+          "scrollbar[7,1;0.25,4;vertical;recipe_scroll;0]",
+          "button[3.5,10;4,2;Back;Back]"
+      }
+      meta:set_string("formspec", table.concat(formspec, ""))
       meta:set_string("infotext", "Factory")
       local inv = meta:get_inventory()
       inv:set_size("main", 5*1)
@@ -69,13 +82,10 @@ minetest.register_abm({
                 end
                 for name, list in pairs(inventories) do
                     for result, stacks in pairs(ingredients) do
-                        local result_stack = ItemStack(result)
-                        local s1 = stacks[1]:get_count()
-                        local s2 = stacks[2]:get_count()
-                        local lesser_stack = s1 < s2 and stacks[1] or stacks[2]
-                        while inv:contains_item(name, lesser_stack) do
+                        while inv:contains_item(name, stacks[1]) and inv:contains_item(name, stacks[2]) do
                             inv:remove_item(name, stacks[1])
-                            inv:remove_item(name, stacks[2])                          
+                            inv:remove_item(name, stacks[2])  
+                            local result_stack = ItemStack(result)
                             inv:add_item("main", result_stack)
                             working = true
                         end

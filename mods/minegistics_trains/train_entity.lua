@@ -25,6 +25,7 @@ local train_entity = {
     railtype = nil,
     automation_timer = 0,
     town_train = false,
+    supply_train = false,
     crowd_sound = false
 }
 
@@ -48,6 +49,7 @@ function train_entity:on_activate(staticdata, dtime_s)
     self.railtype = data.railtype
     self.train_inv = data.train_inv
     self.town_train = data.town_train
+    self.supply_train = data.supply_train
     if data.old_dir then
         self.old_dir = data.old_dir
     end
@@ -59,6 +61,7 @@ function train_entity:get_staticdata()
         railtype = self.railtype,
         old_dir = self.old_dir,
         town_train = self.town_train,
+        supply_train = self.supply_train
     })
 end
 
@@ -331,7 +334,6 @@ end
 
 --deposits or withdraws items at a factory
 local function factory_transaction(train, train_inv, contents)
-    local supply_train = false
     for output, inputs in pairs(factory_recipes) do
         if train_inv[inputs[1]] == nil then
             train_inv[inputs[1]] = 0
@@ -342,16 +344,16 @@ local function factory_transaction(train, train_inv, contents)
         if train_inv[inputs[1]] > 0 then
             contents:add_item("main", inputs[1] .. " " .. train_inv[inputs[1]])
             train_inv[inputs[1]] =  0
-            supply_train = true
+            train.supply_train = true
         end
         if train_inv[inputs[2]] > 0 then
             contents:add_item("main", inputs[2] .. " " .. train_inv[inputs[2]])
             train_inv[inputs[2]] =  0
-            supply_train = true
+            train.supply_train = true
         end
     end
     set_train_empty(train)
-    if supply_train == false then
+    if train.supply_train == false then
         local found_item = false
         for output, inputs in pairs(factory_recipes) do
             if (contents:contains_item("main", (output .. " 10"))) then
