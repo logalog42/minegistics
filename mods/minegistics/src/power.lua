@@ -6,11 +6,8 @@
 ]]--
 
 local abm_timer = 0
-
 power_producers = {}
 power_consumers = {}
-
---TODO Add power lines and sub stations
 
 minetest.register_node("minegistics:PowerPlant", {
    description = "Power Plant: Generates power. Requires coal for fuel.\n" ..
@@ -96,8 +93,8 @@ minetest.register_abm({
             if inv:contains_item("main", "minegistics_basenodes:coal_lump") then
                 inv:remove_item("main", "minegistics_basenodes:coal_lump")
                 has_fuel = true
-             elseif inv:contains_item("main", "minegistics_basenodes:planks") then
-                inv:remove_item("main", "minegistics_basenodes:planks")
+             elseif inv:contains_item("main", "minegistics:lumber") then
+                inv:remove_item("main", "minegistics:lumber")
                 has_fuel = true
             end
             local active = is_active(pos)

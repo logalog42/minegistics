@@ -5,7 +5,6 @@
     License: AGPLv3
 ]]--
 
-money = 100
 show_money_on_hud = true
 local item_buttons = {}
 local item_btn_keys = {}
@@ -20,19 +19,24 @@ local items_for_sale = {
     ["Rail"] = "minegistics_trains:rail",
     ["Powered Rail"] = "minegistics_trains:power_rail",
     ["Brake Rail"] = "minegistics_trains:brake_rail",
-    ["Train"] = "minegistics_trains:train"
+    ["Train"] = "minegistics_trains:train",
+    ["Workshop"] = "minegistics:Workshop",
+    ["Farm"] = "minegistics:Farm"
 }
+
 item_prices = {
+    ["Farm"] = 300,
     ["Collector"] = 300,
-    ["Factory"] = 400,
+    ["Factory"] = 500,
     ["Town"] = 200,
     ["Warehouse"] = 100,
     ["Market"] = 500,
     ["Rail"] = 20,
+    ["Workshop"] = 400,
     ["Powered Rail"] = 200,
     ["Brake Rail"] = 40,
     ["Train"] = 100,
-    ["Power Plant"] = 350
+    ["Power Plant"] = 350,
 }
 
 --defines the inventory formspec
@@ -58,26 +62,26 @@ end
 --defines the inventory formspec
 function power_formspec(player)
     local power_info = ""
-        for index,pos in pairs(power_producers) do
-            local local_consumers = 0
-            local local_producers = 0
-            for index,consumer in pairs(power_consumers) do
-                if vector.distance(consumer, pos) < 200 then
-                    local_consumers = local_consumers + 1
-                end
+    for index,pos in pairs(power_producers) do
+        local local_consumers = 0
+        local local_producers = 0
+        for index,consumer in pairs(power_consumers) do
+            if vector.distance(consumer, pos) < 200 then
+                local_consumers = local_consumers + 1
             end
-            for index,producer in pairs(power_producers) do
-                if vector.distance(producer, pos) < 200 then
-                    local_producers = local_producers + 1
-                end
-            end
-            local stable = local_consumers <= local_producers * 5
-            local stable_display = stable and "stable" or "unstable"
-            power_info = power_info .. local_consumers .. " consumers and " ..
-            local_producers .. " producers for power plant at (" ..
-            pos.x .. ", " .. pos.y .. ", " .. pos.z .. ")" ..
-            " (" .. stable_display .. ")\n"
         end
+        for index,producer in pairs(power_producers) do
+            if vector.distance(producer, pos) < 200 then
+                local_producers = local_producers + 1
+            end
+        end
+        local stable = local_consumers <= local_producers * 5
+        local stable_display = stable and "stable" or "unstable"
+        power_info = power_info .. local_consumers .. " consumers and " ..
+        local_producers .. " producers for power plant at (" ..
+        pos.x .. ", " .. pos.y .. ", " .. pos.z .. ")" ..
+        " (" .. stable_display .. ")\n"
+    end
     local formspec = {
         "size[11,11]",
         "bgcolor[#353535;false]",
@@ -85,6 +89,7 @@ function power_formspec(player)
         "scroll_container[1,1;12,8;power_scroll;vertical;0.1]",
         "label[1,1;" .. power_info .. "]",
         "scroll_container_end[]",
+        "scrollbar[10,1;0.25,8;vertical;power_scroll;0]",
         "button[3.5,10;4,2;Back;Back]"
     }
     return formspec
@@ -118,8 +123,8 @@ function shop_formspec(player)
         "bgcolor[#353535;false]",
         "label[4.5,0.5;Shop]",
         table.concat(item_buttons),
-        "label[3.5,12;".."Your balance: $" .. money.."]",
-        "button[3,13;4,2;Back;Back]"
+        "label[3.5,13.6;".."Your balance: $" .. money.."]",
+        "button[3,14;4,2;Back;Back]"
     }
     return formspec
 end
@@ -150,15 +155,17 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
                         if money >= item_prices[item_name] then
                             if player:get_inventory():add_item("main", stack) then
                                 money = money - item_prices[item_name]
-                                minetest.chat_send_player(
-                                    player_name,"You bought a " .. item_name .. "!   " ..
-                                    "$" .. money .. " remaining."
+                                local players = minetest.get_connected_players()
+                                local player_count = get_table_size(players)
+                                local purchaser = player_count > 1 and player_name or "You"
+                                minetest.chat_send_all(purchaser .. " bought a " ..
+                                    item_name .. "!   " .. "$" .. money .. " remaining."
                                 )
                                 local formspec = shop_formspec(player)
                                 player:set_inventory_formspec(table.concat(formspec, ""))
                             end
                         else
-                            minetest.chat_send_player(player_name, "You can't afford that!")
+                            minetest.chat_send_player(player_name, "Insufficient funds!")
                         end
                     end
                 end

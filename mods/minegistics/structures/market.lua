@@ -8,6 +8,7 @@
 --TODO Create demands of specific items
 
 local abm_timer = 0
+local background = "form_bg.png"
 
 minetest.register_node("minegistics:Market", {
    description = "Market: Changes any item into money.\n" ..
@@ -21,12 +22,27 @@ minetest.register_node("minegistics:Market", {
    inventory_image = "market_wield.png",
    on_construct = function(pos)
       table.insert(power_consumers, pos)
+      local price_list = "-Prices-\n"
+      for item, worth in pairs(item_worth) do
+          local item_label = string.sub(item, 13, 100)
+          if string.sub(item_label, 1, 9) == "basenodes" then
+              item_label = string.sub(item_label, 11, 100)
+          end
+          price_list = price_list .. item_label .. ": $" .. worth .. "\n"
+      end
       local meta = minetest.get_meta(pos)
-      meta:set_string("formspec",
-          "size[8,9]"..
-          "list[context;main;0,0;8,4;]"..
-          "list[current_player;main;0,5;8,4;]" ..
-          "listring[]")
+      local formspec = {
+          "size[8,9]",
+          "list[context;main;0,0;8,4;]",
+          "list[current_player;main;0,5.25;8,4;]",
+          "image[0,1;9,4.75;"..background.."]",
+          "scroll_container[1,2;12,4;recipe_scroll;vertical;0.05]",
+          "label[0,0;" .. price_list .. "]",
+          "scroll_container_end[]",
+          "scrollbar[6.75,1.2;0.25,3.75;vertical;recipe_scroll;0]",
+          "button[3.5,10;4,2;Back;Back]"
+      }
+      meta:set_string("formspec", table.concat(formspec, ""))
       meta:set_string("infotext", "Market")
       local inv = meta:get_inventory()
       inv:set_size("main", 5*1)
@@ -60,32 +76,22 @@ minetest.register_abm({
     chance = 1,
     action = function(pos)
         abm_timer = abm_timer + 1
-        if abm_timer >= math.random(8, 16) then
+        if abm_timer >= math.random(8, 12) then
             minetest.forceload_block(pos, false)
             local meta = minetest.get_meta(pos)
             if power_stable(pos) and meta:get_int("has_town") == 1 then
                 meta:set_int("has_town", 0)
                 local inv = meta:get_inventory()
                 local items = {}
-                local lumps = {}
-                for _,lump in pairs(resources) do
-                    lumps[lump] = ItemStack(lump)
-                end
-                for _,product in pairs(products) do
-                    items[product] = ItemStack(product)
+                for item, worth in pairs(item_worth) do
+                    items[item] = ItemStack(item)
                 end
                 local money_earned = 0
                 local inventories = inv:get_lists()
                 for name, list in pairs(inventories) do
-                    for index, item in pairs(lumps) do
-                        while inv:contains_item(name, lumps[index]) do
-                            inv:remove_item(name, lumps[index])
-                            money_earned = money_earned + item_worth[item:get_name()]
-                        end
-                    end
                     for index, item in pairs(items) do
-                        while inv:contains_item(name, items[index]) do
-                            inv:remove_item(name, items[index])
+                        while inv:contains_item(name, item) do
+                            inv:remove_item(name, item)
                             money_earned = money_earned + item_worth[item:get_name()]
                         end
                     end
