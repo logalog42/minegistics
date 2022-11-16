@@ -155,7 +155,7 @@ local rail_collision_box = {
     }
 }
 
-trains:register_rail("minegistics_trains:rail", {
+trains:register_rail("trains:rail", {
    description = ("Rail: For trains."),
    drawtype = "nodebox",
    paramtype = "light",
@@ -174,7 +174,7 @@ trains:register_rail("minegistics_trains:rail", {
    connects_to = {"group:new", "group:structures"},
 }, {})
 
-trains:register_rail("minegistics_trains:brake_rail", {
+trains:register_rail("trains:brake_rail", {
    description = ("Brake Rail: Reduces the speed of a train."),
    drawtype = "nodebox",
    paramtype = "light",
@@ -193,7 +193,7 @@ trains:register_rail("minegistics_trains:brake_rail", {
    connects_to = {"group:new", "group:structures"},
 }, {acceleration = -3})
 
-trains:register_rail("minegistics_trains:power_rail", {
+trains:register_rail("trains:power_rail", {
    description = ("Powered Rail: Increases the speed of a train."),
    drawtype = "nodebox",
    paramtype = "light",

@@ -1,7 +1,7 @@
 -- trains/init.lua
 
 trains = {}
-trains.modpath = minetest.get_modpath("minegistics_trains")
+trains.modpath = minetest.get_modpath("trains")
 trains.railparams = {}
 
 -- Maximal speed of the train in m/s (min = -1)

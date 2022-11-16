@@ -16,10 +16,10 @@ local items_for_sale = {
     ["Town"] = "minegistics:Town",
     ["Warehouse"] = "minegistics:Warehouse",
     ["Market"] = "minegistics:Market",
-    ["Rail"] = "minegistics_trains:rail",
-    ["Powered Rail"] = "minegistics_trains:power_rail",
-    ["Brake Rail"] = "minegistics_trains:brake_rail",
-    ["Train"] = "minegistics_trains:train",
+    ["Rail"] = "trains:rail",
+    ["Powered Rail"] = "trains:power_rail",
+    ["Brake Rail"] = "trains:brake_rail",
+    ["Train"] = "trains:train",
     ["Workshop"] = "minegistics:Workshop",
     ["Farm"] = "minegistics:Farm"
 }

@@ -53,7 +53,7 @@ minetest.register_abm({
             minetest.forceload_block(pos, false)
             if power_stable(pos) then
                 local under = minetest.get_node(vector.new(pos.x, pos.y - 1, pos.z))
-                if under.name == "minegistics_basenodes:dirt_with_grass" then
+                if under.name == "basenodes:dirt_with_grass" then
                     local rand = math.random(1, 5)
                     local resource = farm_resources[rand]
                     local meta = minetest.get_meta(pos)

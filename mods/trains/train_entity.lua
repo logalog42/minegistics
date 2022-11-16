@@ -69,7 +69,7 @@ function can_collect_train(player)
     local name = player:get_player_name()
     local inv = player:get_inventory()
     local creative = minetest.is_creative_enabled(name)
-    local has_train = inv:contains_item("main", "minegistics_trains:train")
+    local has_train = inv:contains_item("main", "trains:train")
     return creative == false or has_train == false
 end
 
@@ -95,7 +95,7 @@ function train_entity:on_punch(puncher, time_from_last_punch, tool_capabilities,
       end
       if can_collect_train(puncher) then
         local inv = puncher:get_inventory()
-        local leftover = inv:add_item("main", "minegistics_trains:train")
+        local leftover = inv:add_item("main", "trains:train")
         if not leftover:is_empty() then
             minetest.add_item(self.object:get_pos(), leftover)
         end
@@ -163,7 +163,7 @@ local v3_len = vector.length
 
 local function rail_on_step(self, dtime)
     local vel = self.object:get_velocity()
-    
+
     if self.punched then
         vel = vector.add(vel, self.velocity)
         self.object:set_velocity(vel)
@@ -186,7 +186,7 @@ local function rail_on_step(self, dtime)
     end
 
     local stop_wiggle = false
-    
+
     if self.old_pos and same_dir then
         local acc = self.object:get_acceleration()
         local distance = dtime * (v3_len(vel) + 0.5 * dtime * v3_len(acc))
@@ -209,7 +209,7 @@ local function rail_on_step(self, dtime)
     local dir, switch_keys = trains:get_rail_direction(pos, train_dir, self.old_switch, self.railtype)
     local dir_changed = not vector.equals(dir, self.old_dir)
     local new_acc = {x=0, y=0, z=0}
-    
+
     if stop_wiggle or vector.equals(dir, {x=0, y=0, z=0}) then
         vel = {x = 0, y = 0, z = 0}
         local pos_r = vector.round(pos)
@@ -236,7 +236,7 @@ local function rail_on_step(self, dtime)
             pos.x = math.floor(pos.x + 0.5)
             update.pos = true
         end
-        
+
         if dir.x ~= 0 and math.floor(pos.z + 0.5) ~= pos.z then
             pos.z = math.floor(pos.z + 0.5)
             update.pos = true
@@ -256,7 +256,7 @@ local function rail_on_step(self, dtime)
     end
 
     local max_vel = trains.speed_max
-    
+
     for _, v in pairs({"x","y","z"}) do
         if math.abs(vel[v]) > max_vel then
             vel[v] = trains:get_sign(vel[v]) * max_vel
@@ -267,11 +267,11 @@ local function rail_on_step(self, dtime)
 
     self.object:set_acceleration(new_acc)
     self.old_pos = vector.round(pos)
-    
+
     if not vector.equals(dir, {x=0, y=0, z=0}) and not stop_wiggle then
         self.old_dir = vector.new(dir)
     end
-    
+
     self.old_switch = switch_keys
 
     if self.punched then
@@ -287,7 +287,7 @@ local function rail_on_step(self, dtime)
     end
 
     local yaw = 0
-    
+
     if self.old_dir.x < 0 then
         yaw = 0.5
     elseif self.old_dir.x > 0 then
@@ -295,7 +295,7 @@ local function rail_on_step(self, dtime)
     elseif self.old_dir.z < 0 then
         yaw = 1
     end
-    
+
     self.object:set_yaw(yaw * math.pi)
 
     local anim = {x=0, y=0}
@@ -304,13 +304,13 @@ local function rail_on_step(self, dtime)
     elseif dir.y == 1 then
         anim = {x=2, y=2}
     end
-    
+
     self.object:set_animation(anim, 1, 0)
 
     if update.vel then
         self.object:set_velocity(vel)
     end
-    
+
     if update.pos then
         if dir_changed then
             self.object:set_pos(pos)
@@ -432,7 +432,7 @@ local function structure_check(train, dtime)
         table.insert(train_cargo, get_object_id(train.object), {})
         train_inv = train_cargo[get_object_id(train.object)]
     end
-    local directions = { 
+    local directions = {
         vector.new(pos.x + 1, pos.y, pos.z),
         vector.new(pos.x - 1, pos.y, pos.z),
         vector.new(pos.x, pos.y, pos.z + 1),
@@ -452,7 +452,7 @@ local function structure_check(train, dtime)
                 workshop_transaction(train, train_inv, contents)
             elseif structure_name == "minegistics:Town" then
                 train.town_train = true
-                spawn_passengers(train, pos)     
+                spawn_passengers(train, pos)
             elseif structure_name == "minegistics:Market" and train.town_train == true then
                 minetest.get_meta(direction):set_int("has_town", 1)
                 spawn_passengers(train, pos)
@@ -511,9 +511,9 @@ function spawn_passengers(train, pos)
     end
 end
 
-minetest.register_entity("minegistics_trains:train", train_entity)
+minetest.register_entity("trains:train", train_entity)
 
-minetest.register_craftitem("minegistics_trains:train", {
+minetest.register_craftitem("trains:train", {
     description = "Train: " ..
     "Carries resources from one building to another.\n" ..
     "Must be placed on a rail. (Shift+Click to pick up)",
@@ -523,7 +523,7 @@ minetest.register_craftitem("minegistics_trains:train", {
         local under = pointed_thing.under
         local node = minetest.get_node(under)
         local udef = minetest.registered_nodes[node.name]
-        
+
         if udef and udef.on_rightclick and not (placer and placer:is_player() and placer:get_player_control().sneak) then
             return udef.on_rightclick(under, node, placer, itemstack,
             pointed_thing) or itemstack
@@ -532,11 +532,11 @@ minetest.register_craftitem("minegistics_trains:train", {
         if not pointed_thing.type == "node" then
             return
         end
-        
+
         if trains:is_rail(pointed_thing.under) then
-            minetest.add_entity(pointed_thing.under, "minegistics_trains:train")
+            minetest.add_entity(pointed_thing.under, "trains:train")
         elseif trains:is_rail(pointed_thing.above) then
-            minetest.add_entity(pointed_thing.above, "minegistics_trains:train")
+            minetest.add_entity(pointed_thing.above, "trains:train")
         else
             return
         end
@@ -550,7 +550,7 @@ minetest.register_craftitem("minegistics_trains:train", {
         if not minetest.is_creative_enabled(placer:get_player_name()) then
             itemstack:take_item()
         end
-        
+
         return itemstack
     end,
 })
