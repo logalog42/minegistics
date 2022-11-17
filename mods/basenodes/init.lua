@@ -83,6 +83,17 @@ minetest.register_node("basenodes:stone_with_gold", {
 	tiles = {"default_stone.png^default_mineral_gold.png"},
 })
 
+minetest.register_node("basenodes:snow", {
+	description = ("Snowy mountain tops"),
+	tiles = {"default_snow.png"}
+})
+
+minetest.register_node("basenodes:snow_transition", {
+	description = ("Snow starting to show"),
+	tiles = {"default_snow.png", "default_stone.png", "default_stone.png^default_snow_side.png"}
+})
+
+
 --
 -- Ore definitions
 --
