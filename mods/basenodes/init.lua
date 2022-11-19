@@ -93,7 +93,51 @@ minetest.register_node("basenodes:snow_transition", {
 	tiles = {"default_snow.png", "default_stone.png", "default_stone.png^default_snow_side.png"}
 })
 
+local stone_slope_box = {
+  --All box points start in the lower left corner, to upper right
+  fixed = {
+    --1/4th layer
+     {-0.5, -0.5, -0.5, 0.25, -0.25, 0.5},
+     --2/4 layer
+     {-0.5, -0.25, -0.5, 0.125, 0.0, 0.5},
+     --3/4 layer
+     {-0.5, 0.0, 0.058, 0.625, 0.25, 0.5},
+     --4/4 layer
+     {-0.5, 0.25, -0.19, 0.0, 0.5, 0.5},
+  },
+}
 
+local stone_slope_collision = {
+	fixed = {
+		--1/4th layer
+		 {-0.5, -0.5, -0.5, 0.25, -0.25, 0.5},
+		 --2/4 layer
+		 {-0.5, -0.25, -0.5, 0.125, 0.0, 0.5},
+		 --3/4 layer
+		 {-0.5, 0.0, 0.058, 0.625, 0.25, 0.5},
+		 --4/4 layer
+		 {-0.5, 0.25, -0.19, 0.0, 0.5, 0.5},
+	},
+}
+
+minetest.register_node("basenodes:stone_slope", {
+   description = ("Slope for mountain blocks."),
+   drawtype = "nodebox",
+   paramtype = "light",
+	 paramtype2 = "4dir",
+   use_texture_alpha = "clip",
+	 type = fixed,
+   tiles = {
+      "default_stone.png",
+      "default_stone.png",
+			"stone_slope_back.png",
+ 		 	"stone_slope_front.png",
+      "default_stone.png",
+      "default_stone.png"
+   },
+   node_box = stone_slope_box,
+   collision_box = stone_slope_collision,
+}, {})
 --
 -- Ore definitions
 --
