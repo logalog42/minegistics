@@ -40,11 +40,35 @@ minetest.register_on_generated(function(minp, maxp, blockseed)
           for loopy = -1, -1, 1 do
           local vi = area:index(loopx, loopy, loopz)
           local pos = { x = loopx, y = loopy, z = loopz}
-          local current_perlin = perlin:get_3d(pos)
+          local current_perlin = math.floor(perlin:get_3d(pos))
 
           --new perlin generating
           --Mountain locations
           if  current_perlin > 1 then
+
+            --adjacent nodes
+            local right_node = {x = loopx + 1, y = loopy, z = loopz}
+            local left_node = {x = loopx - 1, y = loopy, z = loopz}
+            local back_node = {x = loopx, y = loopy, z = loopz + 1}
+            local front_node = {x = loopx, y = loopy, z = loopz - 1}
+            local adjacent_node = {right_node, left_node, back_node, front_node}
+            local sides = 0
+
+
+            --slope node selection
+            for _, adjacentNode in ipairs(adjacent_node) do
+              if math.floor(perlin:get_3d(adjacentNode)) > current_perlin then
+                sides = sides + 1
+              end
+            end
+
+            --Place slope node
+            if sides == 1 then
+              vm.set_node_at({loopx, current_perlin + 1, loopz}, {name = "basenodes:stone_slope", param2=0})
+            end
+
+            sides = 0
+
             for level = loopy, math.floor(current_perlin) do
               if level >= 6 then
                 data[area:index(loopx, level, loopz)] = minetest.get_content_id("basenodes:snow")
