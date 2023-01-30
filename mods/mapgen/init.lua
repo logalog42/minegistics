@@ -63,11 +63,16 @@ minetest.register_on_generated(function(minp, maxp, blockseed)
               end
             end
 
-            --TODO Get the slope to rotate properly
             --Place slope node
-            --if sides == 1 then
-            --  data[area:index(loopx, current_perlin + 1, loopz)] = minetest.get_content_id("basenodes:stone_slope")
-            --end
+            if sides >= 1 then
+              if (current_perlin + 1) >= 6 then
+              data[area:index(loopx, current_perlin + 1, loopz)] = minetest.get_content_id("basenodes:snow_slope")
+              elseif (current_perlin + 1) == 5 then
+                data[area:index(loopx, current_perlin + 1, loopz)] = minetest.get_content_id("basenodes:snow_slope_transition")
+              else
+                data[area:index(loopx, current_perlin + 1, loopz)] = minetest.get_content_id("basenodes:stone_slope")
+              end
+            end
 
             sides = 0
 
@@ -83,10 +88,12 @@ minetest.register_on_generated(function(minp, maxp, blockseed)
           --Edge around mountain for ore generation
           elseif current_perlin <= 1 and current_perlin >= 0 then
             local rand_ore = math.random(1,100)
-            if rand_ore >= 90 then
-               local max = rand_ore >= 90 and 5 or rand_ore >= 80 and 4 or 3
-               local rand_node = math.random(1, max)
-               data[area:index(loopx, loopy, loopz)] = minetest.get_content_id(ores[rand_node])
+            if rand_ore >= 99 then
+              local rand_node = math.random(1, 5)
+              data[area:index(loopx, loopy, loopz)] = minetest.get_content_id(ores[rand_node])
+            elseif rand_ore >= 98 then
+              local rand_node = math.random(1, 4)
+              data[area:index(loopx, loopy, loopz)] = minetest.get_content_id(ores[rand_node])
             else
               data[area:index(loopx, loopy, loopz)] = minetest.get_content_id("basenodes:stone")
             end
