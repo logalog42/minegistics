@@ -31,6 +31,7 @@ minetest.register_on_generated(function(minp, maxp, blockseed)
     local vm, emin, emax = minetest.get_mapgen_object("voxelmanip")
     local area = VoxelArea:new{MinEdge=emin, MaxEdge=emax}
     local data = vm:get_data()
+    local param2 = vm:get_param2_data()
 
     if minp.y >= -1 or maxp.y <= 1 then
       return
@@ -62,10 +63,11 @@ minetest.register_on_generated(function(minp, maxp, blockseed)
               end
             end
 
+            --TODO Get the slope to rotate properly
             --Place slope node
-            if sides == 1 then
-              vm.set_node_at({loopx, current_perlin + 1, loopz}, {name = "basenodes:stone_slope", param2=0})
-            end
+            --if sides == 1 then
+            --  data[area:index(loopx, current_perlin + 1, loopz)] = minetest.get_content_id("basenodes:stone_slope")
+            --end
 
             sides = 0
 

@@ -110,6 +110,7 @@ minetest.register_node("basenodes:stone_slope", {
    use_texture_alpha = "clip",
    --paramtype = "light",
    paramtype2 = "4dir",
+   param2 = 2,
    node_box = {
 		 		type = "fixed",
 		 		fixed = {
