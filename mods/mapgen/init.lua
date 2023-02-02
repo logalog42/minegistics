@@ -16,22 +16,21 @@ local ores = {
 minetest.register_on_generated(function(minp, maxp, blockseed)
 
   local np_mountains = {
-    offset = -5,
-     scale = 10,
-     spread = {x = 10, y = 10, z = 10},
-     seed = 0,
-     octaves = 2,
-     persistence = 0.5,
-     lacunarity = 2.0,
+    offset = 0,
+     scale = 3,
+     spread = {x = 9, y = 9, z = 9},
+     seed = 800515320,
+     octaves = 10,
+     persistence = 0.1,
+     lacunarity = 1.0,
      flags = "defaults",
   }
 
-    local perlin = minetest.get_perlin(np_mountains)
+    local mountain_perlin = minetest.get_perlin(np_mountains)
 
     local vm, emin, emax = minetest.get_mapgen_object("voxelmanip")
     local area = VoxelArea:new{MinEdge=emin, MaxEdge=emax}
     local data = vm:get_data()
-    local param2 = vm:get_param2_data()
 
     if minp.y >= -1 or maxp.y <= 1 then
       return
@@ -41,7 +40,7 @@ minetest.register_on_generated(function(minp, maxp, blockseed)
           for loopy = -1, -1, 1 do
           local vi = area:index(loopx, loopy, loopz)
           local pos = { x = loopx, y = loopy, z = loopz}
-          local current_perlin = math.floor(perlin:get_3d(pos))
+          local current_perlin = math.floor(mountain_perlin:get_3d(pos))
 
           --new perlin generating
           --Mountain locations
@@ -55,19 +54,30 @@ minetest.register_on_generated(function(minp, maxp, blockseed)
             local adjacent_node = {right_node, left_node, back_node, front_node}
             local sides = 0
 
+            --Placing down mountains
+
+            for level = loopy, math.floor(current_perlin) do
+              if level >= 2 then
+                data[area:index(loopx, level, loopz)] = minetest.get_content_id("basenodes:snow")
+              elseif level == 1 then
+                data[area:index(loopx, level, loopz)] = minetest.get_content_id("basenodes:snow_transition")
+              else
+                data[area:index(loopx, level, loopz)] = minetest.get_content_id("basenodes:stone")
+              end
+            end
 
             --slope node selection
             for _, adjacentNode in ipairs(adjacent_node) do
-              if math.floor(perlin:get_3d(adjacentNode)) > current_perlin then
+              if math.floor(mountain_perlin:get_3d(adjacentNode)) > current_perlin then
                 sides = sides + 1
               end
             end
 
             --Place slope node
             if sides >= 1 then
-              if (current_perlin + 1) >= 6 then
+              if (current_perlin + 1) >= 3 then
               data[area:index(loopx, current_perlin + 1, loopz)] = minetest.get_content_id("basenodes:snow_slope")
-              elseif (current_perlin + 1) == 5 then
+              elseif (current_perlin + 1) == 2 then
                 data[area:index(loopx, current_perlin + 1, loopz)] = minetest.get_content_id("basenodes:snow_slope_transition")
               else
                 data[area:index(loopx, current_perlin + 1, loopz)] = minetest.get_content_id("basenodes:stone_slope")
@@ -76,15 +86,6 @@ minetest.register_on_generated(function(minp, maxp, blockseed)
 
             sides = 0
 
-            for level = loopy, math.floor(current_perlin) do
-              if level >= 6 then
-                data[area:index(loopx, level, loopz)] = minetest.get_content_id("basenodes:snow")
-              elseif level == 5 then
-                data[area:index(loopx, level, loopz)] = minetest.get_content_id("basenodes:snow_transition")
-              else
-                data[area:index(loopx, level, loopz)] = minetest.get_content_id("basenodes:stone")
-              end
-            end
           --Edge around mountain for ore generation
           elseif current_perlin <= 1 and current_perlin >= 0 then
             local rand_ore = math.random(1,100)
@@ -97,6 +98,7 @@ minetest.register_on_generated(function(minp, maxp, blockseed)
             else
               data[area:index(loopx, loopy, loopz)] = minetest.get_content_id("basenodes:stone")
             end
+
           --Everything else is grass
           else
             data[area:index(loopx, loopy, loopz)] = minetest.get_content_id("basenodes:dirt_with_grass")
