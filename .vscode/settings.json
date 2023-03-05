@@ -4,6 +4,7 @@
         "VoxelArea",
         "vector",
         "ItemStack",
-        "DIR_DELIM"
+        "DIR_DELIM",
+        "copy"
     ]
 }

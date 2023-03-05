@@ -7,6 +7,7 @@
 
 --TODO Set a limit to the size train will take from a location
 
+--Initial entity Creation
 local train_entity = {
     initial_properties = {
         physical = false,
@@ -81,7 +82,7 @@ function train_entity:on_punch(puncher, time_from_last_punch, tool_capabilities,
         self.railtype = minetest.get_item_group(node, "connect_to_raillike")
     end
     if not puncher or not puncher:is_player() then
-        local train_dir = trains:get_rail_direction(pos, self.old_dir, nil, nil, self.railtype)
+        local train_dir = trains:get_rail_direction(pos, self.old_dir, nil, self.railtype)
         if vector.equals(train_dir, {x=0, y=0, z=0}) then
             return
         end
@@ -106,7 +107,7 @@ function train_entity:on_punch(puncher, time_from_last_punch, tool_capabilities,
 
     local punch_dir = trains:velocity_to_dir(puncher:get_look_dir())
     punch_dir.y = 0
-    local train_dir = trains:get_rail_direction(pos, punch_dir, nil, nil, self.railtype)
+    local train_dir = trains:get_rail_direction(pos, punch_dir, nil, self.railtype)
     if vector.equals(train_dir, {x=0, y=0, z=0}) then
         return
     end
