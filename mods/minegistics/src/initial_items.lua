@@ -17,9 +17,9 @@ local give_initial_stuff = function(player)
     give_if_not_gotten_already(inv, "main", "minegistics:Town" .. " 1")
     give_if_not_gotten_already(inv, "main", "minegistics:Collector" .. " 2")
     give_if_not_gotten_already(inv, "main", "minegistics:PowerPlant" .. " 1")
-    give_if_not_gotten_already(inv, "main", "minegistics_trains:train" .. " 3")
-    give_if_not_gotten_already(inv, "main", "minegistics_trains:rail" .. " 99")
-    give_if_not_gotten_already(inv, "main", "minegistics_basenodes:coal_lump" .. " 99")
+    give_if_not_gotten_already(inv, "main", "trains:train" .. " 3")
+    give_if_not_gotten_already(inv, "main", "trains:rail" .. " 99")
+    give_if_not_gotten_already(inv, "main", "basenodes:coal_lump" .. " 99")
     minetest.log("action", "[give_initial_stuff] Giving initial stuff to "..player:get_player_name())
 end
 

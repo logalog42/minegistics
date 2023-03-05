@@ -6,7 +6,6 @@
 ]]--
 
 local modpath = minetest.get_modpath("minegistics")
-dofile(modpath .. DIR_DELIM .. "src" .. DIR_DELIM .. "mapgen.lua")
 dofile(modpath .. DIR_DELIM .. "src" .. DIR_DELIM .. "power.lua")
 dofile(modpath .. DIR_DELIM .. "src" .. DIR_DELIM .. "items.lua")
 dofile(modpath .. DIR_DELIM .. "src" .. DIR_DELIM .. "hud.lua")

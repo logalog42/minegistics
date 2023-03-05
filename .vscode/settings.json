@@ -1,0 +1,10 @@
+{
+    "Lua.diagnostics.globals": [
+        "minetest",
+        "VoxelArea",
+        "vector",
+        "ItemStack",
+        "DIR_DELIM",
+        "copy"
+    ]
+}

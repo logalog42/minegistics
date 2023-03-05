@@ -6,16 +6,16 @@
 ]]--
 
 fuels = {
-    "minegistics_basenodes:coal_lump",
+    "basenodes:coal_lump",
     "minegistics:lumber"
 }
 
 resources = {
-    "minegistics_basenodes:coal_lump",
-    "minegistics_basenodes:copper_lump",
-    "minegistics_basenodes:tin_lump",
-    "minegistics_basenodes:iron_lump",
-    "minegistics_basenodes:gold_lump",
+    "basenodes:coal_lump",
+    "basenodes:copper_lump",
+    "basenodes:tin_lump",
+    "basenodes:iron_lump",
+    "basenodes:gold_lump",
     "minegistics:lumber"
   }
 
@@ -28,11 +28,11 @@ farm_resources = {
 }
 
 workshop_recipes = {
-    ["minegistics_basenodes:coal_lump"] = "minegistics:coal_product",
-    ["minegistics_basenodes:copper_lump"] = "minegistics:copper_wire",
-    ["minegistics_basenodes:gold_lump"] = "minegistics:gold_product",
-    ["minegistics_basenodes:iron_lump"] = "minegistics:iron_product",
-    ["minegistics_basenodes:tin_lump"] = "minegistics:tin_product",
+    ["basenodes:coal_lump"] = "minegistics:coal_product",
+    ["basenodes:copper_lump"] = "minegistics:copper_wire",
+    ["basenodes:gold_lump"] = "minegistics:gold_product",
+    ["basenodes:iron_lump"] = "minegistics:iron_product",
+    ["basenodes:tin_lump"] = "minegistics:tin_product",
 }
 
 factory_recipes = {
@@ -48,11 +48,11 @@ item_worth = {
     ["minegistics:leather"] = 1,
     ["minegistics:meat"] = 1,
     ["minegistics:vessels_milk_bottle"] = 1,
-    ["minegistics_basenodes:coal_lump"] = 2,
-    ["minegistics_basenodes:tin_lump"] = 2,
-    ["minegistics_basenodes:iron_lump"] = 2,
-    ["minegistics_basenodes:copper_lump"] = 4,
-    ["minegistics_basenodes:gold_lump"] = 6,
+    ["basenodes:coal_lump"] = 2,
+    ["basenodes:tin_lump"] = 2,
+    ["basenodes:iron_lump"] = 2,
+    ["basenodes:copper_lump"] = 4,
+    ["basenodes:gold_lump"] = 6,
     ["minegistics:lumber"] = 2,
     ["minegistics:coal_product"] = 3,
     ["minegistics:tin_product"] = 3,
