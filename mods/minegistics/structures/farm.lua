@@ -68,7 +68,7 @@ minetest.register_abm({
                         })
                         if minetest.settings:get_bool("minegistics_particles", true) then
                             minetest.add_particlespawner({
-                                amount = 50,
+                                amount = 10,
                                 time = 1,
                                 minpos = {x=pos.x,y=pos.y+1,z=pos.z},
                                 maxpos = {x=pos.x,y=pos.y+2,z=pos.z},
