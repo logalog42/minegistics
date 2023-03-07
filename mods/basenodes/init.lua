@@ -57,6 +57,7 @@ minetest.register_node("basenodes:tree_1", {
    mesh = "minegistics_tree.obj",
    tiles={"minegistics_tree.png"},
    sunlight_propagates = true,
+   paramtype = "light",
 })
 
 minetest.register_node("basenodes:tree_2", {
@@ -65,6 +66,7 @@ minetest.register_node("basenodes:tree_2", {
 	mesh = "minegistics_tree_2.obj",
 	tiles={"minegistics_tree.png"},
 	sunlight_propagates = true,
+	paramtype = "light",
  })
 
 minetest.register_node("basenodes:tree_3", {
@@ -73,6 +75,7 @@ minetest.register_node("basenodes:tree_3", {
 	mesh = "minegistics_tree_3.obj",
 	tiles={"minegistics_tree.png"},
 	sunlight_propagates = true,
+	paramtype = "light",
 })
 
 minetest.register_node("basenodes:tree_4", {
@@ -81,6 +84,7 @@ minetest.register_node("basenodes:tree_4", {
 	mesh = "minegistics_tree_4.obj",
 	tiles={"minegistics_tree.png"},
 	sunlight_propagates = true,
+	paramtype = "light",
 })
 minetest.register_node("basenodes:stone_with_coal", {
 	description = ("Coal Ore"),
@@ -134,7 +138,7 @@ minetest.register_node("basenodes:stone_slope", {
 		--"stone_slope_front.png",
 	 },
    use_texture_alpha = "clip",
-   --paramtype = "light",
+   paramtype = "light",
    node_box = {
 				type = "connected",
 				connect_front ={
@@ -183,7 +187,7 @@ minetest.register_node("basenodes:snow_slope", {
 	drawtype = "nodebox",
 	  tiles = {"default_snow.png"},
 	use_texture_alpha = "clip",
-	--paramtype = "light",
+	paramtype = "light",
 	node_box = {
 				 type = "connected",
 				 connect_front ={
@@ -232,7 +236,7 @@ minetest.register_node("basenodes:snow_slope", {
 	drawtype = "nodebox",
 	  tiles = {"default_snow.png", "default_stone.png", "default_stone.png^default_snow_side.png"},
 	use_texture_alpha = "clip",
-	--paramtype = "light",
+	paramtype = "light",
 	node_box = {
 				 type = "connected",
 				 connect_front ={
