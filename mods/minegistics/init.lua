@@ -25,11 +25,11 @@ dofile(minetest.get_modpath("minegistics") .. DIR_DELIM .. "src" .. DIR_DELIM ..
  minetest.register_on_joinplayer(function(player)
     player:hud_set_flags({hotbar = true, healthbar = false})
     player:set_properties({
-        textures = { "player_drone.png", "player_drone.png" },
-        visual = "upright_sprite",
-        visual_size = { x = 1, y = 1 },
-        collisionbox = {-0.49, 0, -0.49, 0.49, 1, 0.49 },
-        initial_sprite_basepos = {x = 0, y = 0}
+        textures = { "blimp.png" },
+        visual = "mesh",
+        mesh = "blimp.obj",
+        visual_size = { x = 4, y = 4 },
+        collisionbox = {-0.49, 0, -0.49, 0.49, 1, 0.49 }
     })
     skybox.set(player, 1)
     minetest.set_player_privs(player:get_player_name(), {fly=true, fast=true})
