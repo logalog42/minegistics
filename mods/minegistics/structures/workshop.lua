@@ -9,14 +9,21 @@ local abm_timer = 0
 local background = "form_bg.png"
 
 minetest.register_node("minegistics:Workshop", {
-   description = "Workshop: Converts resources into products.\n" ..
-    "Both can be sold but products are worth more.",
-   tiles = {"buildings.png"},
-   groups = {dig_immediate=2, structures=1},
-   drawtype = 'mesh',
-   mesh = "workshop.obj",
-   wield_image = "workshop_wield.png",
-   inventory_image = "workshop_wield.png",
+    description = "Workshop: Converts resources into products.\n" ..
+        "Both can be sold but products are worth more.",
+    tiles = {"buildings.png"},
+    groups = {dig_immediate=2, structures=1},
+    drawtype = 'mesh',
+    mesh = "workshop.obj",
+    wield_image = "workshop_wield.png",
+    inventory_image = "workshop_wield.png",
+    on_place = function(itemstack, placer, pointed_thing)
+        if pointed_thing.above.y ~= 0 then
+            minetest.chat_send_player(placer:get_player_name(), "You can't build here.")
+            return
+        end
+        return minetest.item_place(itemstack, placer, pointed_thing)
+end,
    on_construct = function(pos)
       table.insert(power_consumers, pos)
       local recipe_list = "-Recipes-\n"
