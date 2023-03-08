@@ -17,17 +17,24 @@ minetest.register_node("minegistics:Collector", {
    mesh = "collector.obj",
    wield_image = "collector_wield.png",
    inventory_image = "collector_wield.png",
+   on_place = function(itemstack, placer, pointed_thing)
+    if pointed_thing.above.y ~= 0 then
+        minetest.chat_send_player(placer:get_player_name(), "You can't build here.")
+        return
+    end
+    return minetest.item_place(itemstack, placer, pointed_thing)
+    end,
    on_construct = function(pos)
-      table.insert(power_consumers, pos)
-      local meta = minetest.get_meta(pos)
-      meta:set_string("formspec",
-          "size[8,9]"..
-          "list[context;main;0,0;8,4;]"..
-          "list[current_player;main;0,5;8,4;]" ..
-          "listring[]")
-      meta:set_string("infotext", "Collector")
-      local inv = meta:get_inventory()
-      inv:set_size("main", 5*1)
+            table.insert(power_consumers, pos)
+            local meta = minetest.get_meta(pos)
+            meta:set_string("formspec",
+                "size[8,9]"..
+                "list[context;main;0,0;8,4;]"..
+                "list[current_player;main;0,5;8,4;]" ..
+                "listring[]")
+            meta:set_string("infotext", "Collector")
+            local inv = meta:get_inventory()
+            inv:set_size("main", 5*1)
   end,
   after_dig_node = function(pos, oldnode, oldmetadata, digger)
       for i,p in pairs(power_consumers) do

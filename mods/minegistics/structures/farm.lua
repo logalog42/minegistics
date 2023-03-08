@@ -17,6 +17,13 @@ minetest.register_node("minegistics:Farm", {
    mesh = "farm.obj",
    wield_image = "farm_wield.png",
    inventory_image = "farm_wield.png",
+   on_place = function(itemstack, placer, pointed_thing)
+        if pointed_thing.above.y ~= 0 then
+        minetest.chat_send_player(placer:get_player_name(), "You can't build here.")
+        return
+        end
+        return minetest.item_place(itemstack, placer, pointed_thing)
+    end,
    on_construct = function(pos)
       table.insert(power_consumers, pos)
       local meta = minetest.get_meta(pos)

@@ -20,6 +20,13 @@ minetest.register_node("minegistics:Market", {
    mesh = "market.obj",
    wield_image = "market_wield.png",
    inventory_image = "market_wield.png",
+   on_place = function(itemstack, placer, pointed_thing)
+        if pointed_thing.above.y ~= 0 then
+        minetest.chat_send_player(placer:get_player_name(), "You can't build here.")
+        return
+        end
+        return minetest.item_place(itemstack, placer, pointed_thing)
+    end,
    on_construct = function(pos)
       table.insert(power_consumers, pos)
       local price_list = "-Prices-\n"

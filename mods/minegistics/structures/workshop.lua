@@ -17,6 +17,13 @@ minetest.register_node("minegistics:Workshop", {
    mesh = "workshop.obj",
    wield_image = "workshop_wield.png",
    inventory_image = "workshop_wield.png",
+   on_place = function(itemstack, placer, pointed_thing)
+        if pointed_thing.above.y ~= 0 then
+            minetest.chat_send_player(placer:get_player_name(), "You can't build here.")
+            return
+        end
+        return minetest.item_place(itemstack, placer, pointed_thing)
+    end,
    on_construct = function(pos)
       table.insert(power_consumers, pos)
       local recipe_list = "-Recipes-\n"
