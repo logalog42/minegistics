@@ -11,7 +11,7 @@
 local train_entity = {
     initial_properties = {
         physical = false,
-        collisionbox = {-0.5, -0.5, -0.5, 0.5, 0.5, 0.5},
+        collisionbox = {-5/16, -5/16, -5/16, 5/16, 1/16, 5/16},
         visual = "mesh",
         mesh = "train.obj",
         visual_size = {x=1, y=1},
