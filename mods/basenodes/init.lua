@@ -351,5 +351,8 @@ base_ores = {
     ["basenodes:stone_with_copper"] = "basenodes:copper_lump",
     ["basenodes:stone_with_iron"] = "basenodes:iron_lump",
     ["basenodes:stone_with_gold"] = "basenodes:gold_lump",
-    ["basenodes:tree"] = "minegistics:lumber"
+    ["basenodes:tree_1"] = "minegistics:lumber",
+	["basenodes:tree_2"] = "minegistics:lumber",
+	["basenodes:tree_3"] = "minegistics:lumber",
+	["basenodes:tree_4"] = "minegistics:lumber",
 }
