@@ -3,19 +3,26 @@
 		logalog
 		Droog71
 	License: AGPLv3
+
+
+	TODO:
+		Disable train labels displaying state before PR
+		Set a limit to the size train will take from a location
+	Maybe:
+		corelate train sound to train speed
 ]]--
 
---TODO Set a limit to the size train will take from a location
 
 
 local function spawn_passengers(train, pos)
-	if train.crowd_sound == false then
-		minetest.sound_play('trains_people', {
+	if math.random(1, 20) == 1 then
+	-- if train.crowd_sound then
+		minetest.sound_play("trains_people", {
 			pos = pos,
 			loop = false,
-			max_hear_distance = 16
+			max_hear_distance = 5,
 		})
-		train.crowd_sound = true
+		train.crowd_sound = false
 	end
 	if minetest.settings:get_bool("minegistics_particles", true) then
 		minetest.add_particlespawner({
@@ -60,28 +67,22 @@ local function rail_on_step_event(handler, obj, dtime)
 	end
 end
 
-local function rail_sound(self, dtime)
-	if not self.sound_ttl then
-		self.sound_ttl = 1.0
-		return
-	elseif self.sound_ttl > 0 then
-		self.sound_ttl = self.sound_ttl - dtime
-		return
-	end
-	self.sound_ttl = 1.0
-	if self.sound_handle then
-		local handle = self.sound_handle
-		self.sound_handle = nil
-		minetest.after(0.2, minetest.sound_stop, handle)
-	end
-	local vel = self.object:get_velocity()
-	local speed = vector.length(vel)
-	if speed > 0 then
-		self.sound_handle = minetest.sound_play("trains_train_moving", {
-			object = self.object,
-			gain = (speed / trains.speed_max) / 2,
+
+local function play_rail_sound(train)
+	if not train.sound_handle then
+		local speed = train.object:get_velocity():length()
+		train.sound_handle = minetest.sound_play("trains_train_moving", {
+			object = train.object,
+			gain = 0.75,
+			max_hear_distance = 10,
 			loop = true,
 		})
+	end
+end
+local function stop_rail_sound(train)
+	if train.sound_handle then
+		minetest.sound_stop(train.sound_handle)
+		train.sound_handle = nil
 	end
 end
 
@@ -216,11 +217,12 @@ local function structure_check(train, dtime)
 			elseif structure_name == "minegistics:Workshop" then
 				workshop_transaction(train, train_inv, contents)
 			elseif structure_name == "minegistics:Town" then
-				train.town_train = true
+				train.passengers = true
 				spawn_passengers(train, pos)
-			elseif structure_name == "minegistics:Market" and train.town_train == true then
+			elseif structure_name == "minegistics:Market" and train.passengers == true then
 				minetest.get_meta(direction):set_int("has_town", 1)
 				spawn_passengers(train, pos)
+				train.passengers = true
 			elseif contents ~= nil then
 				for item, amount in pairs(train_inv) do
 					contents:add_item("main", item .. " " .. amount)
@@ -234,17 +236,29 @@ local function structure_check(train, dtime)
 end
 
 
-local function train_drive(self, dtime)
-	-- self.object:set_properties({
-	-- 	nametag = self.object:get_yaw()/(math.pi),
-	-- 	-- nametag = dtime,
-	-- })
+local function train_drive(train, dtime)
+	train.smoke_timer = train.smoke_timer - dtime
+	if train.smoke_timer <= 0 then
+		train.smoke_timer = nil
+		minetest.add_particle({
+			pos = train.object:get_pos(),
+			texture = "black_smoke.png",
+			expirationtime = 1.5,
+			velocity = vector.new(0, 0.75, 0),
+			acceleration = vector.new(0, -0.5, 0),
+		})
+	end
 
-	local new_pos, new_dir, stop = trains.get_next_pos(self, dtime)
-	self.object:set_yaw(trains.dir_to_yaw(new_dir))
-	self.object:move_to(new_pos, false)
-	-- self.object:set_pos(new_pos)
-	if stop then self.state = "stopped" end
+	local new_pos, new_dir, stop = trains.get_next_pos(train, dtime)
+	train.object:set_yaw(trains.dir_to_yaw(new_dir))
+	train.object:move_to(new_pos, false)
+	-- train.object:set_pos(new_pos)
+	if stop then
+		train.state = "stopped"
+		stop_rail_sound(train)
+	else
+		play_rail_sound(train)
+	end
 end
 
 --Initial entity Creation
@@ -259,24 +273,18 @@ local train_entity = {
 		textures = {"trains_train.png"}
 	},
 
-	test = "foo",
-	timer = 0,
+	pause_timer = 1,
+	smoke_timer = 0.3,
 	speed = 1,
 	state = "pause",
 
-	punched = false,
-	velocity = {x=0, y=0, z=0},
-	old_dir = {x=1, y=0, z=0},
-	old_pos = nil,
-	old_switch = 0,
-	railtype = nil,
-	automation_timer = 0,
-	town_train = false,
+	passengers = false,
 	supply_train = false,
 	crowd_sound = false,
 
+	sound_handle = nil,
+
 	on_activate = function(self, staticdata, dtime_s)
-		self.test = nil
 		self.object:set_armor_groups({immortal=1})
 		if string.sub(staticdata, 1, string.len("return")) ~= "return" then
 			return
@@ -285,21 +293,19 @@ local train_entity = {
 		if type(data) ~= "table" then
 			return
 		end
-		self.railtype = data.railtype
 		self.train_inv = data.train_inv
-		self.town_train = data.town_train
+		self.passengers = data.passengers
 		self.supply_train = data.supply_train
-		if data.old_dir then
-			self.old_dir = data.old_dir
-		end
 		table.insert(train_cargo, get_object_id(self.object), {})
+	end,
+
+	on_deactivate = function(self, removal)
+		stop_rail_sound(self)
 	end,
 
 	get_staticdata = function(self)
 		return minetest.serialize({
-			railtype = self.railtype,
-			old_dir = self.old_dir,
-			town_train = self.town_train,
+			passengers = self.passengers,
 			supply_train = self.supply_train
 		})
 	end,
@@ -322,11 +328,6 @@ local train_entity = {
 	end,
 
 	on_step = function(self, dtime, moveresult)
-		-- minetest.add_particle({
-		-- 	pos = self.object:get_pos(),
-		-- 	texture = "black_smoke.png",
-		-- 	velocity = vector.new(0, 1, 0)
-		-- })
 		-- train_drive(self, dtime)
 		self.object:set_properties({
 			nametag = self.state,
@@ -336,41 +337,16 @@ local train_entity = {
 		elseif self.state == "stopped" then
 			structure_check(self, dtime)
 			self.state = "pause"
-			self.timer = 1
+			-- self.pause_timer = 1
 		elseif self.state == "pause" then
-			self.timer = self.timer - dtime
-			if self.timer <= 0 then
-				self.timer = 0
+			self.pause_timer = self.pause_timer - dtime
+			if self.pause_timer <= 0 then
+				self.pause_timer = nil
 				self.state = "driving"
 			end
 		elseif self.state == "loading" then
 			structure_check(self, dtime)
 		end
-		-- self.timer = self.timer + dtime
-		-- local pos = self.object:get_pos()
-		-- if self.timer > 1 then
-		-- 	self.timer = self.timer - 0.25
-		-- 	if pos.y < 0.5 then
-		-- 		pos.y = pos.y + 1
-		-- 	else
-		-- 		pos.y = pos.y - 1
-		-- 	end
-		-- 	-- self.object:set_pos(pos)
-		-- 	-- self.object:move_to(pos, false)
-		-- 	self.object:move_to(pos, true)
-		-- end
-
-
-		-- structure_check(self, dtime)
-		-- rail_on_step(self, dtime)
-		-- rail_sound(self, dtime)
-		-- self.automation_timer = self.automation_timer + 1
-		-- if self.automation_timer >= 1000 then
-		-- 	self:on_punch()
-		-- 	self.town_train = false
-		-- 	self.automation_timer = 0
-		-- 	self.crowd_sound = false
-		-- end
 	end,
 }
 
@@ -408,12 +384,6 @@ minetest.register_craftitem("trains:train", {
 		else
 			return
 		end
-
-		minetest.sound_play('trains_train_moving', {
-			pos = pointed_thing.above,
-			loop = false,
-			max_hear_distance = 16
-		})
 
 		if not minetest.is_creative_enabled(placer:get_player_name()) then
 			itemstack:take_item()
