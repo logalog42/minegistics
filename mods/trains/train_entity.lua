@@ -12,7 +12,7 @@
 		corelate train sound to train speed
 ]]--
 
-
+DEBUG_MODE = minetest.settings:get_bool("minegistics_debug", false)
 
 local function spawn_passengers(train, pos)
 	if math.random(1, 20) == 1 then
@@ -58,12 +58,6 @@ local function get_object_id(object)
 		if entity.object == object then
 			return id
 		end
-	end
-end
-
-local function rail_on_step_event(handler, obj, dtime)
-	if handler then
-		handler(obj, dtime)
 	end
 end
 
@@ -189,9 +183,9 @@ local function collect(train, train_inv, contents, list)
 	end
 end
 
+
 --checks if the train is moving and if stopped check for a structure next to it.
 local function structure_check(train, dtime)
-	local vel = train.object:get_velocity()
 	local pos = train.object:get_pos()
 	local train_inv = train_cargo[get_object_id(train.object)]
 	if train_inv == nil then
@@ -204,33 +198,31 @@ local function structure_check(train, dtime)
 		vector.new(pos.x, pos.y, pos.z + 1),
 		vector.new(pos.x, pos.y, pos.z - 1)
 	}
-	if vel.x == 0 and vel.y == 0 and vel.z == 0 then
-		for i, direction in ipairs(directions) do
-			local structure_name = minetest.get_node(direction).name
-			local contents = minetest.get_inventory({type="node", pos=direction})
-			if structure_name == "minegistics:Collector" then
-				collect(train, train_inv, contents, resources)
-			elseif structure_name == "minegistics:Farm" then
-				collect(train, train_inv, contents, farm_resources)
-			elseif structure_name == "minegistics:Factory" then
-				factory_transaction(train, train_inv, contents)
-			elseif structure_name == "minegistics:Workshop" then
-				workshop_transaction(train, train_inv, contents)
-			elseif structure_name == "minegistics:Town" then
-				train.passengers = true
-				spawn_passengers(train, pos)
-			elseif structure_name == "minegistics:Market" and train.passengers == true then
-				minetest.get_meta(direction):set_int("has_town", 1)
-				spawn_passengers(train, pos)
-				train.passengers = true
-			elseif contents ~= nil then
-				for item, amount in pairs(train_inv) do
-					contents:add_item("main", item .. " " .. amount)
-					train_inv[item] =  0
-				end
-				set_train_empty(train)
-				train:on_punch()
+	for i, direction in ipairs(directions) do
+		local structure_name = minetest.get_node(direction).name
+		local contents = minetest.get_inventory({type="node", pos=direction})
+		if structure_name == "minegistics:Collector" then
+			collect(train, train_inv, contents, resources)
+		elseif structure_name == "minegistics:Farm" then
+			collect(train, train_inv, contents, farm_resources)
+		elseif structure_name == "minegistics:Factory" then
+			factory_transaction(train, train_inv, contents)
+		elseif structure_name == "minegistics:Workshop" then
+			workshop_transaction(train, train_inv, contents)
+		elseif structure_name == "minegistics:Town" then
+			train.passengers = true
+			spawn_passengers(train, pos)
+		elseif structure_name == "minegistics:Market" and train.passengers == true then
+			minetest.get_meta(direction):set_int("has_town", 1)
+			spawn_passengers(train, pos)
+			train.passengers = true
+		elseif contents ~= nil then
+			for item, amount in pairs(train_inv) do
+				contents:add_item("main", item .. " " .. amount)
+				train_inv[item] =  0
 			end
+			set_train_empty(train)
+			train:on_punch()
 		end
 	end
 end
@@ -328,10 +320,11 @@ local train_entity = {
 	end,
 
 	on_step = function(self, dtime, moveresult)
-		-- train_drive(self, dtime)
-		self.object:set_properties({
-			nametag = self.state,
-		})
+		if DEBUG_MODE then
+			self.object:set_properties({
+				nametag = self.state,
+			})
+		end
 		if self.state == "driving" then
 			train_drive(self, dtime)
 		elseif self.state == "stopped" then
@@ -349,17 +342,8 @@ local train_entity = {
 		end
 	end,
 }
-
-
-
-
-
-
-
-
-
-
 minetest.register_entity("trains:train", train_entity)
+
 
 minetest.register_craftitem("trains:train", {
 	description = "Train: " ..

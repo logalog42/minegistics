@@ -1,2 +1,7 @@
 #Enables or disables particle effects.
 minegistics_particles (Particle Effects) bool true
+
+# Debug mode
+#
+# Enables debug features
+minegistics_debug (Debug mode) bool false
