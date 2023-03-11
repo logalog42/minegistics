@@ -70,7 +70,7 @@ local function spawn_passengers(train, pos)
 	end
 end
 
-local function can_collect_train(player)
+local function should_collect_train(player)
 	local name = player:get_player_name()
 	local inv = player:get_inventory()
 	local creative = minetest.is_creative_enabled(name)
@@ -304,12 +304,15 @@ local train_entity = {
 
 	on_punch = function(self, puncher, time_from_last_punch, tool_capabilities, direction, damage)
 		if puncher and puncher:get_player_control().sneak then
-			if can_collect_train(puncher) then
-				local inv = puncher:get_inventory()
-				local leftover = inv:add_item("main", "trains:train")
-				if not leftover:is_empty() then
-					minetest.add_item(self.object:get_pos(), leftover)
+			if should_collect_train(puncher) then
+				local pos = self.object:get_pos()
+				local drops = {
+					"trains:train",
+				}
+				for item, count in pairs(self.cargo) do
+					drops[#drops + 1] = item .. " " .. count
 				end
+				minetest.handle_node_drops(pos, drops, puncher)
 			end
 			self.object:remove()
 			return
