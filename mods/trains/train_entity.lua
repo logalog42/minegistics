@@ -78,15 +78,6 @@ local function can_collect_train(player)
 	return creative == false or has_train == false
 end
 
-local function get_object_id(object)
-	for id, entity in pairs(minetest.luaentities) do
-		if entity.object == object then
-			return id
-		end
-	end
-end
-
-
 
 local function play_rail_sound(train)
 	if not train.sound_handle then
@@ -107,9 +98,8 @@ local function stop_rail_sound(train)
 end
 
 local function get_cargo_count(train)
-	local train_inv = train_cargo[get_object_id(train.object)]
 	local n = 0
-	for item, count in pairs(train_inv) do
+	for item, count in pairs(train.cargo) do
 		n = n + count
 	end
 	return n
@@ -146,18 +136,12 @@ local function factory_transaction(train, train_inv, contents)
 			train.supply_train = true
 		end
 	end
-	set_train_empty(train)
 	if not train.supply_train then
-		local found_item = false
 		for output, inputs in pairs(factory_recipes) do
 			if (contents:contains_item("main", (output .. " 10"))) then
 				contents:remove_item("main", (output .. " 10"))
 				train_inv[output] = (train_inv[output] or 0) + 10
-				found_item = true
 			end
-		end
-		if found_item then
-			set_train_filled(train)
 		end
 	end
 	update_train_cargo_display(train)
@@ -173,18 +157,12 @@ local function workshop_transaction(train, train_inv, contents)
 			ore_hauler = true
 		end
 	end
-	set_train_empty(train)
 	if not ore_hauler then
-		local found_item = false
 		for input, output in pairs(workshop_recipes) do
 			if (contents:contains_item("main", (output .. " 10"))) then
 				contents:remove_item("main", (output .. " 10"))
 				train_inv[output] = (train_inv[output] or 0) + 10
-				found_item = true
 			end
-		end
-		if found_item then
-			set_train_filled(train)
 		end
 	end
 	update_train_cargo_display(train)
@@ -192,16 +170,11 @@ end
 
 --withdraws items at a collector or farm.
 local function collect(train, train_inv, contents, list)
-	local found_item = false
 	for _, item in ipairs(list) do
 		if (contents:contains_item("main", (item .. " 10"))) then
 			contents:remove_item("main", (item .. " 10"))
 			train_inv[item] = (train_inv[item] or 0) + 10
-			found_item = true
 		end
-	end
-	if found_item then
-		set_train_filled(train)
 	end
 	update_train_cargo_display(train)
 end
@@ -210,11 +183,7 @@ end
 --checks if the train is moving and if stopped check for a structure next to it.
 local function structure_check(train, dtime)
 	local pos = train.object:get_pos()
-	local train_inv = train_cargo[get_object_id(train.object)]
-	if train_inv == nil then
-		table.insert(train_cargo, get_object_id(train.object), {})
-		train_inv = train_cargo[get_object_id(train.object)]
-	end
+	local train_inv = train.cargo
 	local directions = {
 		vector.new(pos.x + 1, pos.y, pos.z),
 		vector.new(pos.x - 1, pos.y, pos.z),
@@ -290,33 +259,32 @@ local train_entity = {
 	-- attributes
 	speed = 1,
 	cargo_capacity = 50,
+	cargo_loading_speed = 10,
 
 	pause_timer = 1,
 	smoke_timer = 0.3,
 	state = "pause",
 
-	id = nil,
-
 	passengers = false,
 	supply_train = false,
 	crowd_sound = false,
 
+	cargo = nil,
 	sound_handle = nil,
 
 	on_activate = function(self, staticdata, dtime_s)
-		self.object:set_armor_groups({immortal=1})
-		if string.sub(staticdata, 1, string.len("return")) ~= "return" then
-			return
+		self.object:set_armor_groups({immortal = 1})
+
+		if staticdata == "" then
+			self.cargo = {}
+		else
+			local data = minetest.deserialize(staticdata)
+			self.passengers = data.passengers
+			self.supply_train = data.supply_train
+			self.cargo = data.cargo or {}
+
+			update_train_cargo_display(self)
 		end
-		local data = minetest.deserialize(staticdata)
-		if type(data) ~= "table" then
-			return
-		end
-		self.train_inv = data.train_inv
-		self.passengers = data.passengers
-		self.supply_train = data.supply_train
-		self.id = data.id
-		table.insert(train_cargo, get_object_id(self.object), {})
 	end,
 
 	on_deactivate = function(self, removal)
@@ -327,7 +295,7 @@ local train_entity = {
 		return minetest.serialize({
 			passengers = self.passengers,
 			supply_train = self.supply_train,
-			id = self.id,
+			cargo = self.cargo
 		})
 	end,
 
@@ -347,8 +315,7 @@ local train_entity = {
 			return
 		end
 		if DEBUG_MODE then
-			local train_inv = train_cargo[get_object_id(self.object)]
-			print_table(train_inv)
+			print_table(self.cargo)
 		end
 	end,
 
@@ -363,7 +330,6 @@ local train_entity = {
 		elseif self.state == "stopped" then
 			structure_check(self, dtime)
 			self.state = "pause"
-			-- self.pause_timer = 1
 		elseif self.state == "pause" then
 			self.pause_timer = self.pause_timer - dtime
 			if self.pause_timer <= 0 then
