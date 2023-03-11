@@ -6,13 +6,38 @@
 
 
 	TODO:
-		Disable train labels displaying state before PR
 		Set a limit to the size train will take from a location
 	Maybe:
 		corelate train sound to train speed
 ]]--
 
 DEBUG_MODE = minetest.settings:get_bool("minegistics_debug", false)
+local function print_table(t)
+	for k, v in pairs(t) do
+		minetest.chat_send_all(type(k) .. " : " .. tostring(k) .. " | " .. type(v) .. " : " .. tostring(v))
+	end
+end
+
+
+local load_orders = {
+	factory = {
+		input = {},
+		output = {},
+	},
+	workshop = {
+		input = {},
+		output = {},
+	},
+}
+for output, inputs in pairs(factory_recipes) do
+	load_orders.factory.input[inputs[1]] = true
+	load_orders.factory.input[inputs[2]] = true
+	load_orders.factory.output[output] = true
+end
+for input, output in pairs(workshop_recipes) do
+	load_orders.workshop.input[output] = true
+	load_orders.workshop.output[input] = true
+end
 
 local function spawn_passengers(train, pos)
 	if math.random(1, 20) == 1 then
@@ -62,6 +87,7 @@ local function get_object_id(object)
 end
 
 
+
 local function play_rail_sound(train)
 	if not train.sound_handle then
 		local speed = train.object:get_velocity():length()
@@ -80,6 +106,14 @@ local function stop_rail_sound(train)
 	end
 end
 
+local function get_cargo_count(train)
+	local train_inv = train_cargo[get_object_id(train.object)]
+	local n = 0
+	for item, count in pairs(train_inv) do
+		n = n + count
+	end
+	return n
+end
 --enables filled train mesh.
 local function set_train_filled(train)
 	train.object:set_properties({mesh = "train_2.obj", textures = {"trains_train_2.png"}})
@@ -90,38 +124,35 @@ local function set_train_empty(train)
 	train.object:set_properties({mesh = "train.obj", textures = {"trains_train.png"}})
 end
 
-
+local function update_train_cargo_display(train)
+	if get_cargo_count(train) > 0 then
+		set_train_filled(train)
+	else
+		set_train_empty(train)
+	end
+end
 
 --deposits or withdraws items at a factory
 local function factory_transaction(train, train_inv, contents)
 	for output, inputs in pairs(factory_recipes) do
-		if train_inv[inputs[1]] == nil then
-			train_inv[inputs[1]] = 0
-		end
-		if train_inv[inputs[2]] == nil then
-			train_inv[inputs[2]] = 0
-		end
-		if train_inv[inputs[1]] > 0 then
+		if train_inv[inputs[1]] then
 			contents:add_item("main", inputs[1] .. " " .. train_inv[inputs[1]])
-			train_inv[inputs[1]] =  0
+			train_inv[inputs[1]] = nil
 			train.supply_train = true
 		end
-		if train_inv[inputs[2]] > 0 then
+		if train_inv[inputs[2]] then
 			contents:add_item("main", inputs[2] .. " " .. train_inv[inputs[2]])
-			train_inv[inputs[2]] =  0
+			train_inv[inputs[2]] = nil
 			train.supply_train = true
 		end
 	end
 	set_train_empty(train)
-	if train.supply_train == false then
+	if not train.supply_train then
 		local found_item = false
 		for output, inputs in pairs(factory_recipes) do
 			if (contents:contains_item("main", (output .. " 10"))) then
 				contents:remove_item("main", (output .. " 10"))
-				if train_inv[output] == nil then
-					train_inv[output] = 0
-				end
-				train_inv[output] = train_inv[output] + 10
+				train_inv[output] = (train_inv[output] or 0) + 10
 				found_item = true
 			end
 		end
@@ -129,32 +160,26 @@ local function factory_transaction(train, train_inv, contents)
 			set_train_filled(train)
 		end
 	end
-	train:on_punch()
+	update_train_cargo_display(train)
 end
 
 --deposits or withdraws items at a workshop
 local function workshop_transaction(train, train_inv, contents)
 	local ore_hauler = false
 	for input, output in pairs(workshop_recipes) do
-		if train_inv[input] == nil then
-			train_inv[input] = 0
-		end
-		if train_inv[input] > 0 then
+		if train_inv[input] then
 			contents:add_item("main", input .. " " .. train_inv[input])
-			train_inv[input] =  0
+			train_inv[input] = nil
 			ore_hauler = true
 		end
 	end
 	set_train_empty(train)
-	if ore_hauler == false then
+	if not ore_hauler then
 		local found_item = false
 		for input, output in pairs(workshop_recipes) do
 			if (contents:contains_item("main", (output .. " 10"))) then
 				contents:remove_item("main", (output .. " 10"))
-				if train_inv[output] == nil then
-					train_inv[output] = 0
-				end
-				train_inv[output] = train_inv[output] + 10
+				train_inv[output] = (train_inv[output] or 0) + 10
 				found_item = true
 			end
 		end
@@ -162,7 +187,7 @@ local function workshop_transaction(train, train_inv, contents)
 			set_train_filled(train)
 		end
 	end
-	train:on_punch()
+	update_train_cargo_display(train)
 end
 
 --withdraws items at a collector or farm.
@@ -171,16 +196,14 @@ local function collect(train, train_inv, contents, list)
 	for _, item in ipairs(list) do
 		if (contents:contains_item("main", (item .. " 10"))) then
 			contents:remove_item("main", (item .. " 10"))
-			if train_inv[item] == nil then
-				train_inv[item] = 0
-			end
-			train_inv[item] = train_inv[item] + 10
+			train_inv[item] = (train_inv[item] or 0) + 10
 			found_item = true
 		end
 	end
 	if found_item then
 		set_train_filled(train)
 	end
+	update_train_cargo_display(train)
 end
 
 
@@ -200,7 +223,7 @@ local function structure_check(train, dtime)
 	}
 	for i, direction in ipairs(directions) do
 		local structure_name = minetest.get_node(direction).name
-		local contents = minetest.get_inventory({type="node", pos=direction})
+		local contents = minetest.get_inventory({type = "node", pos = direction})
 		if structure_name == "minegistics:Collector" then
 			collect(train, train_inv, contents, resources)
 		elseif structure_name == "minegistics:Farm" then
@@ -214,15 +237,14 @@ local function structure_check(train, dtime)
 			spawn_passengers(train, pos)
 		elseif structure_name == "minegistics:Market" and train.passengers == true then
 			minetest.get_meta(direction):set_int("has_town", 1)
-			spawn_passengers(train, pos)
 			train.passengers = true
+			spawn_passengers(train, pos)
 		elseif contents ~= nil then
 			for item, amount in pairs(train_inv) do
 				contents:add_item("main", item .. " " .. amount)
-				train_inv[item] =  0
+				train_inv[item] = nil
 			end
-			set_train_empty(train)
-			train:on_punch()
+			update_train_cargo_display(train)
 		end
 	end
 end
@@ -265,10 +287,15 @@ local train_entity = {
 		textures = {"trains_train.png"}
 	},
 
+	-- attributes
+	speed = 1,
+	cargo_capacity = 50,
+
 	pause_timer = 1,
 	smoke_timer = 0.3,
-	speed = 1,
 	state = "pause",
+
+	id = nil,
 
 	passengers = false,
 	supply_train = false,
@@ -288,6 +315,7 @@ local train_entity = {
 		self.train_inv = data.train_inv
 		self.passengers = data.passengers
 		self.supply_train = data.supply_train
+		self.id = data.id
 		table.insert(train_cargo, get_object_id(self.object), {})
 	end,
 
@@ -298,7 +326,8 @@ local train_entity = {
 	get_staticdata = function(self)
 		return minetest.serialize({
 			passengers = self.passengers,
-			supply_train = self.supply_train
+			supply_train = self.supply_train,
+			id = self.id,
 		})
 	end,
 
@@ -316,6 +345,10 @@ local train_entity = {
 			end
 			self.object:remove()
 			return
+		end
+		if DEBUG_MODE then
+			local train_inv = train_cargo[get_object_id(self.object)]
+			print_table(train_inv)
 		end
 	end,
 
