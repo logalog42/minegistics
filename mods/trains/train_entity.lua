@@ -75,7 +75,7 @@ local function can_collect_train(player)
 	local inv = player:get_inventory()
 	local creative = minetest.is_creative_enabled(name)
 	local has_train = inv:contains_item("main", "trains:train")
-	return creative == false or has_train == false
+	return (not creative) or (not has_train)
 end
 
 
@@ -138,9 +138,10 @@ local function factory_transaction(train, train_inv, contents)
 	end
 	if not train.supply_train then
 		for output, inputs in pairs(factory_recipes) do
-			if (contents:contains_item("main", (output .. " 10"))) then
-				contents:remove_item("main", (output .. " 10"))
-				train_inv[output] = (train_inv[output] or 0) + 10
+			local max_transfer = train.cargo_capacity - get_cargo_count(train)
+			local taken = contents:remove_item("main", (output .. " " .. max_transfer))
+			if not taken:is_empty() then
+				train_inv[output] = (train_inv[output] or 0) + taken:get_count()
 			end
 		end
 	end
@@ -159,9 +160,10 @@ local function workshop_transaction(train, train_inv, contents)
 	end
 	if not ore_hauler then
 		for input, output in pairs(workshop_recipes) do
-			if (contents:contains_item("main", (output .. " 10"))) then
-				contents:remove_item("main", (output .. " 10"))
-				train_inv[output] = (train_inv[output] or 0) + 10
+			local max_transfer = train.cargo_capacity - get_cargo_count(train)
+			local taken = contents:remove_item("main", (output .. " " .. max_transfer))
+			if not taken:is_empty() then
+				train_inv[output] = (train_inv[output] or 0) + taken:get_count()
 			end
 		end
 	end
@@ -171,9 +173,10 @@ end
 --withdraws items at a collector or farm.
 local function collect(train, train_inv, contents, list)
 	for _, item in ipairs(list) do
-		if (contents:contains_item("main", (item .. " 10"))) then
-			contents:remove_item("main", (item .. " 10"))
-			train_inv[item] = (train_inv[item] or 0) + 10
+		local max_transfer = train.cargo_capacity - get_cargo_count(train)
+		local taken = contents:remove_item("main", (item .. " " .. max_transfer))
+		if not taken:is_empty() then
+			train_inv[item] = (train_inv[item] or 0) + taken:get_count()
 		end
 	end
 	update_train_cargo_display(train)
@@ -301,9 +304,6 @@ local train_entity = {
 
 	on_punch = function(self, puncher, time_from_last_punch, tool_capabilities, direction, damage)
 		if puncher and puncher:get_player_control().sneak then
-			if self.sound_handle then
-				minetest.sound_stop(self.sound_handle)
-			end
 			if can_collect_train(puncher) then
 				local inv = puncher:get_inventory()
 				local leftover = inv:add_item("main", "trains:train")
@@ -346,8 +346,8 @@ minetest.register_entity("trains:train", train_entity)
 
 minetest.register_craftitem("trains:train", {
 	description = "Train: " ..
-	"Carries resources from one building to another.\n" ..
-	"Must be placed on a rail. (Shift+Click to pick up)",
+		"Carries resources from one building to another.\n" ..
+		"Must be placed on a rail. (Shift+Click to pick up)",
 	inventory_image = "train_wield.png",
 	wield_image = "train_wield.png",
 	on_place = function(itemstack, placer, pointed_thing)
