@@ -1,7 +1,7 @@
 local rail_node_box = {
-    type = "connected",
-    connect_sides = {"front", "left", "back", "right"},
-    --All box points start in the lower left corner, to upper right
+	type = "connected",
+	connect_sides = {"front", "left", "back", "right"},
+	--All box points start in the lower left corner, to upper right
 	fixed = {
 		--Base layer
 		{-4/16, -8/16, -4/16,  4/16, -7/16,  4/16},
@@ -91,62 +91,52 @@ local rail_collision_box = {
 	}
 }
 
-trains:register_rail("trains:rail", {
-   description = ("Rail: For trains."),
-   drawtype = "nodebox",
-   paramtype = "light",
-   use_texture_alpha = "clip",
-   groups = {dig_immediate=2, new=1, rail=1},
-   tiles = {
-      "train_new_top.png",
-      "train_new_bottom.png",
-      "train_new_side.png",
-      "train_new_side.png",
-      "train_new_side.png",
-      "train_new_side.png"
-   },
-   node_box = rail_node_box,
-   collision_box = rail_collision_box,
-   selection_box = rail_collision_box,
-   connects_to = {"group:new", "group:structures"},
-}, {})
+minetest.register_node("trains:rail", {
+	description = ("Rail\nFor trains."),
+	short_description = "Rail",
+	drawtype = "nodebox",
+	paramtype = "light",
+	groups = {dig_immediate = 2, rail = 1},
+	tiles = {
+		"train_new_top.png",
+		"train_new_bottom.png",
+		"train_new_side.png",
+	},
+	node_box = rail_node_box,
+	collision_box = rail_collision_box,
+	selection_box = rail_collision_box,
+	connects_to = {"group:rail", "group:structures"},
+})
 
-trains:register_rail("trains:brake_rail", {
-   description = ("Brake Rail: Reduces the speed of a train."),
-   drawtype = "nodebox",
-   paramtype = "light",
-   use_texture_alpha = "clip",
-   groups = {dig_immediate=2, new=1, rail=1},
-   tiles = {
-      "train_new_top_brake.png",
-      "train_new_bottom.png",
-      "train_new_side.png",
-      "train_new_side.png",
-      "train_new_side.png",
-      "train_new_side.png"
-   },
-   node_box = rail_node_box,
-   collision_box = rail_collision_box,
-   selection_box = rail_collision_box,
-   connects_to = {"group:new", "group:structures"},
-}, {acceleration = -3})
+minetest.register_node("trains:brake_rail", {
+	description = ("Brake Rail\nReduces the speed of a train."),
+	short_description = "Break Rail",
+	drawtype = "nodebox",
+	paramtype = "light",
+	groups = {dig_immediate = 2, rail = 1},
+	tiles = {
+		"train_new_top_brake.png",
+		"train_new_bottom.png",
+		"train_new_side.png",
+	},
+	node_box = rail_node_box,
+	collision_box = rail_collision_box,
+	selection_box = rail_collision_box,
+	connects_to = {"group:rail", "group:structures"},
+})
 
-trains:register_rail("trains:power_rail", {
-   description = ("Powered Rail: Increases the speed of a train."),
-   drawtype = "nodebox",
-   paramtype = "light",
-   use_texture_alpha = "clip",
-   groups = {dig_immediate=2, new=1, rail=1},
-   tiles = {
-      "train_new_top_power.png",
-      "train_new_bottom.png",
-      "train_new_side.png",
-      "train_new_side.png",
-      "train_new_side.png",
-      "train_new_side.png"
-   },
-   node_box = rail_node_box,
-   collision_box = rail_collision_box,
-   selection_box = rail_collision_box,
-   connects_to = {"group:new", "group:structures"},
-}, {acceleration = 3})
+-- minetest.register_node("trains:power_rail", {
+-- 	description = ("Powered Rail: Increases the speed of a train."),
+-- 	drawtype = "nodebox",
+-- 	paramtype = "light",
+-- 	groups = {dig_immediate = 2, rail = 1},
+-- 	tiles = {
+-- 		"train_new_top_power.png",
+-- 		"train_new_bottom.png",
+-- 		"train_new_side.png",
+-- 	},
+-- 	node_box = rail_node_box,
+-- 	collision_box = rail_collision_box,
+-- 	selection_box = rail_collision_box,
+-- 	connects_to = {"group:rail", "group:structures"},
+-- })
