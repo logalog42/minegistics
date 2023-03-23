@@ -173,3 +173,43 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
         end
     end
 end)
+
+function structure_formspec(player, pos, node)
+    local text = "hi"
+    
+    local formspec = {
+        "formspec_version[6]",
+		"size[13,10]",
+
+		--Title Area
+		"container[.5,.5]" ..
+		"label[0,0;" .. node.name .. "]" ..
+		"container_end[]" ..
+
+		--Selection Area
+		"container[2,2]" ..
+		"dropdown[0,0;6,.75;recipies;iron,clay;0;]" ..
+		"button_exit[6.25,0;2,.75;submit;Submit]" ..
+		"container_end[]" ..
+		
+		--Input Inventory
+		"container[0.25,3.5]" ..
+		"list[nodemeta:" .. pos.x .. ",".. pos.y .. ",".. pos.z .. ";input;0,0;1,4;]" ..
+		"container_end[]" ..
+
+		--Output Inventory
+		"container[11.75,3.5]" ..
+		"list[nodemeta:" .. pos.x .. ",".. pos.y .. ",".. pos.z .. ";output;0,0;1,4;]" ..
+		"container_end[]" ..
+
+		--Info Display
+		"container[1.5,1]" ..
+		"label[0,0;", minetest.formspec_escape(text), "]" ..
+		"container_end[]",
+
+		--Player Inventory Display
+		"container[1.5,8.75]" ..
+		"list[current_player;main;0,0;8,1;]" ..
+		"container_end[]",
+    }
+end

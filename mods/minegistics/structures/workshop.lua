@@ -29,6 +29,7 @@ end,
       local recipe_list = "-Recipes-\n"
       for input, output in pairs(workshop_recipes) do
           local input_label = string.sub(input, 23, 100)
+		  minetest.log("Default", input)
           local output_label = string.sub(output, 13, 100)
           recipe_list = recipe_list .. input_label .. " -> " .. output_label .. "\n"
       end

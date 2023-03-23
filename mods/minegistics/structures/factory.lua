@@ -33,7 +33,8 @@ minetest.register_node("minegistics:Factory", {
 			recipe_list = recipe_list .. input_1_label .. " + " .. input_2_label .. " -> " .. output_label .. "\n"
 		end
 		local meta = minetest.get_meta(pos)
-		local formspec = {
+		
+		local formspec = structure_formspec	{
 			"size[8,9]",
 			"list[context;main;0,0;8,4;]",
 			"list[current_player;main;0,5.25;8,4;]",
@@ -48,8 +49,13 @@ minetest.register_node("minegistics:Factory", {
 		meta:set_string("formspec", table.concat(formspec, ""))
 		meta:set_string("infotext", "Factory")
 		local inv = meta:get_inventory()
-		inv:set_size("main", 5*1)
+		inv:set_size("input", 1*4)
+		inv:set_size("output", 1*4)
 	end,
+	on_rightclick = function(pos, node, clicker, itemstack, pointed_thing)
+		minegistics.show_to(clicker:get_player_name(), pos)
+	end,
+	
 	after_dig_node = function(pos, oldnode, oldmetadata, digger)
 		for i,p in pairs(power_consumers) do
 			if p.x == pos.x and p.y == pos.y and p.z == pos.z then
