@@ -25,37 +25,30 @@ minetest.register_node("minegistics:Factory", {
     end,
 	on_construct = function(pos)
 		table.insert(power_consumers, pos)
-		local recipe_list = "-Recipes-\n"
-		for output, inputs in pairs(factory_recipes) do
-			local input_1_label = string.sub(inputs[1], 13, 100)
-			local input_2_label = string.sub(inputs[2], 13, 100)
-			local output_label = string.sub(output, 13, 100)
-			recipe_list = recipe_list .. input_1_label .. " + " .. input_2_label .. " -> " .. output_label .. "\n"
-		end
 		local meta = minetest.get_meta(pos)
-		
-		local formspec = structure_formspec	{
-			"size[8,9]",
-			"list[context;main;0,0;8,4;]",
-			"list[current_player;main;0,5.25;8,4;]",
-			"listring[]",
-			"image[0,1;9,4.75;"..background.."]",
-			"scroll_container[1,2;12,4;recipe_scroll;vertical;0.05]",
-			"label[0,0;" .. recipe_list .. "]",
-			"scroll_container_end[]",
-			"scrollbar[6.75,1.2;0.25,3.75;vertical;recipe_scroll;0]",
-			"button[3.5,10;4,2;Back;Back]",
-		}
-		meta:set_string("formspec", table.concat(formspec, ""))
+		meta:set_string("name", "Factory")
+		meta:set_string("type", "Assembling")
 		meta:set_string("infotext", "Factory")
 		local inv = meta:get_inventory()
 		inv:set_size("input", 1*4)
 		inv:set_size("output", 1*4)
-	end,
-	on_rightclick = function(pos, node, clicker, itemstack, pointed_thing)
-		minegistics.show_to(clicker:get_player_name(), pos)
+		meta:set_string("formspec", strut_form.structure_formspec(pos, ''))
+	
 	end,
 	
+	on_receive_fields = function(pos, formname, fields, sender)
+		for key, value in pairs(fields) do
+			minetest.log("default", key .. " = " .. value)
+		end
+
+		if fields['submit'] then
+			if fields['recipies'] ~= '' then
+				local display = fields['recipies']
+				strut_form.structure_formspec(pos,display)
+			end
+		end
+	end,
+
 	after_dig_node = function(pos, oldnode, oldmetadata, digger)
 		for i,p in pairs(power_consumers) do
 			if p.x == pos.x and p.y == pos.y and p.z == pos.z then

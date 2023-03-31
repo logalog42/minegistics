@@ -8,6 +8,7 @@
 show_money_on_hud = true
 local item_buttons = {}
 local item_btn_keys = {}
+strut_form = {}
 
 local items_for_sale = {
     ["Collector"] = "minegistics:Collector",
@@ -174,8 +175,56 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
     end
 end)
 
-function structure_formspec(player, pos, node)
+function strut_form.recipie_display(type)
+    if type == "Processing" then
+        local formspec = {  
+        --Input 1
+        "item_image[1,1;1,1;" .. input(1) .."" ..
+        --Working Image
+        "animated_image[3,2;5,3;<name>;<texture name>;<frame count>;<frame duration>;<frame start>;<middle>]" ..
+        --Output 1
+        "item_image[7,2;1,1;" .. output(1) .. "]" ..
+        --Output 2
+        "item_image[7,2;1,1;" .. output(2) .. "]" 
+    
+
+        }
+    elseif type == "Assembling" then
+        local formspec = {
+            --Input 1
+            "item_image[1,1;1,1;" .. input(1) .."" ..
+            --Input 2
+            "item_image[1,3;1,1;" .. input(2) .. "]" ..
+            --Working Image
+            "animated_image[3,2;5,3;<name>;<texture name>;<frame count>;<frame duration>;<frame start>;<middle>]" ..
+            --Output
+            "item_image[7,2;1,1;" .. output(1) .. "]" 
+        }
+    elseif type == "Refining" then
+        local formspec = {
+            --Input 1
+            "item_image[1,1;1,1;" .. input(1) .."" ..
+            --Working Image
+            "animated_image[3,2;5,3;<name>;<texture name>;<frame count>;<frame duration>;<frame start>;<middle>]" ..
+            --Output
+            "item_image[7,2;1,1;" .. output(1) .. "]" 
+        }
+    end
+end
+
+function strut_form.structure_formspec(pos,display)
     local text = "hi"
+    local meta = minetest.get_meta(pos)
+    local recipies = ""
+
+    if display ~= '' then
+        minetest.log("Default", display)
+    end
+
+    for output, inputs in pairs(factory_recipes) do
+        local output_label = string.sub(output, 13, 100)
+        recipies = recipies .. ", " .. output_label
+    end
     
     local formspec = {
         "formspec_version[6]",
@@ -183,13 +232,13 @@ function structure_formspec(player, pos, node)
 
 		--Title Area
 		"container[.5,.5]" ..
-		"label[0,0;" .. node.name .. "]" ..
+		"label[0,0;" .. meta:get_string('name') .. "]" ..
 		"container_end[]" ..
 
 		--Selection Area
 		"container[2,2]" ..
-		"dropdown[0,0;6,.75;recipies;iron,clay;0;]" ..
-		"button_exit[6.25,0;2,.75;submit;Submit]" ..
+		"dropdown[0,0;6,.75;recipies;" .. recipies .. ";0;]" ..
+		"button[6.25,0;2,.75;submit;Submit]" ..
 		"container_end[]" ..
 		
 		--Input Inventory
@@ -212,4 +261,6 @@ function structure_formspec(player, pos, node)
 		"list[current_player;main;0,0;8,1;]" ..
 		"container_end[]",
     }
+        -- table.concat is faster than string concatenation - `..`
+    return table.concat(formspec, "")
 end
