@@ -43,6 +43,9 @@ minetest.register_node("minegistics:Factory", {
 
 		if fields['submit'] then
 			if fields['recipies'] ~= '' then
+				for output, inputs in pairs(factory_recipes) do
+					ingredients[output] = { ItemStack(inputs[1]), ItemStack(inputs[2]) }
+				end
 				local display = fields['recipies']
 				strut_form.structure_formspec(pos,display)
 			end

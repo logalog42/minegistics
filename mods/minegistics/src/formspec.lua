@@ -175,7 +175,10 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
     end
 end)
 
-function strut_form.recipie_display(type)
+function strut_form.recipie_display(type, recipie)
+    local input = {}
+    local output = {}
+
     if type == "Processing" then
         local formspec = {  
         --Input 1
@@ -216,9 +219,10 @@ function strut_form.structure_formspec(pos,display)
     local text = "hi"
     local meta = minetest.get_meta(pos)
     local recipies = ""
+    local current_recipe = ''
 
     if display ~= '' then
-        minetest.log("Default", display)
+        current_recipe = strut_form.recipie_display(meta:get_string('type'), display)
     end
 
     for output, inputs in pairs(factory_recipes) do
@@ -253,7 +257,7 @@ function strut_form.structure_formspec(pos,display)
 
 		--Info Display
 		"container[1.5,1]" ..
-		"label[0,0;", minetest.formspec_escape(text), "]" ..
+		"label[0,0;", current_recipe , "]" ..
 		"container_end[]",
 
 		--Player Inventory Display
