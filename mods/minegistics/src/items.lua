@@ -5,12 +5,12 @@
     License: AGPLv3
 ]]--
 
-fuels = {
+Fuels = {
     "basenodes:coal_lump",
     "minegistics:lumber"
 }
 
-resources = {
+Resources = {
     "basenodes:coal_lump",
     "basenodes:copper_lump",
     "basenodes:tin_lump",
@@ -19,7 +19,7 @@ resources = {
     "minegistics:lumber"
   }
 
-farm_resources = {
+Farm_resources = {
     "minegistics:fat",
     "minegistics:fruit",
     "minegistics:leather",
@@ -27,7 +27,7 @@ farm_resources = {
     "minegistics:vessels_milk_bottle",
 }
 
-workshop_recipes = {
+Workshop_recipes = {
     ["basenodes:coal_lump"] = "minegistics:coal_product",
     ["basenodes:copper_lump"] = "minegistics:copper_wire",
     ["basenodes:gold_lump"] = "minegistics:gold_product",
@@ -35,14 +35,14 @@ workshop_recipes = {
     ["basenodes:tin_lump"] = "minegistics:tin_product",
 }
 
-factory_recipes = {
+Factory_recipes = {
     ["minegistics:mechanical_parts"] = {"minegistics:iron_product", "minegistics:copper_wire"},
     ["minegistics:building_materials"] = {"minegistics:iron_product", "minegistics:lumber"},
     ["minegistics:furniture"] = {"minegistics:leather", "minegistics:lumber"},
     ["minegistics:toys"] = {"minegistics:tin_product", "minegistics:lumber"}
 }
 
-item_worth = {
+Item_worth = {
     ["minegistics:fat"] = 1,
     ["minegistics:fruit"] = 1,
     ["minegistics:leather"] = 1,

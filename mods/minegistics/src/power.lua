@@ -6,8 +6,8 @@
 ]]--
 
 local abm_timer = 0
-power_producers = {}
-power_consumers = {}
+Power_producers = {}
+Power_consumers = {}
 
 minetest.register_node("minegistics:PowerPlant", {
 	description = "Power Plant: Generates power. Requires coal for fuel.\n" ..
@@ -31,9 +31,9 @@ minetest.register_node("minegistics:PowerPlant", {
 		inv:set_size("main", 5*1)
 	end,
 	after_dig_node = function(pos, oldnode, oldmetadata, digger)
-		for i,p in pairs(power_producers) do
+		for i,p in pairs(Power_producers) do
 			if p.x == pos.x and p.y == pos.y and p.z == pos.z then
-				table.remove(power_producers, i)
+				table.remove(Power_producers, i)
 				break
 			end
 		end
@@ -52,15 +52,15 @@ minetest.register_node("minegistics:PowerPlant", {
 	end
 })
 
-function power_stable(pos)
+function Power_stable(pos)
 	local local_consumers = 0
 	local local_producers = 0
-	for index,consumer in pairs(power_consumers) do
+	for index,consumer in pairs(Power_consumers) do
 		if vector.distance(consumer, pos) < 200 then
 			local_consumers = local_consumers + 1
 		end
 	end
-	for index,producer in pairs(power_producers) do
+	for index,producer in pairs(Power_producers) do
 		if vector.distance(producer, pos) < 200 then
 			local_producers = local_producers + 1
 		end
@@ -70,8 +70,8 @@ function power_stable(pos)
 	return stable
 end
 
-function is_active(pos)
-	for _,p in pairs(power_producers) do
+function Is_active(pos)
+	for _,p in pairs(Power_producers) do
 		if p.x == pos.x and p.y == pos.y and p.z == pos.z then
 			return true
 		end
@@ -97,10 +97,10 @@ minetest.register_abm({
 				inv:remove_item("main", "minegistics:lumber")
 				has_fuel = true
 			end
-			local active = is_active(pos)
+			local active = Is_active(pos)
 			if has_fuel then
 				if active == false then
-					table.insert(power_producers, pos)
+					table.insert(Power_producers, pos)
 				end
 				minetest.sound_play("power_plant", {
 					pos = pos,
@@ -128,9 +128,9 @@ minetest.register_abm({
 				end
 			else
 				if active == true then
-					for i,p in pairs(power_producers) do
+					for i,p in pairs(Power_producers) do
 						if p.x == pos.x and p.y == pos.y and p.z == pos.z then
-							table.remove(power_producers, i)
+							table.remove(Power_producers, i)
 							break
 						end
 					end

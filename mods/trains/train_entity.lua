@@ -29,12 +29,12 @@ local load_orders = {
 		output = {},
 	},
 }
-for output, inputs in pairs(factory_recipes) do
+for output, inputs in pairs(Factory_recipes) do
 	load_orders.factory.input[inputs[1]] = true
 	load_orders.factory.input[inputs[2]] = true
 	load_orders.factory.output[output] = true
 end
-for input, output in pairs(workshop_recipes) do
+for input, output in pairs(Workshop_recipes) do
 	load_orders.workshop.input[output] = true
 	load_orders.workshop.output[input] = true
 end
@@ -42,7 +42,7 @@ end
 local function spawn_passengers(train, pos)
 	if math.random(1, 20) == 1 then
 	-- if train.crowd_sound then
-		minetest.sound_play("trains_people", {
+		minetest.sound_play("Trains_people", {
 			pos = pos,
 			loop = false,
 			max_hear_distance = 5,
@@ -74,7 +74,7 @@ local function should_collect_train(player)
 	local name = player:get_player_name()
 	local inv = player:get_inventory()
 	local creative = minetest.is_creative_enabled(name)
-	local has_train = inv:contains_item("main", "trains:train")
+	local has_train = inv:contains_item("main", "Trains:train")
 	return (not creative) or (not has_train)
 end
 
@@ -82,7 +82,7 @@ end
 local function play_rail_sound(train)
 	if not train.sound_handle then
 		local speed = train.object:get_velocity():length()
-		train.sound_handle = minetest.sound_play("trains_train_moving", {
+		train.sound_handle = minetest.sound_play("Trains_train_moving", {
 			object = train.object,
 			gain = 0.75,
 			max_hear_distance = 10,
@@ -106,12 +106,12 @@ local function get_cargo_count(train)
 end
 --enables filled train mesh.
 local function set_train_filled(train)
-	train.object:set_properties({mesh = "train_2.obj", textures = {"trains_train_2.png"}})
+	train.object:set_properties({mesh = "train_2.obj", textures = {"Trains_train_2.png"}})
 end
 
 --enables empty train mesh.
 local function set_train_empty(train)
-	train.object:set_properties({mesh = "train.obj", textures = {"trains_train.png"}})
+	train.object:set_properties({mesh = "train.obj", textures = {"Trains_train.png"}})
 end
 
 local function update_train_cargo_display(train)
@@ -124,7 +124,7 @@ end
 
 --deposits or withdraws items at a factory
 local function factory_transaction(train, train_inv, contents)
-	for output, inputs in pairs(factory_recipes) do
+	for output, inputs in pairs(Factory_recipes) do
 		if train_inv[inputs[1]] then
 			contents:add_item("main", inputs[1] .. " " .. train_inv[inputs[1]])
 			train_inv[inputs[1]] = nil
@@ -137,7 +137,7 @@ local function factory_transaction(train, train_inv, contents)
 		end
 	end
 	if not train.supply_train then
-		for output, inputs in pairs(factory_recipes) do
+		for output, inputs in pairs(Factory_recipes) do
 			local max_transfer = train.cargo_capacity - get_cargo_count(train)
 			local taken = contents:remove_item("main", (output .. " " .. max_transfer))
 			if not taken:is_empty() then
@@ -151,7 +151,7 @@ end
 --deposits or withdraws items at a workshop
 local function workshop_transaction(train, train_inv, contents)
 	local ore_hauler = false
-	for input, output in pairs(workshop_recipes) do
+	for input, output in pairs(Workshop_recipes) do
 		if train_inv[input] then
 			contents:add_item("main", input .. " " .. train_inv[input])
 			train_inv[input] = nil
@@ -159,7 +159,7 @@ local function workshop_transaction(train, train_inv, contents)
 		end
 	end
 	if not ore_hauler then
-		for input, output in pairs(workshop_recipes) do
+		for input, output in pairs(Workshop_recipes) do
 			local max_transfer = train.cargo_capacity - get_cargo_count(train)
 			local taken = contents:remove_item("main", (output .. " " .. max_transfer))
 			if not taken:is_empty() then
@@ -197,9 +197,9 @@ local function structure_check(train, dtime)
 		local structure_name = minetest.get_node(direction).name
 		local contents = minetest.get_inventory({type = "node", pos = direction})
 		if structure_name == "minegistics:Collector" then
-			collect(train, train_inv, contents, resources)
+			collect(train, train_inv, contents, Resources)
 		elseif structure_name == "minegistics:Farm" then
-			collect(train, train_inv, contents, farm_resources)
+			collect(train, train_inv, contents, Farm_resources)
 		elseif structure_name == "minegistics:Factory" then
 			factory_transaction(train, train_inv, contents)
 		elseif structure_name == "minegistics:Workshop" then
@@ -235,8 +235,8 @@ local function train_drive(train, dtime)
 		})
 	end
 
-	local new_pos, new_dir, stop = trains.get_next_pos(train, dtime)
-	train.object:set_yaw(trains.dir_to_yaw(new_dir))
+	local new_pos, new_dir, stop = Trains.get_next_pos(train, dtime)
+	train.object:set_yaw(Trains.dir_to_yaw(new_dir))
 	train.object:move_to(new_pos, false)
 	-- train.object:set_pos(new_pos)
 	if stop then
@@ -256,7 +256,7 @@ local train_entity = {
 		visual = "mesh",
 		mesh = "train.obj",
 		visual_size = {x=1, y=1},
-		textures = {"trains_train.png"}
+		textures = {"Trains_train.png"}
 	},
 
 	-- attributes
@@ -307,7 +307,7 @@ local train_entity = {
 			if should_collect_train(puncher) then
 				local pos = self.object:get_pos()
 				local drops = {
-					"trains:train",
+					"Trains:train",
 				}
 				for item, count in pairs(self.cargo) do
 					drops[#drops + 1] = item .. " " .. count
@@ -344,12 +344,12 @@ local train_entity = {
 		end
 	end,
 }
-minetest.register_entity("trains:train", train_entity)
+minetest.register_entity("Trains:train", train_entity)
 
 
-minetest.register_craftitem("trains:train", {
+minetest.register_craftitem("Trains:train", {
 	description = "Train: " ..
-		"Carries resources from one building to another.\n" ..
+		"Carries Resources from one building to another.\n" ..
 		"Must be placed on a rail. (Shift+Click to pick up)",
 	inventory_image = "train_wield.png",
 	wield_image = "train_wield.png",
@@ -363,10 +363,10 @@ minetest.register_craftitem("trains:train", {
 			pointed_thing) or itemstack
 		end
 
-		if trains.is_rail(under) then
-			minetest.add_entity(pointed_thing.under, "trains:train")
-		elseif trains.is_rail(pointed_thing.above) then
-			minetest.add_entity(pointed_thing.above, "trains:train")
+		if Trains.is_rail(under) then
+			minetest.add_entity(pointed_thing.under, "Trains:train")
+		elseif Trains.is_rail(pointed_thing.above) then
+			minetest.add_entity(pointed_thing.above, "Trains:train")
 		else
 			return
 		end

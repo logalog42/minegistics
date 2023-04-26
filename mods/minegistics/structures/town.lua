@@ -22,14 +22,14 @@ minetest.register_node("minegistics:Town", {
     return minetest.item_place(itemstack, placer, pointed_thing)
   end,
   on_construct = function(pos)
-      table.insert(power_consumers, pos)
+      table.insert(Power_consumers, pos)
       local meta = minetest.get_meta(pos)
       meta:set_string("infotext", "Town")
   end,
   after_dig_node = function(pos, oldnode, oldmetadata, digger)
-      for i,p in pairs(power_consumers) do
+      for i,p in pairs(Power_consumers) do
           if p.x == pos.x and p.y == pos.y and p.z == pos.z then
-              table.remove(power_consumers, i)
+              table.remove(Power_consumers, i)
               break
           end
       end

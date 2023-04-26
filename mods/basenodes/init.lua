@@ -345,7 +345,7 @@ minetest.register_node("basenodes:snow_slope", {
 
 -- Register ores
 
-base_ores = {
+Base_ores = {
     ["basenodes:stone_with_coal"] = "basenodes:coal_lump",
     ["basenodes:stone_with_tin"] = "basenodes:tin_lump",
     ["basenodes:stone_with_copper"] = "basenodes:copper_lump",

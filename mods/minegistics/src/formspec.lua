@@ -5,10 +5,10 @@
     License: AGPLv3
 ]]--
 
-show_money_on_hud = true
+Show_money_on_hud = true
 local item_buttons = {}
 local item_btn_keys = {}
-strut_form = {}
+Strut_form = {}
 
 local items_for_sale = {
     ["Collector"] = "minegistics:Collector",
@@ -25,7 +25,7 @@ local items_for_sale = {
     ["Farm"] = "minegistics:Farm"
 }
 
-item_prices = {
+Item_prices = {
     ["Farm"] = 300,
     ["Collector"] = 300,
     ["Factory"] = 500,
@@ -41,8 +41,8 @@ item_prices = {
 }
 
 --defines the inventory formspec
-function inventory_formspec(player)
-    local display = show_money_on_hud and "true" or "false"
+function Inventory_formspec(player)
+    local display = Show_money_on_hud and "true" or "false"
     local formspec = {
         "size[8,7.5]",
         "bgcolor[#2d2d2d;false]",
@@ -61,17 +61,17 @@ function inventory_formspec(player)
 end
 
 --defines the inventory formspec
-function power_formspec(player)
+function Power_formspec(player)
     local power_info = ""
-    for index,pos in pairs(power_producers) do
+    for index,pos in pairs(Power_producers) do
         local local_consumers = 0
         local local_producers = 0
-        for index,consumer in pairs(power_consumers) do
+        for index,consumer in pairs(Power_consumers) do
             if vector.distance(consumer, pos) < 200 then
                 local_consumers = local_consumers + 1
             end
         end
-        for index,producer in pairs(power_producers) do
+        for index,producer in pairs(Power_producers) do
             if vector.distance(producer, pos) < 200 then
                 local_producers = local_producers + 1
             end
@@ -97,12 +97,12 @@ function power_formspec(player)
 end
 
 minetest.register_on_joinplayer(function(player)
-    local formspec = inventory_formspec(player)
+    local formspec = Inventory_formspec(player)
     player:set_inventory_formspec(table.concat(formspec, ""))
 end)
 
 --defines the shop formspec
-function shop_formspec(player)
+function Shop_formspec(player)
     item_buttons = {}
     local index = 1
     for item_name,item in pairs(items_for_sale) do
@@ -115,7 +115,7 @@ function shop_formspec(player)
             "tooltip[" .. item_name .. ";" ..
             stack:get_description() .. ";#353535;#FFFFFF]" ..
             "label[8," .. index + 0.6 .. ";" .. " $" ..
-            item_prices[item_name] .."]"
+            Item_prices[item_name] .."]"
         item_btn_keys[item_name] = item
         index = index + 1
     end
@@ -124,7 +124,7 @@ function shop_formspec(player)
         "bgcolor[#353535;false]",
         "label[4.5,0.5;Shop]",
         table.concat(item_buttons),
-        "label[3.5,13.6;".."Your balance: $" .. money.."]",
+        "label[3.5,13.6;".."Your balance: $" .. Money.."]",
         "button[3,14;4,2;Back;Back]"
     }
     return formspec
@@ -136,16 +136,16 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
     if formname == "" then
         for key, val in pairs(fields) do
             if key == "Shop" then
-                local formspec = shop_formspec(player)
+                local formspec = Shop_formspec(player)
                 player:set_inventory_formspec(table.concat(formspec, ""))
             elseif key == "Back" then
-                local formspec = inventory_formspec(player)
+                local formspec = Inventory_formspec(player)
                 player:set_inventory_formspec(table.concat(formspec, ""))
             elseif key == "Power" then
-                local formspec = power_formspec(player)
+                local formspec = Power_formspec(player)
                 player:set_inventory_formspec(table.concat(formspec, ""))
             elseif key == "display" then
-                show_money_on_hud = not show_money_on_hud
+                Show_money_on_hud = not Show_money_on_hud
             else
                 for item_name,item in pairs(item_btn_keys) do
                     if key == item_name then
@@ -153,16 +153,16 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
                         if item_name == "Rail" then
                             stack:set_count(10)
                         end
-                        if money >= item_prices[item_name] then
+                        if Money >= Item_prices[item_name] then
                             if player:get_inventory():add_item("main", stack) then
-                                money = money - item_prices[item_name]
+                                Money = Money - Item_prices[item_name]
                                 local players = minetest.get_connected_players()
-                                local player_count = get_table_size(players)
+                                local player_count = Get_table_size(players)
                                 local purchaser = player_count > 1 and player_name or "You"
                                 minetest.chat_send_all(purchaser .. " bought a " ..
-                                    item_name .. "!   " .. "$" .. money .. " remaining."
+                                    item_name .. "!   " .. "$" .. Money .. " remaining."
                                 )
-                                local formspec = shop_formspec(player)
+                                local formspec = Shop_formspec(player)
                                 player:set_inventory_formspec(table.concat(formspec, ""))
                             end
                         else
@@ -175,7 +175,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
     end
 end)
 
-function strut_form.recipie_display(type, recipie)
+function Strut_form.recipie_display(type, recipie)
     local input = {}
     local output = {}
 
@@ -215,17 +215,17 @@ function strut_form.recipie_display(type, recipie)
     end
 end
 
-function strut_form.structure_formspec(pos,display)
+function Strut_form.structure_formspec(pos,display)
     local text = "hi"
     local meta = minetest.get_meta(pos)
     local recipies = ""
-    local current_recipe = ''
+    local current_recipe
 
     if display ~= '' then
-        current_recipe = strut_form.recipie_display(meta:get_string('type'), display)
+        current_recipe = Strut_form.recipie_display(meta:get_string('type'), display)
     end
 
-    for output, inputs in pairs(factory_recipes) do
+    for output, inputs in pairs(Factory_recipes) do
         local output_label = string.sub(output, 13, 100)
         recipies = recipies .. ", " .. output_label
     end

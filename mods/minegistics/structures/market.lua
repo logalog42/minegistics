@@ -28,9 +28,9 @@ minetest.register_node("minegistics:Market", {
         return minetest.item_place(itemstack, placer, pointed_thing)
     end,
 	on_construct = function(pos)
-		table.insert(power_consumers, pos)
+		table.insert(Power_consumers, pos)
 		local price_list = "-Prices-\n"
-		for item, worth in pairs(item_worth) do
+		for item, worth in pairs(Item_worth) do
 			local item_label = string.sub(item, 13, 100)
 			if string.sub(item_label, 1, 9) == "basenodes" then
 				item_label = string.sub(item_label, 11, 100)
@@ -56,9 +56,9 @@ minetest.register_node("minegistics:Market", {
 		inv:set_size("main", 5*1)
 	end,
 	after_dig_node = function(pos, oldnode, oldmetadata, digger)
-		for i,p in pairs(power_consumers) do
+		for i,p in pairs(Power_consumers) do
 			if p.x == pos.x and p.y == pos.y and p.z == pos.z then
-				table.remove(power_consumers, i)
+				table.remove(Power_consumers, i)
 				break
 			end
 		end
@@ -87,11 +87,11 @@ minetest.register_abm({
 		if abm_timer >= math.random(8, 12) then
 			minetest.forceload_block(pos, false)
 			local meta = minetest.get_meta(pos)
-			if power_stable(pos) and meta:get_int("has_town") == 1 then
+			if Power_stable(pos) and meta:get_int("has_town") == 1 then
 				meta:set_int("has_town", 0)
 				local inv = meta:get_inventory()
 				local items = {}
-				for item, worth in pairs(item_worth) do
+				for item, worth in pairs(Item_worth) do
 					items[item] = ItemStack(item)
 				end
 				local money_earned = 0
@@ -100,21 +100,21 @@ minetest.register_abm({
 					for index, item in pairs(items) do
 						while inv:contains_item(name, item) do
 							inv:remove_item(name, item)
-							money_earned = money_earned + item_worth[item:get_name()]
+							money_earned = money_earned + Item_worth[item:get_name()]
 						end
 					end
 				end
 				if money_earned > 0 then
-					money = math.floor(money + money_earned)
-					for index,price in pairs(item_prices) do
+					Money = math.floor(Money + money_earned)
+					for index,price in pairs(Item_prices) do
 						local increase = money_earned * 0.01
-						item_prices[index] = math.floor(item_prices[index] + increase)
+						Item_prices[index] = math.floor(Item_prices[index] + increase)
 					end
 					for _,player in pairs(minetest.get_connected_players()) do
 						local spec = player:get_inventory_formspec()
 						local str = string.sub(spec,48,51)
 						if str == "Shop" then
-							local formspec = shop_formspec(player)
+							local formspec = Shop_formspec(player)
 							player:set_inventory_formspec(table.concat(formspec, ""))
 						end
 					end

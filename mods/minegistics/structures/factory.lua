@@ -24,7 +24,7 @@ minetest.register_node("minegistics:Factory", {
         return minetest.item_place(itemstack, placer, pointed_thing)
     end,
 	on_construct = function(pos)
-		table.insert(power_consumers, pos)
+		table.insert(Power_consumers, pos)
 		local meta = minetest.get_meta(pos)
 		meta:set_string("name", "Factory")
 		meta:set_string("type", "Assembling")
@@ -32,30 +32,32 @@ minetest.register_node("minegistics:Factory", {
 		local inv = meta:get_inventory()
 		inv:set_size("input", 1*4)
 		inv:set_size("output", 1*4)
-		meta:set_string("formspec", strut_form.structure_formspec(pos, ''))
+		meta:set_string("formspec", Strut_form.structure_formspec(pos, ''))
 	
 	end,
 	
 	on_receive_fields = function(pos, formname, fields, sender)
+		local ingredients
+		
 		for key, value in pairs(fields) do
 			minetest.log("default", key .. " = " .. value)
 		end
 
 		if fields['submit'] then
 			if fields['recipies'] ~= '' then
-				for output, inputs in pairs(factory_recipes) do
+				for output, inputs in pairs(Factory_recipes) do
 					ingredients[output] = { ItemStack(inputs[1]), ItemStack(inputs[2]) }
 				end
 				local display = fields['recipies']
-				strut_form.structure_formspec(pos,display)
+				Strut_form.structure_formspec(pos,display)
 			end
 		end
 	end,
 
 	after_dig_node = function(pos, oldnode, oldmetadata, digger)
-		for i,p in pairs(power_consumers) do
+		for i,p in pairs(Power_consumers) do
 			if p.x == pos.x and p.y == pos.y and p.z == pos.z then
-				table.remove(power_consumers, i)
+				table.remove(Power_consumers, i)
 				break
 			end
 		end
@@ -83,13 +85,13 @@ minetest.register_abm({
 		abm_timer = abm_timer + 1
 		if abm_timer >= math.random(8, 12) then
 			minetest.forceload_block(pos, false)
-			if power_stable(pos) then
+			if Power_stable(pos) then
 				local meta = minetest.get_meta(pos)
 				local inv = meta:get_inventory()
 				local inventories = inv:get_lists()
 				local ingredients = {}
 				local working = false
-				for output, inputs in pairs(factory_recipes) do
+				for output, inputs in pairs(Factory_recipes) do
 					ingredients[output] = { ItemStack(inputs[1]), ItemStack(inputs[2]) }
 				end
 				for name, list in pairs(inventories) do

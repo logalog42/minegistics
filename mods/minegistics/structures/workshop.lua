@@ -25,9 +25,9 @@ minetest.register_node("minegistics:Workshop", {
         return minetest.item_place(itemstack, placer, pointed_thing)
 end,
    on_construct = function(pos)
-      table.insert(power_consumers, pos)
+      table.insert(Power_consumers, pos)
       local recipe_list = "-Recipes-\n"
-      for input, output in pairs(workshop_recipes) do
+      for input, output in pairs(Workshop_recipes) do
           local input_label = string.sub(input, 23, 100)
 		  minetest.log("Default", input)
           local output_label = string.sub(output, 13, 100)
@@ -51,9 +51,9 @@ end,
       inv:set_size("main", 5*1)
 	end,
 	after_dig_node = function(pos, oldnode, oldmetadata, digger)
-		for i,p in pairs(power_consumers) do
+		for i,p in pairs(Power_consumers) do
 			if p.x == pos.x and p.y == pos.y and p.z == pos.z then
-				table.remove(power_consumers, i)
+				table.remove(Power_consumers, i)
 				break
 			end
 		end
@@ -81,12 +81,12 @@ minetest.register_abm({
 		abm_timer = abm_timer + 1
 		if abm_timer >= math.random(8, 12) then
 			minetest.forceload_block(pos, false)
-			if power_stable(pos) then
+			if Power_stable(pos) then
 				local meta = minetest.get_meta(pos)
 				local inv = meta:get_inventory()
 				local items = {}
 				local working = false
-				for input, output in pairs(workshop_recipes) do
+				for input, output in pairs(Workshop_recipes) do
 					items[input] = ItemStack(input)
 				end
 				local inventories = inv:get_lists()
@@ -94,7 +94,7 @@ minetest.register_abm({
 					for index, item in pairs(items) do
 						while inv:contains_item(name, item) do
 							local item_name = item:get_name()
-							local product = workshop_recipes[item_name]
+							local product = Workshop_recipes[item_name]
 							local stack = ItemStack(product)
 							inv:remove_item(name, item)
 							inv:add_item("main", stack)
