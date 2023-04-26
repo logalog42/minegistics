@@ -265,6 +265,7 @@ function Strut_form.structure_formspec(pos,display)
 		"list[current_player;main;0,0;8,1;]" ..
 		"container_end[]",
     }
-        -- table.concat is faster than string concatenation - `..`
+
+    -- table.concat is faster than string concatenation - `..`
     return table.concat(formspec, "")
 end

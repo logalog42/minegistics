@@ -256,7 +256,7 @@ local train_entity = {
 		visual = "mesh",
 		mesh = "train.obj",
 		visual_size = {x=1, y=1},
-		textures = {"Trains_train.png"}
+		textures = {"trains_train.png"}
 	},
 
 	-- attributes
@@ -307,7 +307,7 @@ local train_entity = {
 			if should_collect_train(puncher) then
 				local pos = self.object:get_pos()
 				local drops = {
-					"Trains:train",
+					"trains:train",
 				}
 				for item, count in pairs(self.cargo) do
 					drops[#drops + 1] = item .. " " .. count
@@ -344,10 +344,10 @@ local train_entity = {
 		end
 	end,
 }
-minetest.register_entity("Trains:train", train_entity)
+minetest.register_entity("trains:train", train_entity)
 
 
-minetest.register_craftitem("Trains:train", {
+minetest.register_craftitem("trains:train", {
 	description = "Train: " ..
 		"Carries Resources from one building to another.\n" ..
 		"Must be placed on a rail. (Shift+Click to pick up)",
@@ -364,9 +364,9 @@ minetest.register_craftitem("Trains:train", {
 		end
 
 		if Trains.is_rail(under) then
-			minetest.add_entity(pointed_thing.under, "Trains:train")
+			minetest.add_entity(pointed_thing.under, "trains:train")
 		elseif Trains.is_rail(pointed_thing.above) then
-			minetest.add_entity(pointed_thing.above, "Trains:train")
+			minetest.add_entity(pointed_thing.above, "trains:train")
 		else
 			return
 		end
