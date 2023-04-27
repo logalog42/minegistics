@@ -218,16 +218,19 @@ end
 function Strut_form.structure_formspec(pos,display)
     local text = "hi"
     local meta = minetest.get_meta(pos)
-    local recipies = ""
-    local current_recipe
+    local recipes = ""
+    local name = meta:get_string('name')
+    local possible_recipes = name .. '_recipes'
 
     if display ~= '' then
         current_recipe = Strut_form.recipie_display(meta:get_string('type'), display)
+    else
+        current_recipe = meta:get_string('tutorial')
     end
 
-    for output, inputs in pairs(Factory_recipes) do
+    for output, inputs in pairs( possible_recipes) do
         local output_label = string.sub(output, 13, 100)
-        recipies = recipies .. ", " .. output_label
+        recipes = recipies .. ", " .. output_label
     end
     
     local formspec = {
@@ -241,7 +244,7 @@ function Strut_form.structure_formspec(pos,display)
 
 		--Selection Area
 		"container[2,2]" ..
-		"dropdown[0,0;6,.75;recipies;" .. recipies .. ";0;]" ..
+		"dropdown[0,0;6,.75;recipies;" .. recipes .. ";0;]" ..
 		"button[6.25,0;2,.75;submit;Submit]" ..
 		"container_end[]" ..
 		
@@ -257,8 +260,13 @@ function Strut_form.structure_formspec(pos,display)
 
 		--Info Display
 		"container[1.5,1]" ..
-		"label[0,0;", current_recipe , "]" ..
+		"label[0,0;", display , "]" ..
 		"container_end[]",
+
+        --Recipie Display
+        "container[1.5,3.5]" ..
+        "label[0,0;", current_recipe , "]" ..
+        "container_end[]",
 
 		--Player Inventory Display
 		"container[1.5,8.75]" ..

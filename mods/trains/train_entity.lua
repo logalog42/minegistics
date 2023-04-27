@@ -74,7 +74,7 @@ local function should_collect_train(player)
 	local name = player:get_player_name()
 	local inv = player:get_inventory()
 	local creative = minetest.is_creative_enabled(name)
-	local has_train = inv:contains_item("main", "Trains:train")
+	local has_train = inv:contains_item("main", "trains:train")
 	return (not creative) or (not has_train)
 end
 
@@ -82,7 +82,7 @@ end
 local function play_rail_sound(train)
 	if not train.sound_handle then
 		local speed = train.object:get_velocity():length()
-		train.sound_handle = minetest.sound_play("Trains_train_moving", {
+		train.sound_handle = minetest.sound_play("trains_train_moving", {
 			object = train.object,
 			gain = 0.75,
 			max_hear_distance = 10,
@@ -106,12 +106,12 @@ local function get_cargo_count(train)
 end
 --enables filled train mesh.
 local function set_train_filled(train)
-	train.object:set_properties({mesh = "train_2.obj", textures = {"Trains_train_2.png"}})
+	train.object:set_properties({mesh = "train_2.obj", textures = {"trains_train_2.png"}})
 end
 
 --enables empty train mesh.
 local function set_train_empty(train)
-	train.object:set_properties({mesh = "train.obj", textures = {"Trains_train.png"}})
+	train.object:set_properties({mesh = "train.obj", textures = {"trains_train.png"}})
 end
 
 local function update_train_cargo_display(train)

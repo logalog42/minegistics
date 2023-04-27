@@ -29,6 +29,7 @@ minetest.register_node("minegistics:Factory", {
 		meta:set_string("name", "Factory")
 		meta:set_string("type", "Assembling")
 		meta:set_string("infotext", "Factory")
+		meta:set_string("tutorial", "With this building you are going to combine two base items into a much more valuable trade good.")
 		local inv = meta:get_inventory()
 		inv:set_size("input", 1*4)
 		inv:set_size("output", 1*4)
@@ -37,7 +38,14 @@ minetest.register_node("minegistics:Factory", {
 	end,
 	
 	on_receive_fields = function(pos, formname, fields, sender)
-		local ingredients
+		local meta = minetest.get_meta(pos)
+		name = meta:get_string('name')
+
+		for index, value in ipairs(name .. "_recipes") do
+			if value.type == table then
+				ingredients[index] = { ItemStack(value[1])}
+			end
+		end
 		
 		for key, value in pairs(fields) do
 			minetest.log("default", key .. " = " .. value)
