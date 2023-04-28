@@ -15,6 +15,8 @@ Base_ores = {
 	["basenodes:tree_2"] = "minegistics:lumber",
 	["basenodes:tree_3"] = "minegistics:lumber",
 	["basenodes:tree_4"] = "minegistics:lumber",
+    ["basenodes:clay_spot"] = "minegistics:clay_lump",
+    ["basenodes:gravel_spot"] = "minegistics:gravel_lump"
 }
 
 Fuels = {

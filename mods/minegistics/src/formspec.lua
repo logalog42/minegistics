@@ -179,9 +179,16 @@ function Strut_form.recipie_display(type, display_recipe, possible_recipes)
     local input = {}
     local output = {}
 
-    for index, value in ipairs(possible_recipes) do
-        if value == display_recipe then
-            for index, value in ipairs(value) do
+    possible_recipes = {
+        ["minegistics:iron_product"] = {"minegistics:iron_ingot", "minegistics:mechanical_parts"},
+        ["minegistics:copper_product"] = {"minegistics:copper_ingot", "minegistics:copper_wire"},
+        ["minegistics:steel_product"] = {"minegistics:building_materials", "minegistics:steel_ingot"},
+        ["minegistics:ash"] = {"minegistics:potash", "minegistics:lye"}
+    }
+
+    for index, value in pairs(possible_recipes) do
+        if index == display_recipe then
+            for index, value in pairs(value) do
                 ItemStack(ItemStack|index|output|1)
             end
         end
@@ -227,6 +234,7 @@ function Strut_form.structure_formspec(pos,display_recipe)
     local meta = minetest.get_meta(pos)
     local name = meta:get_string('name')
     local possible_recipes = name .. '_recipes'
+    local display = meta:get_string("infotext")
     local current_recipe
     local recipes
 
