@@ -34,7 +34,7 @@ for output, inputs in pairs(Factory_recipes) do
 	load_orders.factory.input[inputs[2]] = true
 	load_orders.factory.output[output] = true
 end
-for input, output in pairs(Workshop_recipes) do
+for input, output in pairs(Refinery_recipes) do
 	load_orders.workshop.input[output] = true
 	load_orders.workshop.output[input] = true
 end
@@ -151,7 +151,7 @@ end
 --deposits or withdraws items at a workshop
 local function workshop_transaction(train, train_inv, contents)
 	local ore_hauler = false
-	for input, output in pairs(Workshop_recipes) do
+	for input, output in pairs(Refinery_recipes) do
 		if train_inv[input] then
 			contents:add_item("main", input .. " " .. train_inv[input])
 			train_inv[input] = nil
@@ -159,7 +159,7 @@ local function workshop_transaction(train, train_inv, contents)
 		end
 	end
 	if not ore_hauler then
-		for input, output in pairs(Workshop_recipes) do
+		for input, output in pairs(Refinery_recipes) do
 			local max_transfer = train.cargo_capacity - get_cargo_count(train)
 			local taken = contents:remove_item("main", (output .. " " .. max_transfer))
 			if not taken:is_empty() then
@@ -197,9 +197,9 @@ local function structure_check(train, dtime)
 		local structure_name = minetest.get_node(direction).name
 		local contents = minetest.get_inventory({type = "node", pos = direction})
 		if structure_name == "minegistics:Collector" then
-			collect(train, train_inv, contents, Resources)
+			collect(train, train_inv, contents, Material)
 		elseif structure_name == "minegistics:Farm" then
-			collect(train, train_inv, contents, Farm_resources)
+			collect(train, train_inv, contents, Farm_material)
 		elseif structure_name == "minegistics:Factory" then
 			factory_transaction(train, train_inv, contents)
 		elseif structure_name == "minegistics:Workshop" then

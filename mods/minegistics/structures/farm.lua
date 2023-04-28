@@ -62,7 +62,7 @@ minetest.register_abm({
                 local under = minetest.get_node(vector.new(pos.x, pos.y - 1, pos.z))
                 if under.name == "basenodes:dirt_with_grass" then
                     local rand = math.random(1, 5)
-                    local resource = Farm_resources[rand]
+                    local resource = Farm_material[rand]
                     local meta = minetest.get_meta(pos)
                     local inv = meta:get_inventory()
                     local stack = ItemStack(resource)

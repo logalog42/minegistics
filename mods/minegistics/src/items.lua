@@ -22,7 +22,7 @@ Fuels = {
     "minegistics:lumber"
 }
 
-Resources = {
+Material = {
     "basenodes:coal_lump",
     "basenodes:copper_lump",
     "basenodes:tin_lump",
@@ -31,27 +31,51 @@ Resources = {
     "minegistics:lumber"
   }
 
-Farm_resources = {
-    "minegistics:fat",
+Farm_material = {
     "minegistics:fruit",
+    "minegistics:wheat",
+    "minegistics:cotton"
+}
+
+Ranch_material = {
+    "minegistics:fat",
     "minegistics:leather",
     "minegistics:meat",
+}
+
+Dairy_material = {
     "minegistics:vessels_milk_bottle",
 }
 
-Workshop_recipes = {
-    ["basenodes:coal_lump"] = "minegistics:coal_product",
-    ["basenodes:copper_lump"] = "minegistics:copper_wire",
+Refinery_recipes = {
+    ["basenodes:coal_lump"] = "minegistics:coal_coke_product",
+    ["basenodes:copper_lump"] = "minegistics:copper_product",
     ["basenodes:gold_lump"] = "minegistics:gold_product",
     ["basenodes:iron_lump"] = "minegistics:iron_product",
     ["basenodes:tin_lump"] = "minegistics:tin_product",
+    ["basenodes:fat"] = "minegistics:tallow_product",
+    ["basenodes:lumber"] = "minegistics:ash_product",
+    ["basenodes:clay"] = "minegistics:Ceramics",
 }
 
 Factory_recipes = {
-    ["minegistics:mechanical_parts"] = {"minegistics:iron_product", "minegistics:copper_wire"},
-    ["minegistics:building_materials"] = {"minegistics:iron_product", "minegistics:lumber"},
-    ["minegistics:furniture"] = {"minegistics:leather", "minegistics:lumber"},
-    ["minegistics:toys"] = {"minegistics:tin_product", "minegistics:lumber"}
+    ["minegistics:luxury_tools"] = {"steel_ingot", "bronze_ingot"},
+    ["minegistics:toys"] = {"minegistics:mechanical_parts", "minegistics:copper_wire"},
+    ["minegistics:bronze_ingot"] = {"minegistics:copper_ingot", "minegistics:tin_product"},
+    ["minegistics:steel_product"] = {"minegistics:coal_coke", "minegistics:iron_ingot"},
+    ["minegistics:cement"] = {"minegistics:gravel", "minegistics:sand"},
+    ["minegistics:soap"] = {"minegistics:tallow_product", "minegistics:lye"},
+    ["minegistics:luxury_furniture"] = {"minegistics:leather", "minegistics:lumber"},
+    ["minegistics:furniture"] = {"minegistics:cotton", "minegistics:lumber"},
+    ["minegistics:luxury_meal"] = {"minegistics:fruit", "minegistics:vessels_milk_bottle"},
+    ["minegistics:simple_meal"] = {"minegistics:wheat", "minegistics:meat"},
+}
+
+Workshop_recipes = {
+    ["minegistics:iron_product"] = {"minegistics:iron_ingot", "minegistics:mechanical_parts"},
+    ["minegistics:copper_product"] = {"minegistics:copper_ingot", "minegistics:copper_wire"},
+    ["minegistics:steel_product"] = {"minegistics:building_materials", "minegistics:steel_ingot"},
+    ["minegistics:ash"] = {"minegistics:potash", "minegistics:lye"}
 }
 
 Item_worth = {

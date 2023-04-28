@@ -27,7 +27,7 @@ end,
    on_construct = function(pos)
       table.insert(Power_consumers, pos)
       local recipe_list = "-Recipes-\n"
-      for input, output in pairs(Workshop_recipes) do
+      for input, output in pairs(Refinery_recipes) do
           local input_label = string.sub(input, 23, 100)
 		  minetest.log("Default", input)
           local output_label = string.sub(output, 13, 100)
@@ -86,7 +86,7 @@ minetest.register_abm({
 				local inv = meta:get_inventory()
 				local items = {}
 				local working = false
-				for input, output in pairs(Workshop_recipes) do
+				for input, output in pairs(Refinery_recipes) do
 					items[input] = ItemStack(input)
 				end
 				local inventories = inv:get_lists()
@@ -94,7 +94,7 @@ minetest.register_abm({
 					for index, item in pairs(items) do
 						while inv:contains_item(name, item) do
 							local item_name = item:get_name()
-							local product = Workshop_recipes[item_name]
+							local product = Refinery_recipes[item_name]
 							local stack = ItemStack(product)
 							inv:remove_item(name, item)
 							inv:add_item("main", stack)
