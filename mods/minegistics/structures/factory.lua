@@ -29,6 +29,7 @@ minetest.register_node("minegistics:Factory", {
 		meta:set_string("name", "Factory")
 		meta:set_string("type", "Assembling")
 		meta:set_string("infotext", "Factory")
+		meta:set_string("display_recipe", "")
 		meta:set_string("tutorial", "With this building you are going to combine two base items into a much more valuable trade good.")
 		local inv = meta:get_inventory()
 		inv:set_size("input", 1*4)
@@ -38,26 +39,10 @@ minetest.register_node("minegistics:Factory", {
 	end,
 	
 	on_receive_fields = function(pos, formname, fields, sender)
-		local meta = minetest.get_meta(pos)
-		name = meta:get_string('name')
-
-		for index, value in ipairs(name .. "_recipes") do
-			if value.type == table then
-				ingredients[index] = { ItemStack(value[1])}
-			end
-		end
-		
-		for key, value in pairs(fields) do
-			minetest.log("default", key .. " = " .. value)
-		end
 
 		if fields['submit'] then
-			if fields['recipies'] ~= '' then
-				for output, inputs in pairs(Factory_recipes) do
-					ingredients[output] = { ItemStack(inputs[1]), ItemStack(inputs[2]) }
-				end
-				local display = fields['recipies']
-				Strut_form.structure_formspec(pos,display)
+			if fields['recipes'] ~= '' then
+				Strut_form.structure_formspec(pos,fields.recipes)
 			end
 		end
 	end,
