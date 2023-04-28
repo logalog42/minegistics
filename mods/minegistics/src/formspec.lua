@@ -175,9 +175,17 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
     end
 end)
 
-function Strut_form.recipie_display(type, recipie)
+function Strut_form.recipie_display(type, display_recipe, possible_recipes)
     local input = {}
     local output = {}
+
+    for index, value in ipairs(possible_recipes) do
+        if value == display_recipe then
+            for index, value in ipairs(value) do
+                ItemStack(ItemStack|index|output|1)
+            end
+        end
+    end
 
     if type == "Processing" then
         local formspec = {  
@@ -215,22 +223,22 @@ function Strut_form.recipie_display(type, recipie)
     end
 end
 
-function Strut_form.structure_formspec(pos,display)
-    local text = "hi"
+function Strut_form.structure_formspec(pos,display_recipe)
     local meta = minetest.get_meta(pos)
-    local recipes = ""
     local name = meta:get_string('name')
     local possible_recipes = name .. '_recipes'
+    local current_recipe
+    local recipes
 
-    if display ~= '' then
-        current_recipe = Strut_form.recipie_display(meta:get_string('type'), display)
+    if display_recipe ~= '' then
+        current_recipe = Strut_form.recipie_display(meta:get_string('type'), display_recipe, possible_recipes)
     else
         current_recipe = meta:get_string('tutorial')
     end
 
     for output, inputs in pairs( possible_recipes) do
         local output_label = string.sub(output, 13, 100)
-        recipes = recipies .. ", " .. output_label
+        recipes = recipes .. ", " .. output_label
     end
     
     local formspec = {
@@ -244,7 +252,7 @@ function Strut_form.structure_formspec(pos,display)
 
 		--Selection Area
 		"container[2,2]" ..
-		"dropdown[0,0;6,.75;recipies;" .. recipes .. ";0;]" ..
+		"dropdown[0,0;6,.75;recipes;" .. recipes .. ";0;]" ..
 		"button[6.25,0;2,.75;submit;Submit]" ..
 		"container_end[]" ..
 		

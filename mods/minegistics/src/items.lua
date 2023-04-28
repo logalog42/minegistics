@@ -5,6 +5,18 @@
     License: AGPLv3
 ]]--
 
+Base_ores = {
+    ["basenodes:stone_with_coal"] = "basenodes:coal_lump",
+    ["basenodes:stone_with_tin"] = "basenodes:tin_lump",
+    ["basenodes:stone_with_copper"] = "basenodes:copper_lump",
+    ["basenodes:stone_with_iron"] = "basenodes:iron_lump",
+    ["basenodes:stone_with_gold"] = "basenodes:gold_lump",
+    ["basenodes:tree_1"] = "minegistics:lumber",
+	["basenodes:tree_2"] = "minegistics:lumber",
+	["basenodes:tree_3"] = "minegistics:lumber",
+	["basenodes:tree_4"] = "minegistics:lumber",
+}
+
 Fuels = {
     "basenodes:coal_lump",
     "minegistics:lumber"
