@@ -182,7 +182,7 @@ function Strut_form.recipie_display(type, display_recipe, possible_recipes)
     for index, value in ipairs(possible_recipes) do
         if value == display_recipe then
             for index, value in ipairs(value) do
-                ItemStack(index)
+                ItemStack(ItemStack|index|output|1)
             end
         end
     end
@@ -226,8 +226,7 @@ end
 function Strut_form.structure_formspec(pos,display_recipe)
     local meta = minetest.get_meta(pos)
     local name = meta:get_string('name')
-    local possible_recipes = RecipiesInStructure.name
-    local recipes
+
 
     if display_recipe ~= '' then
         current_recipe = Strut_form.recipie_display(meta:get_string('type'), display_recipe, possible_recipes)
