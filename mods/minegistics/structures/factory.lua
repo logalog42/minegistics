@@ -31,6 +31,7 @@ minetest.register_node("minegistics:Factory", {
 		meta:set_string("infotext", "Factory")
 		meta:set_string("display_recipe", "")
 		meta:set_string("tutorial", "With this building you are going to combine two base items into a much more valuable trade good.")
+		meta:set_string("possible_recipes", Factory_recipes)
 		local inv = meta:get_inventory()
 		inv:set_size("input", 1*4)
 		inv:set_size("output", 1*4)

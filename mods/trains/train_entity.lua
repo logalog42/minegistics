@@ -29,12 +29,13 @@ local load_orders = {
 		output = {},
 	},
 }
-for output, inputs in pairs(Factory_recipes) do
+
+for output, inputs in pairs(RecipiesInStructure.Factory) do
 	load_orders.factory.input[inputs[1]] = true
 	load_orders.factory.input[inputs[2]] = true
 	load_orders.factory.output[output] = true
 end
-for input, output in pairs(Refinery_recipes) do
+for input, output in pairs(RecipiesInStructure.Refinery) do
 	load_orders.workshop.input[output] = true
 	load_orders.workshop.output[input] = true
 end
