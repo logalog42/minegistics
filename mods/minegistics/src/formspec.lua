@@ -178,100 +178,115 @@ end)
 function Strut_form.recipie_display(type, display_recipe, possible_recipes)
     local input = {}
     local output = {}
-
-    for index, value in ipairs(possible_recipes) do
-        if value == display_recipe then
-            for index, value in ipairs(value) do
-                ItemStack(ItemStack|index|output|1)
-            end
-        end
-    end
+    local formspec
 
     if type == "Processing" then
-        local formspec = {  
-        --Input 1
-        "item_image[1,1;1,1;" .. input(1) .."" ..
-        --Working Image
-        "animated_image[3,2;5,3;<name>;<texture name>;<frame count>;<frame duration>;<frame start>;<middle>]" ..
-        --Output 1
-        "item_image[7,2;1,1;" .. output(1) .. "]" ..
-        --Output 2
-        "item_image[7,2;1,1;" .. output(2) .. "]" 
-    
-
+        formspec = {  
+            --Input 1
+            "item_image[1,1;1,1;" .. input(1) .."" ..
+            --Working Image
+            --"animated_image[3,2;5,3;<name>;<texture name>;<frame count>;<frame duration>;<frame start>;<middle>]" ..
+            --Output 1
+            "item_image[7,2;1,1;" .. output(1) .. "]" ..
+            --Output 2
+            "item_image[7,2;1,1;" .. output(2) .. "]",
         }
     elseif type == "Assembling" then
-        local formspec = {
+        for index, recipies in ipairs(possible_recipes) do
+            if recipies == display_recipe then
+                for index, value in ipairs(recipies) do
+                    input[index] = value
+                end
+                output[1] = recipies
+            end
+        end
+        formspec = {
             --Input 1
-            "item_image[1,1;1,1;" .. input(1) .."" ..
+            "item_image[1,1;1,1;" .. input[1] .."]" ..
             --Input 2
-            "item_image[1,3;1,1;" .. input(2) .. "]" ..
+            "item_image[1,3;1,1;" .. input[2] .. "]" ..
             --Working Image
-            "animated_image[3,2;5,3;<name>;<texture name>;<frame count>;<frame duration>;<frame start>;<middle>]" ..
+            --"animated_image[3,2;5,3;<name>;<texture name>;<frame count>;<frame duration>;<frame start>;<middle>]" ..
             --Output
-            "item_image[7,2;1,1;" .. output(1) .. "]" 
+            "item_image[7,2;1,1;" .. output[1] .. "]",
         }
     elseif type == "Refining" then
-        local formspec = {
+        formspec = {
             --Input 1
             "item_image[1,1;1,1;" .. input(1) .."" ..
             --Working Image
-            "animated_image[3,2;5,3;<name>;<texture name>;<frame count>;<frame duration>;<frame start>;<middle>]" ..
+            --"animated_image[3,2;5,3;<name>;<texture name>;<frame count>;<frame duration>;<frame start>;<middle>]" ..
             --Output
-            "item_image[7,2;1,1;" .. output(1) .. "]" 
+            "item_image[7,2;1,1;" .. output(1) .. "]",
         }
     end
+
+    return table.concat(formspec, "")
+
 end
 
-function Strut_form.structure_formspec(pos,display_recipe)
+function Strut_form.structure_formspec(pos)
     local meta = minetest.get_meta(pos)
-    local name = meta:get_string('name')
-
+    local info = meta:get_string('infotext')
+    local possible_recipes = RecipiesInStructure[meta:get_string("name")]
+    local type = meta:get_string('type')
+    local display_recipe = meta:get_string('display_recipe')
+    local recipe_number = 0
+    local active_recipe = ''
+    local recipes = ''
 
     if display_recipe ~= '' then
-        current_recipe = Strut_form.recipie_display(meta:get_string('type'), display_recipe, possible_recipes)
+        active_recipe = Strut_form.recipie_display( type, display_recipe, possible_recipes)
     else
-        current_recipe = meta:get_string('tutorial')
+        active_recipe = meta:get_string('tutorial')
     end
 
-    for output, inputs in pairs( possible_recipes) do
+    for output, inputs in pairs(possible_recipes) do
         local output_label = string.sub(output, 13, 100)
-        recipes = recipes .. ", " .. output_label
+        recipes = recipes .. " , " .. output_label
     end
     
+    for index, value in ipairs(possible_recipes) do
+        local output_label = string.sub(output, 13, 100)
+        if value == output_label then
+            recipe_number = index
+        end
+        
+    end
+
     local formspec = {
-        "formspec_version[6]",
+        "formspec_version[6]" ..
 		"size[13,10]",
 
 		--Title Area
 		"container[.5,.5]" ..
 		"label[0,0;" .. meta:get_string('name') .. "]" ..
-		"container_end[]" ..
+		"container_end[]",
 
 		--Selection Area
 		"container[2,2]" ..
-		"dropdown[0,0;6,.75;recipes;" .. recipes .. ";0;]" ..
+		"dropdown[0,0;6,.75;recipes;" .. recipes .. ";" .. recipe_number ..";false]" ..
 		"button[6.25,0;2,.75;submit;Submit]" ..
-		"container_end[]" ..
+		"container_end[]",
 		
 		--Input Inventory
 		"container[0.25,3.5]" ..
 		"list[nodemeta:" .. pos.x .. ",".. pos.y .. ",".. pos.z .. ";input;0,0;1,4;]" ..
-		"container_end[]" ..
+		"container_end[]",
 
 		--Output Inventory
 		"container[11.75,3.5]" ..
 		"list[nodemeta:" .. pos.x .. ",".. pos.y .. ",".. pos.z .. ";output;0,0;1,4;]" ..
-		"container_end[]" ..
+		"container_end[]",
 
 		--Info Display
 		"container[1.5,1]" ..
-		"label[0,0;", display , "]" ..
+		"label[0,0;" .. info .. "]" ..
 		"container_end[]",
 
         --Recipie Display
         "container[1.5,3.5]" ..
-        "label[0,0;", current_recipe , "]" ..
+        "label[0,0;" .. active_recipe  .. "]" ..
         "container_end[]",
 
 		--Player Inventory Display
@@ -279,6 +294,8 @@ function Strut_form.structure_formspec(pos,display_recipe)
 		"list[current_player;main;0,0;8,1;]" ..
 		"container_end[]",
     }
+
+    minetest.log('default', active_recipe)
 
     -- table.concat is faster than string concatenation - `..`
     return table.concat(formspec, "")

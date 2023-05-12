@@ -58,7 +58,7 @@ RecipiesInStructure = {
         ["minegistics:tin_lump"] = "minegistics:tin_product",
         ["minegistics:fat"] = "minegistics:tallow_product",
         ["minegistics:lumber"] = "minegistics:ash_product",
-        ["minegistics:clay"] = "minegistics:Ceramics",
+        ["minegistics:clay"] = "minegistics:Ceramics"
     },
 
     Factory = {
@@ -71,7 +71,7 @@ RecipiesInStructure = {
         ["minegistics:luxury_furniture"] = {"minegistics:leather", "minegistics:lumber"},
         ["minegistics:furniture"] = {"minegistics:cotton", "minegistics:lumber"},
         ["minegistics:luxury_meal"] = {"minegistics:fruit", "minegistics:vessels_milk_bottle"},
-        ["minegistics:simple_meal"] = {"minegistics:wheat", "minegistics:meat"},
+        ["minegistics:simple_meal"] = {"minegistics:wheat", "minegistics:meat"}
     },
 
     Workshop = {

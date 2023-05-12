@@ -31,7 +31,6 @@ minetest.register_node("minegistics:Factory", {
 		meta:set_string("infotext", "Factory")
 		meta:set_string("display_recipe", "")
 		meta:set_string("tutorial", "With this building you are going to combine two base items into a much more valuable trade good.")
-		meta:set_string("possible_recipes", Factory_recipes)
 		local inv = meta:get_inventory()
 		inv:set_size("input", 1*4)
 		inv:set_size("output", 1*4)
@@ -42,9 +41,21 @@ minetest.register_node("minegistics:Factory", {
 	on_receive_fields = function(pos, formname, fields, sender)
 
 		if fields['submit'] then
-			if fields['recipes'] ~= '' then
-				Strut_form.structure_formspec(pos,fields.recipes)
+			local meta = minetest.get_meta(pos)
+			local possible_recipes = RecipiesInStructure[meta:get_string("name")]
+
+			for output, inputs in pairs(possible_recipes) do
+					local item_name = " " .. string.sub(output, 13, 100)
+					minetest.log('default', dump(fields))
+					minetest.log('default', item_name)
+					if fields.recipes == item_name then
+						minetest.log('default', "Okay it matches!")
+						meta:set_string("display_recipe", output)
+					end
 			end
+
+			Strut_form.structure_formspec(pos)
+
 		end
 	end,
 
