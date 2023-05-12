@@ -175,9 +175,11 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
     end
 end)
 
-function Strut_form.recipie_display(type, display_recipe, possible_recipes)
-    local input = {}
+function Strut_form.recipie_display(type, display_recipe, possible_recipes, recipe_number)
+    local input = ''
     local output = {}
+    local ingredients = {}
+    
     local formspec
 
     if type == "Processing" then
@@ -192,19 +194,20 @@ function Strut_form.recipie_display(type, display_recipe, possible_recipes)
             "item_image[7,2;1,1;" .. output(2) .. "]",
         }
     elseif type == "Assembling" then
-        for index, recipies in ipairs(possible_recipes) do
-            if recipies == display_recipe then
-                for index, value in ipairs(recipies) do
-                    input[index] = value
-                end
-                output[1] = recipies
+        for index, list in ipairs(possible_recipes) do
+            if recipe_number == index then
+                for key, value in pairs(list) do
+                    input = ItemStack(key)
+                    output = { value[1], value[2] }             
+                end 
             end
         end
+        minetest.log("default", input)
         formspec = {
             --Input 1
-            "item_image[1,1;1,1;" .. input[1] .."]" ..
+            "item_image[1,1;1,1;" .. output[1] .."]" ..
             --Input 2
-            "item_image[1,3;1,1;" .. input[2] .. "]" ..
+            "item_image[1,3;1,1;" .. output[2] .. "]" ..
             --Working Image
             --"animated_image[3,2;5,3;<name>;<texture name>;<frame count>;<frame duration>;<frame start>;<middle>]" ..
             --Output
@@ -236,23 +239,25 @@ function Strut_form.structure_formspec(pos)
     local recipes = ''
 
     if display_recipe ~= '' then
-        active_recipe = Strut_form.recipie_display( type, display_recipe, possible_recipes)
+        --Sets the recipes dropdown to the current display_recipe
+        for index, value in ipairs(possible_recipes) do
+            local project = string.sub(value, 13, 100)
+            if display_recipe == project then
+                recipe_number = index
+            end    
+        end
+        active_recipe = Strut_form.recipie_display( type, display_recipe, possible_recipes, recipe_number)
     else
         active_recipe = meta:get_string('tutorial')
     end
 
+    --Creates a list of items for the dropdown from structures possible recipes
     for output, inputs in pairs(possible_recipes) do
         local output_label = string.sub(output, 13, 100)
         recipes = recipes .. " , " .. output_label
     end
-    
-    for index, value in ipairs(possible_recipes) do
-        local output_label = string.sub(output, 13, 100)
-        if value == output_label then
-            recipe_number = index
-        end
-        
-    end
+
+
 
     local formspec = {
         "formspec_version[6]" ..

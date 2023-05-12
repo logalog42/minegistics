@@ -46,11 +46,11 @@ minetest.register_node("minegistics:Factory", {
 
 			for output, inputs in pairs(possible_recipes) do
 					local item_name = " " .. string.sub(output, 13, 100)
-					minetest.log('default', dump(fields))
-					minetest.log('default', item_name)
 					if fields.recipes == item_name then
-						minetest.log('default', "Okay it matches!")
+						minetest.log('default', dump(fields))
+						minetest.log('default', item_name)
 						meta:set_string("display_recipe", output)
+						minetest.log('default', meta:get_string("display_recipe"))
 					end
 			end
 
@@ -96,7 +96,7 @@ minetest.register_abm({
 				local inventories = inv:get_lists()
 				local ingredients = {}
 				local working = false
-				for output, inputs in pairs(Factory_recipes) do
+				for output, inputs in pairs(RecipiesInStructure.Factory) do
 					ingredients[output] = { ItemStack(inputs[1]), ItemStack(inputs[2]) }
 				end
 				for name, list in pairs(inventories) do
