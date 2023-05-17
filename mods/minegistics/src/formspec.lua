@@ -175,52 +175,58 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
     end
 end)
 
-function Strut_form.recipie_display(type, display_recipe, possible_recipes, recipe_number)
+function Strut_form.recipie_display(type, display_recipe, possible_recipes, tutorial)
     local input = ''
     local output = {}
-    local ingredients = {}
-    
     local formspec
 
-    if type == "Processing" then
-        formspec = {  
-            --Input 1
-            "item_image[1,1;1,1;" .. input(1) .."" ..
-            --Working Image
-            --"animated_image[3,2;5,3;<name>;<texture name>;<frame count>;<frame duration>;<frame start>;<middle>]" ..
-            --Output 1
-            "item_image[7,2;1,1;" .. output(1) .. "]" ..
-            --Output 2
-            "item_image[7,2;1,1;" .. output(2) .. "]",
-        }
-    elseif type == "Assembling" then
-        for index, list in ipairs(possible_recipes) do
-            if recipe_number == index then
-                for key, value in pairs(list) do
-                    input = ItemStack(key)
-                    output = { value[1], value[2] }             
-                end 
+    if display_recipe ~= '' then
+        if type == "Processing" then
+            formspec = {  
+                --Input 1
+                "item_image[1,1;1,1;" .. input(1) .."" ..
+                --Working Image
+                --"animated_image[3,2;5,3;<name>;<texture name>;<frame count>;<frame duration>;<frame start>;<middle>]" ..
+                --Output 1
+                "item_image[7,2;1,1;" .. output(1) .. "]" ..
+                --Output 2
+                "item_image[7,2;1,1;" .. output(2) .. "]",
+            }
+        elseif type == "Assembling" then
+            for key, value in pairs(possible_recipes) do
+                --minetest.log("default", "Key = " .. key .. " Value 1 = " .. value[1])
+                if key == display_recipe then
+                    input = key
+                    output = {value[1], value[2]}
+                    break
+                end
             end
+            --minetest.log("default", "output 1 = " .. tostring(output[1]))
+            --minetest.log("default", "output 2 = " .. tostring(output[2]))
+            
+            formspec = {
+                --Input 1
+                "item_image[1,1;1,1;" .. output[1] .. "]" ..
+                --Input 2
+                "item_image[1,3;1,1;" .. output[2] .. "]" ..
+                --Working Image
+                --"animated_image[3,2;5,3;<name>;<texture name>;<frame count>;<frame duration>;<frame start>;<middle>]" ..
+                --Output
+                "item_image[7,2;1,1;" .. input .. "]"
+            }
+        elseif type == "Refining" then
+            formspec = {
+                --Input 1
+                "item_image[1,1;1,1;" .. input(1) .."" ..
+                --Working Image
+                --"animated_image[3,2;5,3;<name>;<texture name>;<frame count>;<frame duration>;<frame start>;<middle>]" ..
+                --Output
+                "item_image[7,2;1,1;" .. output(1) .. "]",
+            }
         end
-        minetest.log("default", input)
+    else
         formspec = {
-            --Input 1
-            "item_image[1,1;1,1;" .. output[1] .."]" ..
-            --Input 2
-            "item_image[1,3;1,1;" .. output[2] .. "]" ..
-            --Working Image
-            --"animated_image[3,2;5,3;<name>;<texture name>;<frame count>;<frame duration>;<frame start>;<middle>]" ..
-            --Output
-            "item_image[7,2;1,1;" .. output[1] .. "]",
-        }
-    elseif type == "Refining" then
-        formspec = {
-            --Input 1
-            "item_image[1,1;1,1;" .. input(1) .."" ..
-            --Working Image
-            --"animated_image[3,2;5,3;<name>;<texture name>;<frame count>;<frame duration>;<frame start>;<middle>]" ..
-            --Output
-            "item_image[7,2;1,1;" .. output(1) .. "]",
+            "hypertext[0,0;10.5,8;tutorial_display;" .. tutorial .. "]"
         }
     end
 
@@ -237,27 +243,15 @@ function Strut_form.structure_formspec(pos)
     local recipe_number = 0
     local active_recipe = ''
     local recipes = ''
+    local tutorial = meta:get_string('tutorial')
 
-    if display_recipe ~= '' then
-        --Sets the recipes dropdown to the current display_recipe
-        for index, value in ipairs(possible_recipes) do
-            local project = string.sub(value, 13, 100)
-            if display_recipe == project then
-                recipe_number = index
-            end    
-        end
-        active_recipe = Strut_form.recipie_display( type, display_recipe, possible_recipes, recipe_number)
-    else
-        active_recipe = meta:get_string('tutorial')
-    end
+    active_recipe = Strut_form.recipie_display( type, display_recipe, possible_recipes, tutorial)
 
     --Creates a list of items for the dropdown from structures possible recipes
     for output, inputs in pairs(possible_recipes) do
         local output_label = string.sub(output, 13, 100)
-        recipes = recipes .. " , " .. output_label
+        recipes = recipes .. "," .. output_label
     end
-
-
 
     local formspec = {
         "formspec_version[6]" ..
@@ -271,7 +265,7 @@ function Strut_form.structure_formspec(pos)
 		--Selection Area
 		"container[2,2]" ..
 		"dropdown[0,0;6,.75;recipes;" .. recipes .. ";" .. recipe_number ..";false]" ..
-		"button[6.25,0;2,.75;submit;Submit]" ..
+		"button_exit[6.25,0;2,.75;submit;Submit]" ..
 		"container_end[]",
 		
 		--Input Inventory
@@ -291,7 +285,8 @@ function Strut_form.structure_formspec(pos)
 
         --Recipie Display
         "container[1.5,3.5]" ..
-        "label[0,0;" .. active_recipe  .. "]" ..
+        "label[4,0;" .. string.sub(display_recipe, 13, 100) .. "]" ..
+        active_recipe  ..
         "container_end[]",
 
 		--Player Inventory Display
@@ -299,8 +294,6 @@ function Strut_form.structure_formspec(pos)
 		"list[current_player;main;0,0;8,1;]" ..
 		"container_end[]",
     }
-
-    minetest.log('default', active_recipe)
 
     -- table.concat is faster than string concatenation - `..`
     return table.concat(formspec, "")

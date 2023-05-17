@@ -34,27 +34,38 @@ minetest.register_node("minegistics:Factory", {
 		local inv = meta:get_inventory()
 		inv:set_size("input", 1*4)
 		inv:set_size("output", 1*4)
-		meta:set_string("formspec", Strut_form.structure_formspec(pos, ''))
+		meta:set_string("formspec", Strut_form.structure_formspec(pos))
 	
 	end,
 	
 	on_receive_fields = function(pos, formname, fields, sender)
+
+		local meta = minetest.get_meta(pos)
+
+		--[[
+		minetest.log("default", "----------Recieve Instance----------")
+		for key, value in pairs(fields) do
+			minetest.log("default", "Field: " .. key .. " = " .. value)
+		end
+		]]--
 
 		if fields['submit'] then
 			local meta = minetest.get_meta(pos)
 			local possible_recipes = RecipiesInStructure[meta:get_string("name")]
 
 			for output, inputs in pairs(possible_recipes) do
-					local item_name = " " .. string.sub(output, 13, 100)
-					if fields.recipes == item_name then
-						minetest.log('default', dump(fields))
-						minetest.log('default', item_name)
-						meta:set_string("display_recipe", output)
-						minetest.log('default', meta:get_string("display_recipe"))
-					end
+				local compare_output = string.sub(output, 13, 100)
+				--minetest.log("default", "fields.recipes = " .. fields.recipes)
+				--minetest.log("default","Compare_output = " .. compare_output)
+				if fields.recipes == compare_output then
+					--minetest.log("default", "fields.recipes == compare_output")
+					meta:set_string("display_recipe", output)
+				end
+				compare_output = ''
 			end
 
-			Strut_form.structure_formspec(pos)
+			meta:set_string("formspec", Strut_form.structure_formspec(pos))
+			--minetest.log("default", "formspec should be updated.")
 
 		end
 	end,
