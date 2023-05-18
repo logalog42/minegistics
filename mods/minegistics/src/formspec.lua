@@ -209,12 +209,9 @@ function Strut_form.recipie_display(type, display_recipe, possible_recipes, tuto
                 "item_image[1,1;1,1;" .. output[1] .. "]" ..
                 --Input 2
                 "item_image[1,3;1,1;" .. output[2] .. "]" ..
-                --Working furnace example
-                "image[2.75,1.5;1,1;default_furnace_fire_bg.png^[lowpart:"..
-                (fuel_percent)..":default_furnace_fire_fg.png]"..
-                "image[3.75,1.5;1,1;gui_furnace_arrow_bg.png^[lowpart:"..
-                (item_percent)..":gui_furnace_arrow_fg.png^[transformR270]"..
-                "animated_image[2,1;2,3;2to1;animated2to1.png;8;100;1;]" ..
+
+                --need to reverse image png
+                "animated_image[2,1;2,3;2to1;animated2to1.png;9;200;1;]" ..
                 --Working Cog Image
                 --"animated_image[3,2;5,3;<name>;<texture name>;<frame count>;<frame duration>;<frame start>;<middle>]" ..
                 --Working 1-to-1 Image
