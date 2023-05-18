@@ -176,23 +176,12 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 end)
 
 function Strut_form.recipie_display(type, display_recipe, possible_recipes, tutorial)
-    local input = ''
-    local output = {}
     local formspec
 
     if display_recipe ~= '' then
         if type == "Processing" then
-            formspec = {  
-                --Input 1
-                "item_image[1,1;1,1;" .. input(1) .."" ..
-                --Working Image
-                --"animated_image[3,2;5,3;<name>;<texture name>;<frame count>;<frame duration>;<frame start>;<middle>]" ..
-                --Output 1
-                "item_image[7,2;1,1;" .. output(1) .. "]" ..
-                --Output 2
-                "item_image[7,2;1,1;" .. output(2) .. "]",
-            }
-        elseif type == "Assembling" then
+            local input = ''
+            local output = {}
             for key, value in pairs(possible_recipes) do
                 --minetest.log("default", "Key = " .. key .. " Value 1 = " .. value[1])
                 if key == display_recipe then
@@ -201,32 +190,52 @@ function Strut_form.recipie_display(type, display_recipe, possible_recipes, tuto
                     break
                 end
             end
+            formspec = {  
+                --Input 1
+                "item_image[1,1;1,1;" .. input .."" ..
+                --Working Image
+                "animated_image[2,1;6.5,2.75;animatedProcessing;animatedProcessing.png;24;200;;]"..
+                --Output 1
+                "item_image[7,2;1,1;" .. output(1) .. "]" ..
+                --Output 2
+                "item_image[7,2;1,1;" .. output(2) .. "]",
+            }
+        elseif type == "Assembling" then
+            local input = {}
+            local output = ''
+            for key, value in pairs(possible_recipes) do
+                --minetest.log("default", "Key = " .. key .. " Value 1 = " .. value[1])
+                if key == display_recipe then
+                    output = key
+                    input = {value[1], value[2]}
+                    break
+                end
+            end
             --minetest.log("default", "output 1 = " .. tostring(output[1]))
             --minetest.log("default", "output 2 = " .. tostring(output[2]))
             
             formspec = {
                 --Input 1
-                "item_image[1,1;1,1;" .. output[1] .. "]" ..
+                "item_image[0,.5;1.5,1.5;" .. input[1] .. "]" ..
                 --Input 2
-                "item_image[1,3;1,1;" .. output[2] .. "]" ..
+                "item_image[0,3;1.5,1.5;" .. input[2] .. "]" ..
 
-                --need to reverse image png
-                "animated_image[2,1;2,3;2to1;animated2to1.png;9;200;1;]" ..
-                --Working Cog Image
-                --"animated_image[3,2;5,3;<name>;<texture name>;<frame count>;<frame duration>;<frame start>;<middle>]" ..
-                --Working 1-to-1 Image
-                --"animated_image[3,2;5,3;<name>;<texture name>;<frame count>;<frame duration>;<frame start>;<middle>]" ..
+                --Whole Factory Animation
+                "animated_image[2,1;6.5,2.75;animatedAssembler;animatedAssembler.png;24;200;;]"..
+
                 --Output
-                "item_image[7,2;1,1;" .. input .. "]"
+                "item_image[8.5,1.75;1.5,1.5;" .. output .. "]"
             }
         elseif type == "Refining" then
+            local input = ''
+            local output = ''
             formspec = {
                 --Input 1
-                "item_image[1,1;1,1;" .. input(1) .."" ..
+                "item_image[0,1.75;1.5,1.5;" .. input .."" ..
                 --Working Image
-                --"animated_image[3,2;5,3;<name>;<texture name>;<frame count>;<frame duration>;<frame start>;<middle>]" ..
+                "animated_image[3,2;5,3;refiner1to1;animated1to1.png;9;200;;" ..
                 --Output
-                "item_image[7,2;1,1;" .. output(1) .. "]",
+                "item_image[8.5,1.75;1.5,1.5;" .. output .. "]",
             }
         end
     else
