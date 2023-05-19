@@ -24,36 +24,56 @@ minetest.register_node("minegistics:Factory", {
         return minetest.item_place(itemstack, placer, pointed_thing)
     end,
 	on_construct = function(pos)
-		table.insert(power_consumers, pos)
-		local recipe_list = "-Recipes-\n"
-		for output, inputs in pairs(factory_recipes) do
-			local input_1_label = string.sub(inputs[1], 13, 100)
-			local input_2_label = string.sub(inputs[2], 13, 100)
-			local output_label = string.sub(output, 13, 100)
-			recipe_list = recipe_list .. input_1_label .. " + " .. input_2_label .. " -> " .. output_label .. "\n"
-		end
+		table.insert(Power_consumers, pos)
 		local meta = minetest.get_meta(pos)
-		local formspec = {
-			"size[8,9]",
-			"list[context;main;0,0;8,4;]",
-			"list[current_player;main;0,5.25;8,4;]",
-			"listring[]",
-			"image[0,1;9,4.75;"..background.."]",
-			"scroll_container[1,2;12,4;recipe_scroll;vertical;0.05]",
-			"label[0,0;" .. recipe_list .. "]",
-			"scroll_container_end[]",
-			"scrollbar[6.75,1.2;0.25,3.75;vertical;recipe_scroll;0]",
-			"button[3.5,10;4,2;Back;Back]",
-		}
-		meta:set_string("formspec", table.concat(formspec, ""))
+		meta:set_string("name", "Factory")
+		meta:set_string("type", "Assembling")
 		meta:set_string("infotext", "Factory")
+		meta:set_string("display_recipe", "")
+		meta:set_string("tutorial", "With this building you are going to combine two base items into a much more valuable trade good.")
 		local inv = meta:get_inventory()
-		inv:set_size("main", 5*1)
+		inv:set_size("input", 1*4)
+		inv:set_size("output", 1*4)
+		meta:set_string("formspec", Strut_form.structure_formspec(pos))
+	
 	end,
+	
+	on_receive_fields = function(pos, formname, fields, sender)
+
+		local meta = minetest.get_meta(pos)
+
+		--[[
+		minetest.log("default", "----------Recieve Instance----------")
+		for key, value in pairs(fields) do
+			minetest.log("default", "Field: " .. key .. " = " .. value)
+		end
+		]]--
+
+		if fields['submit'] then
+			local meta = minetest.get_meta(pos)
+			local possible_recipes = RecipiesInStructure[meta:get_string("name")]
+
+			for output, inputs in pairs(possible_recipes) do
+				local compare_output = string.sub(output, 13, 100)
+				--minetest.log("default", "fields.recipes = " .. fields.recipes)
+				--minetest.log("default","Compare_output = " .. compare_output)
+				if fields.recipes == compare_output then
+					--minetest.log("default", "fields.recipes == compare_output")
+					meta:set_string("display_recipe", output)
+				end
+				compare_output = ''
+			end
+
+			meta:set_string("formspec", Strut_form.structure_formspec(pos))
+			--minetest.log("default", "formspec should be updated.")
+
+		end
+	end,
+
 	after_dig_node = function(pos, oldnode, oldmetadata, digger)
-		for i,p in pairs(power_consumers) do
+		for i,p in pairs(Power_consumers) do
 			if p.x == pos.x and p.y == pos.y and p.z == pos.z then
-				table.remove(power_consumers, i)
+				table.remove(Power_consumers, i)
 				break
 			end
 		end
@@ -81,13 +101,13 @@ minetest.register_abm({
 		abm_timer = abm_timer + 1
 		if abm_timer >= math.random(8, 12) then
 			minetest.forceload_block(pos, false)
-			if power_stable(pos) then
+			if Power_stable(pos) then
 				local meta = minetest.get_meta(pos)
 				local inv = meta:get_inventory()
 				local inventories = inv:get_lists()
 				local ingredients = {}
 				local working = false
-				for output, inputs in pairs(factory_recipes) do
+				for output, inputs in pairs(RecipiesInStructure.Factory) do
 					ingredients[output] = { ItemStack(inputs[1]), ItemStack(inputs[2]) }
 				end
 				for name, list in pairs(inventories) do

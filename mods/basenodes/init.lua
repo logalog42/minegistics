@@ -1,36 +1,4 @@
 --
--- Craftitems
---
-
--- Register Craftitems
-
-minetest.register_craftitem("basenodes:coal_lump", {
-	description = ("Coal Lump"),
-	inventory_image = "default_coal_lump.png",
-	groups = {coal = 1, flammable = 1}
-})
-
-minetest.register_craftitem("basenodes:copper_lump", {
-	description = ("Copper Lump"),
-	inventory_image = "default_copper_lump.png"
-})
-
-minetest.register_craftitem("basenodes:tin_lump", {
-   description = ("Tin lump"),
-   inventory_image = "default_tin_lump.png"
-})
-
-minetest.register_craftitem("basenodes:gold_lump", {
-	description = ("Gold Lump"),
-	inventory_image = "default_gold_lump.png"
-})
-
-minetest.register_craftitem("basenodes:iron_lump", {
-	description = ("Iron Lump"),
-	inventory_image = "default_iron_lump.png"
-})
-
---
 -- Node definitions
 --
 
@@ -340,19 +308,3 @@ minetest.register_node("basenodes:snow_slope", {
 	liquid_viscosity = 1,
 	post_effect_color = {a = 103, r = 30, g = 60, b = 90},
 })
--- Ore definitions
---
-
--- Register ores
-
-base_ores = {
-    ["basenodes:stone_with_coal"] = "basenodes:coal_lump",
-    ["basenodes:stone_with_tin"] = "basenodes:tin_lump",
-    ["basenodes:stone_with_copper"] = "basenodes:copper_lump",
-    ["basenodes:stone_with_iron"] = "basenodes:iron_lump",
-    ["basenodes:stone_with_gold"] = "basenodes:gold_lump",
-    ["basenodes:tree_1"] = "minegistics:lumber",
-	["basenodes:tree_2"] = "minegistics:lumber",
-	["basenodes:tree_3"] = "minegistics:lumber",
-	["basenodes:tree_4"] = "minegistics:lumber",
-}

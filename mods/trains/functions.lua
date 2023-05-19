@@ -1,4 +1,4 @@
-function trains.is_rail(pos)
+function Trains.is_rail(pos)
 	local node_name = minetest.get_node(pos).name
 	if node_name == "ignore" then
 		local vm = minetest.get_voxel_manip()
@@ -41,7 +41,7 @@ local function yaw_to_dir(yaw)
 	end
 end
 
-function trains.dir_to_yaw(dir)
+function Trains.dir_to_yaw(dir)
 	if dir.z == 1 then return 0
 	elseif dir.x == -1 then return 0.5 * math.pi
 	elseif dir.x == 1 then return 1.5 * math.pi
@@ -51,7 +51,7 @@ function trains.dir_to_yaw(dir)
 end
 
 local vector_zero = vector.zero()
-function trains.get_next_pos(train, dtime)
+function Trains.get_next_pos(train, dtime)
 	local pos = train.object:get_pos()
 	local node_pos = vector.round(pos)
 
@@ -62,19 +62,19 @@ function trains.get_next_pos(train, dtime)
 	local next_node = new_pos + (front * 0.501)
 
 	-- not prety, but if the train is about to cross the middle of a break_rail node it will stop
-	if (pos + (front * 0.501)):round() == node_pos and node_pos ~= next_node:round() and minetest.get_node(node_pos).name == "trains:brake_rail" then
+	if (pos + (front * 0.501)):round() == node_pos and node_pos ~= next_node:round() and minetest.get_node(node_pos).name == "Trains:brake_rail" then
 		return node_pos, front, true
 	end
 
 	-- if we are standing in the middle of a node we need to decied where to go next
 	if pos == node_pos then
-		if trains.is_rail(pos + front) then
+		if Trains.is_rail(pos + front) then
 			return pos + (front * distance), front
-		elseif trains.is_rail(pos + left) then
+		elseif Trains.is_rail(pos + left) then
 			return pos + (left * distance), left
-		elseif trains.is_rail(pos + right) then
+		elseif Trains.is_rail(pos + right) then
 			return pos + (right * distance), right
-		elseif trains.is_rail(pos + back) then
+		elseif Trains.is_rail(pos + back) then
 			return pos + (back * distance), back
 		else
 			-- there are no surounding nodes
@@ -82,11 +82,11 @@ function trains.get_next_pos(train, dtime)
 		end
 	end
 
-	if trains.is_rail(next_node) then
+	if Trains.is_rail(next_node) then
 		-- go straight
 		return new_pos, front
 	else
-		if (not trains.is_rail(pos + left)) and (not trains.is_rail(pos + right)) and trains.is_rail(pos + back) then
+		if (not Trains.is_rail(pos + left)) and (not Trains.is_rail(pos + right)) and Trains.is_rail(pos + back) then
 			-- when we reach a dead end, put in a break
 			return node_pos, front, true
 		end

@@ -1,8 +1,8 @@
 -- trains/init.lua
 
-trains = {}
-trains.modpath = minetest.get_modpath("trains")
+Trains = {}
+Trains.modpath = minetest.get_modpath("trains")
 
-dofile(trains.modpath.."/functions.lua")
-dofile(trains.modpath.."/rails.lua")
-dofile(trains.modpath.."/train_entity.lua")
+dofile(Trains.modpath.. DIR_DELIM .. "functions.lua")
+dofile(Trains.modpath.. DIR_DELIM .. "rails.lua")
+dofile(Trains.modpath.. DIR_DELIM .. "train_entity.lua")

@@ -18,11 +18,11 @@ local skies = {
 	{"MinegisticSky", "#5f5f5e", 0.9, { density = 0 }},
 }
 
-skybox = {}
+Skybox = {}
 
-skybox.set = function(player, number)
+Skybox.set = function(player, number)
 	if number == 0 then
-		skybox.clear(player)
+		Skybox.clear(player)
 	else
 		local sky = skies[number]
 		player:override_day_night_ratio(sky[3])
@@ -52,7 +52,7 @@ skybox.set = function(player, number)
 	end
 end
 
-skybox.clear = function(player)
+Skybox.clear = function(player)
 	player:override_day_night_ratio(nil)
 	if player.get_sky_color ~= nil then
 		player:set_sky({base_color = "white", type = "regular"})
@@ -74,25 +74,25 @@ skybox.clear = function(player)
 	player:get_meta():set_string("minegistics:skybox", "off")
 end
 
-skybox.add = function(def)
+Skybox.add = function(def)
 	table.add(skies, def)
 end
 
-skybox.get_skies = function()
+Skybox.get_skies = function()
 	return table.copy(skies)
 end
 
 minetest.register_on_joinplayer(function(player)
 	local sky = player:get_meta():get_string("minegistics:skybox")
 	if not sky or sky == "" then
-		skybox.clear(player)
+		Skybox.clear(player)
 	else
 		for k, v in ipairs(skies) do
 			if sky == v[1] then
-				skybox.set(player, k)
+				Skybox.set(player, k)
 				return
 			end
 		end
-		skybox.clear(player)
+		Skybox.clear(player)
 	end
 end)

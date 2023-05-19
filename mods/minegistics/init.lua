@@ -5,7 +5,7 @@
     License: AGPLv3
 ]]--
 
-money = 100
+Money = 100
 
 local loaded = false
 local enable_fog = minetest.settings:get_bool("enable_fog")
@@ -31,7 +31,7 @@ dofile(minetest.get_modpath("minegistics") .. DIR_DELIM .. "src" .. DIR_DELIM ..
         visual_size = { x = 4, y = 4 },
         collisionbox = {-0.49, 0, -0.49, 0.49, 1, 0.49 }
     })
-    skybox.set(player, 1)
+    Skybox.set(player, 1)
     minetest.set_player_privs(player:get_player_name(), {fly=true, fast=true})
     player:set_clouds({density = 0})
     local name = player:get_player_name()
@@ -41,16 +41,16 @@ dofile(minetest.get_modpath("minegistics") .. DIR_DELIM .. "src" .. DIR_DELIM ..
             local data = minetest.parse_json(file:read "*a")
             if data then
                 if data.money then
-                    money = data.money
+                    Money = data.money
                 end
                 if data.item_prices then
-                    item_prices = data.item_prices
+                    Item_prices = data.item_prices
                 end
                 if data.power_producers then
-                    power_producers = data.power_producers
+                    Power_producers = data.power_producers
                 end
                 if data.power_consumers then
-                    power_consumers = data.power_consumers
+                    Power_consumers = data.power_consumers
                 end
             else
                 minetest.log("error", "Failed to read save_data.json")
@@ -65,18 +65,18 @@ end)
 minetest.register_on_leaveplayer(function(player)
     if player then
         local name = player:get_player_name()
-        hud_ids[name] = nil
-        hud_bg_ids[name] = nil
+        Hud_ids[name] = nil
+        Hud_bg_ids[name] = nil
     end
 end)
 
 --saves data
 minetest.register_on_shutdown(function()
     local save_vars = {
-        money = money,
-        item_prices = item_prices,
-        power_producers = power_producers,
-        power_consumers = power_consumers
+        money = Money,
+        item_prices = Item_prices,
+        power_producers = Power_producers,
+        power_consumers = Power_consumers
     }
     local save_data = minetest.write_json(save_vars)
     local save_path = minetest.get_worldpath() .. DIR_DELIM .. "save_data.json"
@@ -89,11 +89,11 @@ end)
 
 --main game loop
 minetest.register_globalstep(function(dtime)   
-    update_shared_hud()
+    Update_shared_hud()
 end)
 
 --gets the size of a table
-function get_table_size(table)
+function Get_table_size(table)
     local size = 0
     for k,v in pairs(table) do
         size = size + 1
