@@ -192,13 +192,13 @@ function Strut_form.recipie_display(type, display_recipe, possible_recipes, tuto
             end
             formspec = {  
                 --Input 1
-                "item_image[1,1;1,1;" .. input .."" ..
+                "item_image[0,1.75;1.5,1.5;" .. input .."]" ..
                 --Working Image
                 "animated_image[2,1;6.5,2.75;animatedProcessing;animatedProcessing.png;24;200;;]"..
                 --Output 1
-                "item_image[7,2;1,1;" .. output(1) .. "]" ..
+                "item_image[8.5,.5;1.5,1.5;" .. output[1] .. "]" ..
                 --Output 2
-                "item_image[7,2;1,1;" .. output(2) .. "]",
+                "item_image[8.5,3;1.5,1.5;" .. output[2] .. "]",
             }
         elseif type == "Assembling" then
             local input = {}
@@ -232,8 +232,10 @@ function Strut_form.recipie_display(type, display_recipe, possible_recipes, tuto
             formspec = {
                 --Input 1
                 "item_image[0,1.75;1.5,1.5;" .. input .."" ..
+
                 --Working Image
                 "animated_image[3,2;5,3;refiner1to1;animated1to1.png;9;200;;" ..
+
                 --Output
                 "item_image[8.5,1.75;1.5,1.5;" .. output .. "]",
             }

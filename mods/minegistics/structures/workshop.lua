@@ -26,30 +26,51 @@ minetest.register_node("minegistics:Workshop", {
 end,
    on_construct = function(pos)
       table.insert(Power_consumers, pos)
-      local recipe_list = "-Recipes-\n"
-      for input, output in pairs(Refinery_recipes) do
-          local input_label = string.sub(input, 23, 100)
-		  minetest.log("Default", input)
-          local output_label = string.sub(output, 13, 100)
-          recipe_list = recipe_list .. input_label .. " -> " .. output_label .. "\n"
-      end
       local meta = minetest.get_meta(pos)
-      local formspec = {
-          "size[8,9]",
-          "list[context;main;0,0;8,4;]",
-          "list[current_player;main;0,5.25;8,4;]",
-          "image[0,1;9,4.75;"..background.."]",
-          "scroll_container[1,2;12,4;recipe_scroll;vertical;0.05]",
-          "label[0,0;" .. recipe_list .. "]",
-          "scroll_container_end[]",
-          "scrollbar[6.75,1.2;0.25,3.75;vertical;recipe_scroll;0]",
-          "button[3.5,10;4,2;Back;Back]"
-      }
-      meta:set_string("formspec", table.concat(formspec, ""))
-      meta:set_string("infotext", "Workshop")
-      local inv = meta:get_inventory()
+	  local inv = meta:get_inventory()
+	  meta:set_string("name", "Workshop")
+	  meta:set_string("type", "Processing")
+	  meta:set_string("infotext", "Workshop")
+	  meta:set_string("display_recipe", "")
+	  meta:set_string("tutorial", "With this building you are going to process resources into two different items.")
+	  inv:set_size("input", 1*4)
+	  inv:set_size("output", 1*4)
+      meta:set_string("formspec", Strut_form.structure_formspec(pos))
       inv:set_size("main", 5*1)
 	end,
+
+	on_receive_fields = function(pos, formname, fields, sender)
+
+		local meta = minetest.get_meta(pos)
+
+		--[[
+		minetest.log("default", "----------Recieve Instance----------")
+		for key, value in pairs(fields) do
+			minetest.log("default", "Field: " .. key .. " = " .. value)
+		end
+		]]--
+
+		if fields['submit'] then
+			local meta = minetest.get_meta(pos)
+			local possible_recipes = RecipiesInStructure[meta:get_string("name")]
+
+			for output, inputs in pairs(possible_recipes) do
+				local compare_output = string.sub(output, 13, 100)
+				--minetest.log("default", "fields.recipes = " .. fields.recipes)
+				--minetest.log("default","Compare_output = " .. compare_output)
+				if fields.recipes == compare_output then
+					--minetest.log("default", "fields.recipes == compare_output")
+					meta:set_string("display_recipe", output)
+				end
+				compare_output = ''
+			end
+
+			meta:set_string("formspec", Strut_form.structure_formspec(pos))
+			--minetest.log("default", "formspec should be updated.")
+
+		end
+	end,
+
 	after_dig_node = function(pos, oldnode, oldmetadata, digger)
 		for i,p in pairs(Power_consumers) do
 			if p.x == pos.x and p.y == pos.y and p.z == pos.z then
@@ -86,7 +107,7 @@ minetest.register_abm({
 				local inv = meta:get_inventory()
 				local items = {}
 				local working = false
-				for input, output in pairs(Refinery_recipes) do
+				for input, output in pairs(RecipiesInStructure.Workshop) do
 					items[input] = ItemStack(input)
 				end
 				local inventories = inv:get_lists()
