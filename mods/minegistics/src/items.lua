@@ -16,7 +16,8 @@ Base_ores = {
 	["basenodes:tree_3"] = "minegistics:lumber",
 	["basenodes:tree_4"] = "minegistics:lumber",
     ["basenodes:clay_spot"] = "minegistics:clay_lump",
-    ["basenodes:gravel_spot"] = "minegistics:gravel_lump"
+    ["basenodes:gravel_spot"] = "minegistics:gravel_lump",
+    ["basenodes:sand"] = "minegistics:sand_lump"
 }
 
 Fuels = {
@@ -46,7 +47,7 @@ Ranch_material = {
 }
 
 Dairy_material = {
-    "minegistics:vessels_milk_bottle",
+    "minegistics:milk_bottle",
 }
 
 RecipiesInStructure = {
@@ -66,11 +67,11 @@ RecipiesInStructure = {
         ["minegistics:toys"] = {"minegistics:mechanical_parts", "minegistics:copper_wire"},
         ["minegistics:bronze_ingot"] = {"minegistics:copper_ingot", "minegistics:tin_product"},
         ["minegistics:steel_product"] = {"minegistics:coal_coke", "minegistics:iron_ingot"},
-        ["minegistics:cement"] = {"minegistics:gravel", "minegistics:sand"},
-        ["minegistics:soap"] = {"minegistics:tallow_product", "minegistics:lye"},
+        ["minegistics:cement"] = {"minegistics:gravel_lump", "minegistics:sand_lump"},
+        ["minegistics:soap"] = {"minegistics:tallow", "minegistics:lye"},
         ["minegistics:luxury_furniture"] = {"minegistics:leather", "minegistics:lumber"},
         ["minegistics:furniture"] = {"minegistics:cotton", "minegistics:lumber"},
-        ["minegistics:luxury_meal"] = {"minegistics:fruit", "minegistics:vessels_milk_bottle"},
+        ["minegistics:luxury_meal"] = {"minegistics:fruit", "minegistics:milk_bottle"},
         ["minegistics:simple_meal"] = {"minegistics:wheat", "minegistics:meat"}
     },
 
@@ -217,6 +218,11 @@ minetest.register_craftitem("minegistics:gold_product", {
     inventory_image = "gold_product.png"
 })
 
+minetest.register_craftitem("minegistics:gravel_lump",{
+    description = (""),
+    inventory_image = "gravel_lump.png"
+})
+
 minetest.register_craftitem("minegistics:iron_ingot", {
     description = (""),
     inventory_image = "iron_ingot.png"
@@ -282,6 +288,11 @@ minetest.register_craftitem("minegistics:potash", {
     inventory_image = "potash_product.png"
 })
 
+minetest.register_craftitem("minegistics:sand_lump", {
+    description = (""),
+    inventory_image = "sand_lump.png"
+})
+
 minetest.register_craftitem("minegistics:simple_meal", {
     description = (""),
     inventory_image = "simple_meal_good.png"
@@ -322,7 +333,7 @@ minetest.register_craftitem("minegistics:toys", {
     inventory_image = "toys_good.png"
 })
 
-minetest.register_craftitem("minegistics:vessels_milk_bottle", {
+minetest.register_craftitem("minegistics:milk_bottle", {
     description = ("Milk: Produced by farms."),
     inventory_image = "vessels_milk_bottle_resource.png"
 })

@@ -193,12 +193,18 @@ function Strut_form.recipie_display(type, display_recipe, possible_recipes, tuto
             formspec = {  
                 --Input 1
                 "item_image[0,1.75;1.5,1.5;" .. input .."]" ..
+                --Label of item
+                "label[0,3.25;" .. string.sub(input, 13, 100) .. "]" ..
                 --Working Image
                 "animated_image[2,1;6.5,2.75;animatedProcessing;animatedProcessing.png;24;200;;]"..
                 --Output 1
                 "item_image[8.5,.5;1.5,1.5;" .. output[1] .. "]" ..
+                --Label of item
+                "label[8.25,2;" .. string.sub(output[1], 13, 100) .. "]" ..
                 --Output 2
-                "item_image[8.5,3;1.5,1.5;" .. output[2] .. "]",
+                "item_image[8.5,3;1.5,1.5;" .. output[2] .. "]" ..
+                --Label of item
+                "label[8.25,4.5;" .. string.sub(output[2], 13, 100) .. "]",
             }
         elseif type == "Assembling" then
             local input = {}
@@ -217,14 +223,18 @@ function Strut_form.recipie_display(type, display_recipe, possible_recipes, tuto
             formspec = {
                 --Input 1
                 "item_image[0,.5;1.5,1.5;" .. input[1] .. "]" ..
+                --Label of item
+                "label[0,2;" .. string.sub(input[1], 13, 100) .. "]" ..
                 --Input 2
                 "item_image[0,3;1.5,1.5;" .. input[2] .. "]" ..
-
+                --Label of item
+                "label[0,4.5;" .. string.sub(input[2], 13, 100) .. "]" ..
                 --Whole Factory Animation
                 "animated_image[2,1;6.5,2.75;animatedAssembler;animatedAssembler.png;24;200;;]"..
-
                 --Output
-                "item_image[8.5,1.75;1.5,1.5;" .. output .. "]"
+                "item_image[8.5,1.75;1.5,1.5;" .. output .. "]" ..
+                --Label of item
+                "label[8.25,3.25;" .. string.sub(output, 13, 100) .. "]"
             }
         elseif type == "Refining" then
             local input = ''
@@ -232,12 +242,14 @@ function Strut_form.recipie_display(type, display_recipe, possible_recipes, tuto
             formspec = {
                 --Input 1
                 "item_image[0,1.75;1.5,1.5;" .. input .."" ..
-
+                --Label of item
+                "label[0,3.25;" .. string.sub(input, 13, 100) .. "]" ..
                 --Working Image
                 "animated_image[3,2;5,3;refiner1to1;animated1to1.png;9;200;;" ..
-
                 --Output
-                "item_image[8.5,1.75;1.5,1.5;" .. output .. "]",
+                "item_image[8.5,1.75;1.5,1.5;" .. output .. "]" ..
+                --Label of item
+                "label[8.25,3.25;" .. string.sub(input, 13, 100) .. "]"
             }
         end
     else
