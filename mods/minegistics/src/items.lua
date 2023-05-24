@@ -52,14 +52,14 @@ Dairy_material = {
 
 RecipiesInStructure = {
     Refinery = {
-        ["minegistics:coal_lump"] = "minegistics:coal_coke_product",
+        ["minegistics:coal_coke_product"] = "minegistics:coal_lump",
         ["minegistics:copper_lump"] = "minegistics:copper_product",
         ["minegistics:gold_lump"] = "minegistics:gold_product",
         ["minegistics:iron_lump"] = "minegistics:iron_product",
         ["minegistics:tin_lump"] = "minegistics:tin_product",
-        ["minegistics:fat"] = "minegistics:tallow_product",
-        ["minegistics:lumber"] = "minegistics:ash_product",
-        ["minegistics:clay"] = "minegistics:Ceramics"
+        ["minegistics:tallow_product"] = "minegistics:fat",
+        ["minegistics:ash_product"] = "minegistics:lumber",
+        ["minegistics:Ceramics"] = "minegistics:clay"
     },
 
     Factory = {
