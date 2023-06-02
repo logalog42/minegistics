@@ -4,13 +4,13 @@ local background = "form_bg.png"
 
 minetest.register_node("minegistics:Refinery", {
 	description = "Refinery: basic resources into better goods",
-	tiles = {"buildings.png"},
+	tiles = {"refinery.png"},
 	groups = {dig_immediate=2, structures=1},
 	drawtype = "mesh",
-    visual_scale = .5,
+    visual_scale = 1,
 	mesh = "refinery.obj",
-	wield_image = "factory_wield.png",
- 	inventory_image = "factory_wield.png",
+	wield_image = "refinery_wield.png",
+ 	inventory_image = "refinery_wield.png",
     on_place = function(itemstack, placer, pointed_thing)
         if pointed_thing.above.y ~= 0 then
         minetest.chat_send_player(placer:get_player_name(), "You can't build here.")
@@ -31,7 +31,7 @@ minetest.register_node("minegistics:Refinery", {
 		inv:set_size("output", 1*4)
 		meta:set_string("formspec", Strut_form.structure_formspec(pos))
         local timer = minetest.get_node_timer(pos)
-        timer:start(200) -- in seconds
+        timer:start(10) -- in seconds
 	
 	end,
 	
@@ -95,15 +95,17 @@ minetest.register_node("minegistics:Refinery", {
         if Power_stable(pos) then
             local meta = minetest.get_meta(pos)
             local inv = meta:get_inventory()
+			local input = meta:get_inventory("input")
+			local output = meta:get_inventory("output")
             local ingredients = {}
             local working = false
             for output, input in pairs(RecipiesInStructure.Refinery) do
                 ingredients[input] = {ItemStack(output[1])}
             end
-            for result, stacks in pairs(ingredients) do
-                if stacks == meta.display_recipe and inv:contains_item("input", stacks[1]) then
-                    inv:remove_item("input", stacks[1])
-                    local result_stack = ItemStack(result)
+            for output, input in pairs(ingredients) do
+                if output == meta.display_recipe and inv:contains_item("input", input[1]) then
+                    inv:remove_item("input", input[1])
+                    local result_stack = ItemStack(output)
                     inv:add_item("output", result_stack)
                     working = true
                 end
