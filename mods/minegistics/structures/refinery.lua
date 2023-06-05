@@ -31,7 +31,7 @@ minetest.register_node("minegistics:Refinery", {
 		inv:set_size("output", 1*4)
 		meta:set_string("formspec", Strut_form.structure_formspec(pos))
         local timer = minetest.get_node_timer(pos)
-        timer:start(10) -- in seconds
+        timer:start(3) -- in seconds
 	
 	end,
 	
@@ -56,6 +56,7 @@ minetest.register_node("minegistics:Refinery", {
 				if fields.recipes == compare_output then
 					--minetest.log("default", "fields.recipes == compare_output")
 					meta:set_string("display_recipe", output)
+					--minetest.log("default", "display_recipe = " .. meta:get_string("display_recipe"))
 				end
 				compare_output = ''
 			end
@@ -92,25 +93,46 @@ minetest.register_node("minegistics:Refinery", {
 
     on_timer = function(pos)
         minetest.forceload_block(pos, false)
-        if Power_stable(pos) then
-            local meta = minetest.get_meta(pos)
-            local inv = meta:get_inventory()
+		local meta = minetest.get_meta(pos)
+		--minetest.log("default", "display_recipe = " .. meta:get_string("display_recipe"))
+        if Power_stable(pos) and meta:get_string("display_recipe") ~= '' then
 			local input = meta:get_inventory("input")
 			local output = meta:get_inventory("output")
             local ingredients = {}
             local working = false
-            for output, input in pairs(RecipiesInStructure.Refinery) do
-                ingredients[input] = {ItemStack(output[1])}
+            for struct_output, struct_input in pairs(RecipiesInStructure.Refinery) do
+                ingredients[struct_input] = ItemStack(struct_output)
             end
-            for output, input in pairs(ingredients) do
-                if output == meta.display_recipe and inv:contains_item("input", input[1]) then
-                    inv:remove_item("input", input[1])
-                    local result_stack = ItemStack(output)
-                    inv:add_item("output", result_stack)
+            for ing_input, ing_output in pairs(ingredients) do
+				--minetest.log("default", "ing_output = " .. ing_output .. " ing_input = " .. ing_input)
+                if input:contains_item(ing_output == meta.display_recipe and input:contains_item("input", ItemStack(ing_input) .. " 1") then
+                    input:remove_item("input", ItemStack(ing_input) .. " 1")
+                    output:add_item("output", ItemStack(ing_output) .. " 1")
                     working = true
                 end
             end
-            if working then
+
+			local meta = minetest.get_meta(pos)
+
+			local ingredients = {}
+			local working = false
+			for output, inputs in pairs(RecipiesInStructure.Factory) do
+				ingredients[output] = { ItemStack(inputs[1]), ItemStack(inputs[2]) }
+			end
+			for name, list in pairs(inventories) do
+				for result, stacks in pairs(ingredients) do
+					while inv:contains_item(name, stacks[1]) and inv:contains_item(name, stacks[2]) do
+						inv:remove_item(name, stacks[1])
+						inv:remove_item(name, stacks[2])
+						local result_stack = ItemStack(result)
+						inv:add_item("main", result_stack)
+						working = true
+					end
+				end
+			end
+
+
+			if working then
                 minetest.sound_play("factory", {
                     pos = pos,
                     loop = false,
@@ -137,5 +159,6 @@ minetest.register_node("minegistics:Refinery", {
                 end
             end
         end
+		return true
     end
 })
