@@ -34,6 +34,18 @@ Material = {
     "minegistics:lumber"
   }
 
+Raw_Material = {
+    "minegistics:coal_lump",
+    "minegistics:tin_product",
+    "minegistics:copper_product",
+    "minegistics:iron_product",
+    "minegistics:gold_product",
+    "minegistics:clay_lump",
+    "minegistics:gravel_lump",
+    "minegistics:sand_lump",
+    "minegistics:lumber"
+}
+
 Farm_material = {
     "minegistics:fruit",
     "minegistics:wheat",
@@ -66,7 +78,7 @@ RecipiesInStructure = {
         ["minegistics:luxury_tools"] = {"minegistics:steel_ingot", "minegistics:bronze_ingot"},
         ["minegistics:toys"] = {"minegistics:mechanical_parts", "minegistics:copper_wire"},
         ["minegistics:bronze_ingot"] = {"minegistics:copper_ingot", "minegistics:tin_product"},
-        ["minegistics:steel_product"] = {"minegistics:coal_coke", "minegistics:iron_ingot"},
+        ["minegistics:steel_lump"] = {"minegistics:coal_coke", "minegistics:iron_ingot"},
         ["minegistics:cement"] = {"minegistics:gravel_lump", "minegistics:sand_lump"},
         ["minegistics:soap"] = {"minegistics:tallow", "minegistics:lye"},
         ["minegistics:luxury_furniture"] = {"minegistics:leather", "minegistics:lumber"},
@@ -76,9 +88,9 @@ RecipiesInStructure = {
     },
 
     Workshop = {
-        ["minegistics:iron_product"] = {"minegistics:iron_ingot", "minegistics:mechanical_parts"},
-        ["minegistics:copper_product"] = {"minegistics:copper_ingot", "minegistics:copper_wire"},
-        ["minegistics:steel_product"] = {"minegistics:building_materials", "minegistics:steel_ingot"},
+        ["minegistics:iron_lump"] = {"minegistics:iron_ingot", "minegistics:mechanical_parts"},
+        ["minegistics:copper_lump"] = {"minegistics:copper_ingot", "minegistics:copper_wire"},
+        ["minegistics:steel_lump"] = {"minegistics:building_materials", "minegistics:steel_ingot"},
         ["minegistics:ash"] = {"minegistics:potash", "minegistics:lye"}
     }
 }

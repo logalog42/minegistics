@@ -24,10 +24,14 @@ local load_orders = {
 		input = {},
 		output = {},
 	},
-	workshop = {
+	refinery = {
 		input = {},
 		output = {},
 	},
+	workshop = {
+		input = {},
+		output = {},
+	}
 }
 
 for output, inputs in pairs(RecipiesInStructure.Factory) do
@@ -35,9 +39,14 @@ for output, inputs in pairs(RecipiesInStructure.Factory) do
 	load_orders.factory.input[inputs[2]] = true
 	load_orders.factory.output[output] = true
 end
-for input, output in pairs(RecipiesInStructure.Refinery) do
-	load_orders.workshop.input[output] = true
-	load_orders.workshop.output[input] = true
+for inputs, output in pairs(RecipiesInStructure.Refinery) do
+	load_orders.refinery.input[output] = true
+	load_orders.refinery.output[inputs] = true
+end
+for inputs, output in pairs(RecipiesInStructure.Workshop) do
+	load_orders.workshop.input[inputs] = true
+	load_orders.workshop.output[output[1]] = true
+	load_orders.workshop.output[output[2]] = true
 end
 
 local function spawn_passengers(train, pos)
@@ -78,7 +87,6 @@ local function should_collect_train(player)
 	local has_train = inv:contains_item("main", "trains:train")
 	return (not creative) or (not has_train)
 end
-
 
 local function play_rail_sound(train)
 	if not train.sound_handle then
@@ -125,7 +133,7 @@ end
 
 --deposits or withdraws items at a factory
 local function factory_transaction(train, train_inv, contents)
-	for output, inputs in pairs(Factory_recipes) do
+	for output, inputs in pairs(RecipiesInStructure.Factory) do
 		if train_inv[inputs[1]] then
 			contents:add_item("main", inputs[1] .. " " .. train_inv[inputs[1]])
 			train_inv[inputs[1]] = nil
@@ -138,7 +146,7 @@ local function factory_transaction(train, train_inv, contents)
 		end
 	end
 	if not train.supply_train then
-		for output, inputs in pairs(Factory_recipes) do
+		for output, inputs in pairs(RecipiesInStructure.Factory) do
 			local max_transfer = train.cargo_capacity - get_cargo_count(train)
 			local taken = contents:remove_item("main", (output .. " " .. max_transfer))
 			if not taken:is_empty() then
@@ -151,18 +159,43 @@ end
 
 --deposits or withdraws items at a workshop
 local function workshop_transaction(train, train_inv, contents)
+	for inputs, output in pairs(RecipiesInStructure.Workshop) do
+		if train_inv[inputs] then
+			contents:add_item("input", inputs .. " " .. train_inv[inputs])
+			train_inv[inputs[1]] = nil
+			train.supply_train = true
+		end
+	end
+	if not train.supply_train then
+		for inputs, output in pairs(RecipiesInStructure.Workshop) do
+			local max_transfer = train.cargo_capacity - get_cargo_count(train)
+			local taken1 = contents:remove_item("output", (output[1] .. " " .. max_transfer))
+			local taken2 = contents:remove_item("output", (output[2] .. " " .. max_transfer))
+			if not taken1:is_empty() then
+				train_inv[output[1]] = (train_inv[output[1]] or 0) + taken1:get_count()
+			end
+			if not taken2:is_empty() then
+				train_inv[output[2]] = (train_inv[output[2]] or 0) + taken2:get_count()
+			end
+		end
+	end
+	update_train_cargo_display(train)
+end
+
+--deposits or withdraws items at a refinery
+local function refinery_transaction(train, train_inv, contents)
 	local ore_hauler = false
-	for input, output in pairs(Refinery_recipes) do
+	for output, input in pairs(RecipiesInStructure.Refinery) do
 		if train_inv[input] then
-			contents:add_item("main", input .. " " .. train_inv[input])
+			contents:add_item("input", input .. " " .. train_inv[input])
 			train_inv[input] = nil
 			ore_hauler = true
 		end
 	end
 	if not ore_hauler then
-		for input, output in pairs(Refinery_recipes) do
+		for output, input in pairs(RecipiesInStructure.Refinery) do
 			local max_transfer = train.cargo_capacity - get_cargo_count(train)
-			local taken = contents:remove_item("main", (output .. " " .. max_transfer))
+			local taken = contents:remove_item("output", (output .. " " .. max_transfer))
 			if not taken:is_empty() then
 				train_inv[output] = (train_inv[output] or 0) + taken:get_count()
 			end
@@ -198,13 +231,13 @@ local function structure_check(train, dtime)
 		local structure_name = minetest.get_node(direction).name
 		local contents = minetest.get_inventory({type = "node", pos = direction})
 		if structure_name == "minegistics:Collector" then
-			collect(train, train_inv, contents, Material)
+			collect(train, train_inv, contents, Raw_Material)
 		elseif structure_name == "minegistics:Farm" then
 			collect(train, train_inv, contents, Farm_material)
 		elseif structure_name == "minegistics:Factory" then
 			factory_transaction(train, train_inv, contents)
-		elseif structure_name == "minegistics:Workshop" then
-			workshop_transaction(train, train_inv, contents)
+		elseif structure_name == "minegistics:Refinery" then
+			refinery_transaction(train, train_inv, contents)
 		elseif structure_name == "minegistics:Town" then
 			train.passengers = true
 			spawn_passengers(train, pos)

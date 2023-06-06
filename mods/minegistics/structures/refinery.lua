@@ -94,43 +94,35 @@ minetest.register_node("minegistics:Refinery", {
     on_timer = function(pos)
         minetest.forceload_block(pos, false)
 		local meta = minetest.get_meta(pos)
+		local inv = minetest.get_inventory({type="node", pos=pos})
 		--minetest.log("default", "display_recipe = " .. meta:get_string("display_recipe"))
         if Power_stable(pos) and meta:get_string("display_recipe") ~= '' then
-			local input = meta:get_inventory("input")
-			local output = meta:get_inventory("output")
+			local input = inv:get_list("input")
+			local output = inv:get_list("output")
             local ingredients = {}
             local working = false
             for struct_output, struct_input in pairs(RecipiesInStructure.Refinery) do
-                ingredients[struct_input] = ItemStack(struct_output)
-            end
-            for ing_input, ing_output in pairs(ingredients) do
-				--minetest.log("default", "ing_output = " .. ing_output .. " ing_input = " .. ing_input)
-                if input:contains_item(ing_output == meta.display_recipe and input:contains_item("input", ItemStack(ing_input) .. " 1") then
-                    input:remove_item("input", ItemStack(ing_input) .. " 1")
-                    output:add_item("output", ItemStack(ing_output) .. " 1")
-                    working = true
-                end
-            end
-
-			local meta = minetest.get_meta(pos)
-
-			local ingredients = {}
-			local working = false
-			for output, inputs in pairs(RecipiesInStructure.Factory) do
-				ingredients[output] = { ItemStack(inputs[1]), ItemStack(inputs[2]) }
-			end
-			for name, list in pairs(inventories) do
-				for result, stacks in pairs(ingredients) do
-					while inv:contains_item(name, stacks[1]) and inv:contains_item(name, stacks[2]) do
-						inv:remove_item(name, stacks[1])
-						inv:remove_item(name, stacks[2])
-						local result_stack = ItemStack(result)
-						inv:add_item("main", result_stack)
-						working = true
-					end
+                if meta:get_string("display_recipe") == struct_output then
+					ingredients[struct_output] = struct_input
 				end
-			end
-
+            end
+            for ing_output, ing_input in pairs(ingredients) do
+				--minetest.log("default", "ing_input = " .. ing_input)
+				--minetest.log("default", "ing_output = " .. ing_output)
+				local input_stack = ItemStack(ing_input .. " 1")
+				local output_stack = ItemStack(ing_output .. " 1")
+				if not inv:room_for_item("output", output_stack) then
+					--minetest.log("default", "There is no room for new items")
+					working = false
+					break
+				end
+				if inv:contains_item("input", input_stack) then
+					--minetest.log("default", "There were some items in input")
+					inv:remove_item("input", input_stack)
+					inv:add_item("output", output_stack)
+					working = true
+				end
+            end
 
 			if working then
                 minetest.sound_play("factory", {
