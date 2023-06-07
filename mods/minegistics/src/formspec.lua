@@ -126,8 +126,8 @@ function Shop_formspec(player)
         "bgcolor[#353535;false]",
         "label[4.5,0.5;Shop]",
         table.concat(item_buttons),
-        "label[3.5,13.6;".."Your balance: $" .. Money.."]",
-        "button[3,14;4,2;Back;Back]"
+        "label[3.5," .. index .. ".6;".."Your balance: $" .. Money.."]",
+        "button[3," .. index + 1 .. ";4,2;Back;Back]"
     }
     return formspec
 end
