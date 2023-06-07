@@ -7,10 +7,10 @@
 
 Base_ores = {
     ["basenodes:stone_with_coal"] = "minegistics:coal_lump",
-    ["basenodes:stone_with_tin"] = "minegistics:tin_lump",
-    ["basenodes:stone_with_copper"] = "minegistics:copper_lump",
-    ["basenodes:stone_with_iron"] = "minegistics:iron_lump",
-    ["basenodes:stone_with_gold"] = "minegistics:gold_lump",
+    ["basenodes:stone_with_tin"] = "minegistics:tin_product",
+    ["basenodes:stone_with_copper"] = "minegistics:copper_product",
+    ["basenodes:stone_with_iron"] = "minegistics:iron_product",
+    ["basenodes:stone_with_gold"] = "minegistics:gold_product",
     ["basenodes:tree_1"] = "minegistics:lumber",
 	["basenodes:tree_2"] = "minegistics:lumber",
 	["basenodes:tree_3"] = "minegistics:lumber",
@@ -34,6 +34,18 @@ Material = {
     "minegistics:lumber"
   }
 
+Raw_Material = {
+    "minegistics:coal_lump",
+    "minegistics:tin_product",
+    "minegistics:copper_product",
+    "minegistics:iron_product",
+    "minegistics:gold_product",
+    "minegistics:clay_lump",
+    "minegistics:gravel_lump",
+    "minegistics:sand_lump",
+    "minegistics:lumber"
+}
+
 Farm_material = {
     "minegistics:fruit",
     "minegistics:wheat",
@@ -52,21 +64,21 @@ Dairy_material = {
 
 RecipiesInStructure = {
     Refinery = {
-        ["minegistics:coal_lump"] = "minegistics:coal_coke_product",
+        ["minegistics:coal_coke_product"] = "minegistics:coal_lump",
         ["minegistics:copper_lump"] = "minegistics:copper_product",
         ["minegistics:gold_lump"] = "minegistics:gold_product",
         ["minegistics:iron_lump"] = "minegistics:iron_product",
         ["minegistics:tin_lump"] = "minegistics:tin_product",
-        ["minegistics:fat"] = "minegistics:tallow_product",
-        ["minegistics:lumber"] = "minegistics:ash_product",
-        ["minegistics:clay"] = "minegistics:Ceramics"
+        ["minegistics:tallow_product"] = "minegistics:fat",
+        ["minegistics:ash_product"] = "minegistics:lumber",
+        ["minegistics:Ceramics"] = "minegistics:clay"
     },
 
     Factory = {
         ["minegistics:luxury_tools"] = {"minegistics:steel_ingot", "minegistics:bronze_ingot"},
         ["minegistics:toys"] = {"minegistics:mechanical_parts", "minegistics:copper_wire"},
         ["minegistics:bronze_ingot"] = {"minegistics:copper_ingot", "minegistics:tin_product"},
-        ["minegistics:steel_product"] = {"minegistics:coal_coke", "minegistics:iron_ingot"},
+        ["minegistics:steel_lump"] = {"minegistics:coal_coke", "minegistics:iron_ingot"},
         ["minegistics:cement"] = {"minegistics:gravel_lump", "minegistics:sand_lump"},
         ["minegistics:soap"] = {"minegistics:tallow", "minegistics:lye"},
         ["minegistics:luxury_furniture"] = {"minegistics:leather", "minegistics:lumber"},
@@ -76,9 +88,9 @@ RecipiesInStructure = {
     },
 
     Workshop = {
-        ["minegistics:iron_product"] = {"minegistics:iron_ingot", "minegistics:mechanical_parts"},
-        ["minegistics:copper_product"] = {"minegistics:copper_ingot", "minegistics:copper_wire"},
-        ["minegistics:steel_product"] = {"minegistics:building_materials", "minegistics:steel_ingot"},
+        ["minegistics:iron_lump"] = {"minegistics:iron_ingot", "minegistics:mechanical_parts"},
+        ["minegistics:copper_lump"] = {"minegistics:copper_ingot", "minegistics:copper_wire"},
+        ["minegistics:steel_lump"] = {"minegistics:building_materials", "minegistics:steel_ingot"},
         ["minegistics:ash"] = {"minegistics:potash", "minegistics:lye"}
     }
 }
@@ -90,17 +102,18 @@ Item_worth = {
     ["minegistics:meat"] = 1,
     ["minegistics:vessels_milk_bottle"] = 1,
     ["minegistics:coal_lump"] = 2,
-    ["minegistics:tin_lump"] = 2,
-    ["minegistics:iron_lump"] = 2,
-    ["minegistics:copper_lump"] = 4,
-    ["minegistics:gold_lump"] = 6,
+    ["minegistics:tin_lump"] = 3,
+    ["minegistics:iron_lump"] = 3,
+    ["minegistics:copper_lump"] = 5,
+    ["minegistics:gold_lump"] = 8,
     ["minegistics:lumber"] = 2,
     ["minegistics:coal_product"] = 3,
-    ["minegistics:tin_product"] = 3,
-    ["minegistics:iron_product"] = 3,
+    ["minegistics:tin_product"] = 2,
+    ["minegistics:iron_product"] = 2,
+    ["minegistics:copper_product"] = 3,
+    ["minegistics:gold_product"] = 6,
     ["minegistics:furniture"] = 4,
     ["minegistics:copper_wire"] = 6,
-    ["minegistics:gold_product"] = 8,
     ["minegistics:building_materials"] = 10,
     ["minegistics:toys"] = 10,
     ["minegistics:mechanical_parts"] = 12

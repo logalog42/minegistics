@@ -22,7 +22,8 @@ local items_for_sale = {
     ["Brake Rail"] = "trains:brake_rail",
     ["Train"] = "trains:train",
     ["Workshop"] = "minegistics:Workshop",
-    ["Farm"] = "minegistics:Farm"
+    ["Farm"] = "minegistics:Farm",
+    ["Refinery"] = "minegistics:Refinery"
 }
 
 Item_prices = {
@@ -38,6 +39,7 @@ Item_prices = {
     ["Brake Rail"] = 40,
     ["Train"] = 100,
     ["Power Plant"] = 350,
+    ["Refinery"] = 100
 }
 
 --defines the inventory formspec
@@ -124,8 +126,8 @@ function Shop_formspec(player)
         "bgcolor[#353535;false]",
         "label[4.5,0.5;Shop]",
         table.concat(item_buttons),
-        "label[3.5,13.6;".."Your balance: $" .. Money.."]",
-        "button[3,14;4,2;Back;Back]"
+        "label[3.5," .. index .. ".6;".."Your balance: $" .. Money.."]",
+        "button[3," .. index + 1 .. ";4,2;Back;Back]"
     }
     return formspec
 end
@@ -239,17 +241,26 @@ function Strut_form.recipie_display(type, display_recipe, possible_recipes, tuto
         elseif type == "Refining" then
             local input = ''
             local output = ''
+            for key, value in pairs(possible_recipes) do
+                --minetest.log("default", "Key = " .. key .. " Value 1 = " .. value[1])
+                if key == display_recipe then
+                    input = value
+                    output = key
+                    break
+                end
+            end
+
             formspec = {
                 --Input 1
-                "item_image[0,1.75;1.5,1.5;" .. input .."" ..
+                "item_image[0,1.75;1.5,1.5;" .. input .."]" ..
                 --Label of item
                 "label[0,3.25;" .. string.sub(input, 13, 100) .. "]" ..
                 --Working Image
-                "animated_image[3,2;5,3;refiner1to1;animated1to1.png;9;200;;" ..
+                "animated_image[2,1;5,3;refiner1to1;animated1to1.png;9;200;;]" ..
                 --Output
                 "item_image[8.5,1.75;1.5,1.5;" .. output .. "]" ..
                 --Label of item
-                "label[8.25,3.25;" .. string.sub(input, 13, 100) .. "]"
+                "label[8.25,3.25;" .. string.sub(output, 13, 100) .. "]"
             }
         end
     else
